@@ -1,4 +1,63 @@
-import { cellToBoundary, cellToLatLng } from "h3-js";
+import { cellToBoundary, cellToLatLng, cellToParent, getResolution } from "h3-js";
+
+/** Stored visit resolution (block-scale). Coarser view is derived, never stored. */
+export const FOG_STORED_RESOLUTION = 9;
+export const FOG_COARSE_RESOLUTION = 7;
+/** Leaflet zoom at or below this uses neighborhood-scale (res 7) hexes. */
+export const FOG_COARSE_ZOOM_MAX = 13;
+
+export function resolutionForZoom(zoom) {
+  return Number(zoom) <= FOG_COARSE_ZOOM_MAX
+    ? FOG_COARSE_RESOLUTION
+    : FOG_STORED_RESOLUTION;
+}
+
+export function cellAtResolution(cellId, resolution) {
+  if (!cellId || !Number.isInteger(resolution)) return cellId;
+  const current = getResolution(cellId);
+  if (current === resolution) return cellId;
+  if (current > resolution) return cellToParent(cellId, resolution);
+  return cellId;
+}
+
+/**
+ * Collapse res-9 cells to a coarser H3 resolution, de-duping siblings that
+ * share a parent so zoomed-out hexes don't overlap.
+ */
+export function coarsenCells(cells, resolution) {
+  const list = cellList(cells);
+  if (!Number.isInteger(resolution) || resolution >= FOG_STORED_RESOLUTION) {
+    return list;
+  }
+  const byParent = new Map();
+  for (const cell of list) {
+    let parent;
+    try {
+      parent = cellAtResolution(cell.h3_cell, resolution);
+    } catch {
+      continue;
+    }
+    if (!parent) continue;
+    const count = Number.isFinite(cell.visit_count) ? cell.visit_count : 1;
+    const prev = byParent.get(parent);
+    if (!prev) {
+      byParent.set(parent, { h3_cell: parent, visit_count: count });
+    } else {
+      prev.visit_count = Math.max(prev.visit_count, count);
+    }
+  }
+  return [...byParent.values()];
+}
+
+/** Everyone wins over some when a neighborhood contains both tiers. */
+export function coarsenGroupCoverage(everyone, some, resolution) {
+  const everyoneCells = coarsenCells(everyone, resolution);
+  const everyoneSet = new Set(everyoneCells.map((cell) => cell.h3_cell));
+  const someCells = coarsenCells(some, resolution).filter(
+    (cell) => !everyoneSet.has(cell.h3_cell)
+  );
+  return { everyone: everyoneCells, some: someCells };
+}
 
 function closedRing(coords) {
   if (!coords.length) return coords;

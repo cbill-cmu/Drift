@@ -4,9 +4,11 @@ import L from "leaflet";
 import {
   buildPersonalFogGeoJSON,
   buildVisitedCellGeoJSON,
-  cellList,
+  coarsenCells,
+  coarsenGroupCoverage,
   filterCellsInBounds,
   lngLatRingFromBBox,
+  resolutionForZoom,
 } from "../utils/fogGeoJSON.js";
 
 const FOG_STYLE = {
@@ -46,7 +48,9 @@ const SOME_STYLE = {
 const REVEAL_MIN_ZOOM = 15;
 
 function snapshotView(map) {
-  const padded = map.getBounds().pad(0.35);
+  const zoom = map.getZoom();
+  const pad = resolutionForZoom(zoom) < 9 ? 0.55 : 0.35;
+  const padded = map.getBounds().pad(pad);
   const bbox = {
     west: padded.getWest(),
     south: padded.getSouth(),
@@ -54,7 +58,7 @@ function snapshotView(map) {
     north: padded.getNorth(),
   };
   return {
-    zoom: map.getZoom(),
+    zoom,
     bbox,
     ring: lngLatRingFromBBox(bbox),
   };
@@ -116,10 +120,17 @@ export default function FogOverlayLayer({
     };
   }, [map]);
 
+  const resolution = resolutionForZoom(view.zoom);
+
+  const groupCoverage = useMemo(
+    () => coarsenGroupCoverage(everyone, some, resolution),
+    [everyone, some, resolution]
+  );
+
   const holeCells = useMemo(() => {
-    if (mode === "group") return cellList([...everyone, ...some]);
-    return cellList(cells);
-  }, [mode, cells, everyone, some]);
+    if (mode === "group") return [...groupCoverage.everyone, ...groupCoverage.some];
+    return coarsenCells(cells, resolution);
+  }, [mode, cells, groupCoverage, resolution]);
 
   const visibleHoles = useMemo(
     () => filterCellsInBounds(holeCells, view.bbox),
@@ -127,13 +138,13 @@ export default function FogOverlayLayer({
   );
 
   const visibleEveryone = useMemo(
-    () => filterCellsInBounds(cellList(everyone), view.bbox),
-    [everyone, view.bbox]
+    () => filterCellsInBounds(groupCoverage.everyone, view.bbox),
+    [groupCoverage, view.bbox]
   );
 
   const visibleSome = useMemo(
-    () => filterCellsInBounds(cellList(some), view.bbox),
-    [some, view.bbox]
+    () => filterCellsInBounds(groupCoverage.some, view.bbox),
+    [groupCoverage, view.bbox]
   );
 
   const fog = useMemo(
@@ -159,7 +170,7 @@ export default function FogOverlayLayer({
     [mode, visibleHoles, view.zoom]
   );
 
-  const fogKey = `${mode}|${view.ring.map((p) => p.map((n) => n.toFixed(4)).join(",")).join("|")}|${visibleHoles.length}`;
+  const fogKey = `${mode}|r${resolution}|${view.ring.map((p) => p.map((n) => n.toFixed(4)).join(",")).join("|")}|${visibleHoles.length}`;
 
   return (
     <>

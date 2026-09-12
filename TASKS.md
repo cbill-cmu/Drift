@@ -142,10 +142,14 @@ Status legend: `[ ]` not started · `[~]` in progress · `[x]` done
 
 ## Phase 8 — Zoom-level resolution switching
 
-- [ ] Listen for Leaflet zoom events; below a threshold zoom, re-request/re-render cells at H3 resolution 7 instead of 9 (either a separate backend param `?resolution=7|9` on the coverage/visited-cells routes, or compute the coarser view client-side via `h3.cellToParent(cell, 7)` and de-dupe)
-- [ ] Confirm resolution-7 hexes render as visibly larger city-scale regions, not a broken/overlapping mess
+- [x] Listen for Leaflet zoom events; below a threshold zoom, re-request/re-render cells at H3 resolution 7 instead of 9 (either a separate backend param `?resolution=7|9` on the coverage/visited-cells routes, or compute the coarser view client-side via `h3.cellToParent(cell, 7)` and de-dupe)
+- [x] Confirm resolution-7 hexes render as visibly larger city-scale regions, not a broken/overlapping mess
 
 **Done when:** zooming out smoothly transitions from block-level hexes to neighborhood-level hexes without visual glitches.
+
+**Choice:** client-side `cellToParent` (stored data stays res 9). Leaflet zoom ≤13 uses res 7; zoom ≥14 stays res 9. Sibling res-9 cells collapse to one parent so hexes don't overlap; in group mode an everyone parent wins over some.
+
+**Verified:** CMU cell `892a847317bffff` coarsens to `872a84731ffffff` (res 7); bbox area is ~49× the res-9 cell. Nearby CMU points de-dupe to one parent; Acrisure Stadium is a distinct parent. Zoom 13→res 7, zoom 14→res 9.
 
 ---
 
