@@ -1,57 +1,10 @@
-import { ObjectId } from "mongodb";
 import { Router } from "express";
 import { COLLECTIONS } from "../models/index.js";
+import { asString, idVariants, matchGroupId } from "../services/ids.js";
 import { getDb } from "../services/mongoService.js";
+import { buildNeighborhoods } from "../services/neighborhoods.js";
 
 const router = Router();
-
-const HOOD_TOTALS = {
-  Oakland: 9,
-  Shadyside: 10,
-  "Squirrel Hill": 11,
-  "East Liberty": 10,
-  "South Side": 9,
-  Lawrenceville: 11,
-  Downtown: 11,
-  Bloomfield: 9,
-};
-
-function asString(value) {
-  if (value == null) return "";
-  return String(value);
-}
-
-function idVariants(id) {
-  const variants = [id];
-  if (typeof id === "string" && ObjectId.isValid(id)) {
-    variants.push(new ObjectId(id));
-  }
-  return variants;
-}
-
-function matchGroupId(field, groupId) {
-  return { $or: idVariants(groupId).map((value) => ({ [field]: value })) };
-}
-
-function buildNeighborhoods(nodes) {
-  const byHood = {};
-  for (const node of nodes) {
-    const hood = node.neighborhood || "Unknown";
-    if (!byHood[hood]) byHood[hood] = [];
-    byHood[hood].push(node);
-  }
-  const neighborhoods = {};
-  for (const [hood, list] of Object.entries(byHood)) {
-    const discovered = list.length;
-    const total = Math.max(discovered, HOOD_TOTALS[hood] || discovered);
-    neighborhoods[hood] = {
-      pct: Math.round((100 * discovered) / total),
-      discovered,
-      total,
-    };
-  }
-  return neighborhoods;
-}
 
 function serializeNode(node) {
   return {
