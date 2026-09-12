@@ -131,3 +131,99 @@ export async function unsendFriendRequest(friendshipId) {
     throw apiError(err, "Failed to unsend friend request");
   }
 }
+
+function mapGroupInvite(item) {
+  return {
+    invite_id: item?.invite_id,
+    status: item?.status,
+    direction: item?.direction,
+    created_at: item?.created_at,
+    group: item?.group || null,
+    user: item?.user || null,
+  };
+}
+
+/** POST /api/groups  body { name } */
+export async function createGroup(name) {
+  try {
+    const { data } = await api.post("/api/groups", { name });
+    return data;
+  } catch (err) {
+    throw apiError(err, "Failed to create group");
+  }
+}
+
+/** GET /api/groups */
+export async function fetchMyGroups() {
+  try {
+    const { data } = await api.get("/api/groups");
+    return data;
+  } catch (err) {
+    throw apiError(err, "Failed to load groups");
+  }
+}
+
+/** GET /api/groups/:groupId/inviteable */
+export async function fetchInviteableFriends(groupId) {
+  try {
+    const { data } = await api.get(`/api/groups/${groupId}/inviteable`);
+    return data;
+  } catch (err) {
+    throw apiError(err, "Failed to load inviteable friends");
+  }
+}
+
+/** POST /api/groups/:groupId/invites  body { user_id } */
+export async function inviteFriendToGroup(groupId, userId) {
+  try {
+    const { data } = await api.post(`/api/groups/${groupId}/invites`, { user_id: userId });
+    return data;
+  } catch (err) {
+    throw apiError(err, "Failed to send group invite");
+  }
+}
+
+/** GET /api/groups/invites */
+export async function fetchGroupInvites() {
+  try {
+    const { data } = await api.get("/api/groups/invites");
+    return {
+      success: data?.success !== false,
+      me: data?.me || null,
+      incoming: (data?.incoming || []).map(mapGroupInvite),
+      outgoing: (data?.outgoing || []).map(mapGroupInvite),
+    };
+  } catch (err) {
+    throw apiError(err, "Failed to load group invites");
+  }
+}
+
+/** POST /api/groups/invites/:id/accept */
+export async function acceptGroupInvite(inviteId) {
+  try {
+    const { data } = await api.post(`/api/groups/invites/${inviteId}/accept`);
+    return data;
+  } catch (err) {
+    throw apiError(err, "Failed to accept group invite");
+  }
+}
+
+/** POST /api/groups/invites/:id/decline */
+export async function declineGroupInvite(inviteId) {
+  try {
+    const { data } = await api.post(`/api/groups/invites/${inviteId}/decline`);
+    return data;
+  } catch (err) {
+    throw apiError(err, "Failed to decline group invite");
+  }
+}
+
+/** POST /api/groups/invites/:id/unsend */
+export async function unsendGroupInvite(inviteId) {
+  try {
+    const { data } = await api.post(`/api/groups/invites/${inviteId}/unsend`);
+    return data;
+  } catch (err) {
+    throw apiError(err, "Failed to unsend group invite");
+  }
+}

@@ -37,13 +37,19 @@ export function useFriends() {
     }
   }, []);
 
+  const clearInviteNotice = useCallback(() => {
+    setInviteNotice("");
+    setInviteNoticeKind("hint");
+  }, []);
+
   const addByEmail = useCallback(
     async (email) => {
+      clearInviteNotice();
       const result = await addFriendByEmail(email);
       await reload();
       return result;
     },
-    [reload]
+    [clearInviteNotice, reload]
   );
 
   useEffect(() => {
@@ -77,20 +83,22 @@ export function useFriends() {
 
   const accept = useCallback(
     async (friendshipId) => {
+      clearInviteNotice();
       const result = await acceptFriendRequest(friendshipId);
       await reload();
       return result;
     },
-    [reload]
+    [clearInviteNotice, reload]
   );
 
   const unsend = useCallback(
     async (friendshipId) => {
+      clearInviteNotice();
       const result = await unsendFriendRequest(friendshipId);
       await reload();
       return result;
     },
-    [reload]
+    [clearInviteNotice, reload]
   );
 
   return {
@@ -106,5 +114,6 @@ export function useFriends() {
     addByEmail,
     accept,
     unsend,
+    clearInviteNotice,
   };
 }

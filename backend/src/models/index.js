@@ -9,4 +9,5 @@ export {
   TRAVEL_MODES,
   INDEXES,
   FRIEND_STATUSES,
+  GROUP_INVITE_STATUSES,
 } from "../../../shared/mongodb-schema.js";

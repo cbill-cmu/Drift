@@ -1,15 +1,17 @@
 import { Router } from "express";
 
-import { createTrip, HttpError } from "../services/tripService.js";
+import { createTrip, HttpError, validateTripBody } from "../services/tripService.js";
 
 const router = Router();
 
 /**
  * POST /api/trips
  * Contract: shared/api-contract.md
+ * Person D: reject bad coords / travel_mode / duration with 400 before createTrip.
  */
 router.post("/", async (req, res) => {
   try {
+    validateTripBody(req.body);
     const payload = await createTrip(req.body, req.auth || {});
     return res.status(200).json(payload);
   } catch (err) {

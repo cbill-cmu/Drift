@@ -29,7 +29,7 @@ build/
 coverage/
 
 # MongoDB / seed artifacts (generated JSON can be large)
-data/
+/data/
 shared/mongodb-seed/output/
 *.seed.json
 

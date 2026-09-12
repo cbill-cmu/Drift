@@ -16,6 +16,7 @@ export const COLLECTIONS = {
   USER_HEATPOINTS: "user_heatpoints",
   USER_PLACE_TYPE_PROFILES: "user_place_type_profiles",
   FRIENDS: "friends",
+  GROUP_INVITES: "group_invites",
 };
 
 export const NODE_PLACE_TYPES = [
@@ -32,6 +33,8 @@ export const NODE_PLACE_TYPES = [
 export const TRAVEL_MODES = ["walk", "bus", "car", "uber", "train"];
 
 export const FRIEND_STATUSES = ["pending", "accepted", "blocked"];
+
+export const GROUP_INVITE_STATUSES = ["pending", "accepted", "declined"];
 
 /**
  * Document shapes (reference only — Mongo is schemaless).
@@ -61,6 +64,9 @@ export const FRIEND_STATUSES = ["pending", "accepted", "blocked"];
  *   user_id, place_type, frequency_pct, trip_count, last_updated
  * }
  * friends: { user_id_1, user_id_2, status, created_at }
+ * group_invites: {
+ *   group_id, inviter_id, invitee_id, status, created_at, updated_at
+ * }
  */
 
 export const INDEXES = {
@@ -79,4 +85,8 @@ export const INDEXES = {
   users: [{ key: { auth0_id: 1 }, unique: true }, { key: { email: 1 } }],
   groups: [{ key: { name: 1 } }],
   user_place_type_profiles: [{ key: { user_id: 1, place_type: 1 }, unique: true }],
+  group_invites: [
+    { key: { group_id: 1, invitee_id: 1 }, unique: true },
+    { key: { invitee_id: 1, status: 1 } },
+  ],
 };

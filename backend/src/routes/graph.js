@@ -8,6 +8,25 @@ import { buildNeighborhoods } from "../services/neighborhoods.js";
 
 const router = Router();
 
+const HEX_ID = /^[a-fA-F0-9]{24}$/;
+const AUTH0_SUB = /^auth0\|[\w.-]{1,128}$/;
+
+function wellFormedId(value) {
+  const raw = String(value || "").trim();
+  return HEX_ID.test(raw) || AUTH0_SUB.test(raw);
+}
+
+function requireWellFormedParams(req, res, next) {
+  const { groupId, userId } = req.params;
+  if (groupId !== undefined && !HEX_ID.test(String(groupId).trim())) {
+    return res.status(400).json({ success: false, error: "Invalid groupId" });
+  }
+  if (userId !== undefined && !wellFormedId(userId)) {
+    return res.status(400).json({ success: false, error: "Invalid userId" });
+  }
+  return next();
+}
+
 function serializeNode(node) {
   return {
     id: asString(node._id),
@@ -86,7 +105,7 @@ async function loadGroupGraph(groupId) {
  * Contract: shared/api-contract.md
  * Person A: Auth0 JWT + group membership required.
  */
-router.get("/:groupId/graph", requireAuth, requireGroupMember, async (req, res) => {
+router.get("/:groupId/graph", requireAuth, requireWellFormedParams, requireGroupMember, async (req, res) => {
   try {
     const graph = await loadGroupGraph(req.params.groupId);
     if (!graph) {
@@ -110,6 +129,7 @@ router.get("/:groupId/graph", requireAuth, requireGroupMember, async (req, res) 
 router.get(
   "/:groupId/members/:userId/graph",
   requireAuth,
+  requireWellFormedParams,
   requireGroupMember,
   async (req, res) => {
     try {

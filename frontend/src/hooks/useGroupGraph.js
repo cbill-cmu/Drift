@@ -1,8 +1,8 @@
 import { useCallback, useEffect, useState } from "react";
 import { fetchFriendGraph, fetchGroupGraph } from "../api/client.js";
 import { normalizeGraph } from "../api/normalizeGraph.js";
-import { getFixtureFriendGraph } from "../data/fixtureFriendGraphs.js";
-import groupGraphFixture from "../data/groupGraphFixture.json";
+import { getFixtureFriendGraph } from "../fixtures/friendGraphs.js";
+import groupGraphFixture from "../fixtures/groupGraph.json";
 
 /**
  * Load the graph currently on the map from the API.

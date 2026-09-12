@@ -1,11 +1,11 @@
 # Drift API Contract
 
-**Status:** Implemented on `main` for trips + group/member graph. Profile endpoint still TODO.  
+**Status:** Implemented on `main` for trips + group/member graph + friends + group create/invite.  
 **Owners:** Person 1 implements; Person 2 consumes; changes need team agreement.
 
 Base URL (local): `http://localhost:3000`  
-Auth: `Authorization: Bearer <Auth0 access token>` (trips currently require Bearer; graph may be open depending on backend config)  
-Errors: `{ "success": false, "error": "string" }` with 400 / 401 / 500 as appropriate
+Auth: `Authorization: Bearer <Auth0 access token>` on all `/api/*` routes below.  
+Errors: `{ "success": false, "error": "string" }` with 400 / 401 / 403 / 404 / 409 / 500 as appropriate
 
 **Demo group_id (seed):** `6aa507373e4c8b8fc47e6428` — confirm with `npm run verify` after any reload.
 
@@ -68,6 +68,114 @@ Notes for implementers:
   "error": "string"
 }
 ```
+
+---
+
+## Groups (create + friend-only invites)
+
+Membership is invite-only. Email is not used here — add friends via `POST /api/friends` first, then invite with their `user_id` from `GET /api/friends` → `accepted[]`.
+
+### POST /api/groups
+
+Create a group. Caller becomes the first member.
+
+**Request**
+
+```json
+{ "name": "Sunday Hikers" }
+```
+
+**Response (success)**
+
+```json
+{
+  "success": true,
+  "group": {
+    "id": "string",
+    "name": "Sunday Hikers",
+    "creator_id": "string",
+    "member_ids": ["string"],
+    "created_at": "ISO date",
+    "total_nodes_discovered": 0,
+    "total_edges_discovered": 0
+  }
+}
+```
+
+### GET /api/groups
+
+Groups the caller belongs to.
+
+```json
+{ "success": true, "groups": [{ "id": "string", "name": "Sunday Hikers" }] }
+```
+
+### POST /api/groups/:groupId/invites
+
+Invite an **accepted friend**. Body is `{ "user_id" }` (Mongo id, not email).
+
+**403** if the caller is not a member, or `user_id` is not an accepted friend.  
+**409** if they are already a member or a pending invite exists.
+
+```json
+{
+  "success": true,
+  "invite": {
+    "invite_id": "string",
+    "status": "pending",
+    "direction": "outgoing",
+    "created_at": "ISO date",
+    "group": { "id": "string", "name": "Sunday Hikers" },
+    "user": { "id": "string", "display_name": "Bob", "email": "bob@test.com" }
+  }
+}
+```
+
+### GET /api/groups/:groupId/inviteable
+
+Accepted friends who are not members and have no pending invite. Use this to render the Invite picker.
+
+```json
+{
+  "success": true,
+  "group": { "id": "string", "name": "Sunday Hikers" },
+  "inviteable": [{ "id": "string", "display_name": "Bob", "email": "bob@test.com" }]
+}
+```
+
+### GET /api/groups/invites
+
+Pending inbox for the caller.
+
+```json
+{
+  "success": true,
+  "me": { "id": "string", "display_name": "Fabio", "email": "fabio@test.com" },
+  "incoming": [],
+  "outgoing": []
+}
+```
+
+### POST /api/groups/invites/:id/accept
+
+Invitee only. Adds them to `member_ids` and `users.groups`.
+
+```json
+{
+  "success": true,
+  "already_accepted": false,
+  "invite": {},
+  "group": {}
+}
+```
+
+### POST /api/groups/invites/:id/decline
+
+Invitee deletes the pending row (they can be invited again).
+
+### POST /api/groups/invites/:id/unsend
+
+Inviter deletes the pending row (they can send again).
 
 ---
 
@@ -146,7 +254,9 @@ Taste profile for recommendation card (can ship after core loop).
 | 200 | Success |
 | 400 | Missing/invalid body fields |
 | 401 | Missing/invalid JWT |
-| 404 | Unknown group/user |
+| 403 | Not a group member / not an accepted friend / not the invitee |
+| 404 | Unknown group/user/invite |
+| 409 | Already a member / invite already sent |
 | 501 | Stub not implemented yet |
 | 500 | Mongo / Google Places / unexpected |
 

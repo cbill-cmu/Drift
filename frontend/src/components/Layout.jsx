@@ -175,6 +175,8 @@ export default function Layout({ groupId }) {
           <div className="soft-sheet-body">
             {sheet === "friends" ? (
               <FriendsPanel
+                groupId={groupId}
+                groupName={groupName}
                 onViewMap={viewFriend}
                 activeFriendId={activeFriend?.id}
               />

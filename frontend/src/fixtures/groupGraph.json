@@ -1,0 +1,43 @@
+{
+  "success": true,
+  "group_id": "6aa507373e4c8b8fc47e6428",
+  "group_name": "CMU CREW",
+  "nodes": [
+    {
+      "id": "fixture_cmu",
+      "name": "CMU",
+      "neighborhood": "Oakland",
+      "lat": 40.4425,
+      "lng": -79.9435,
+      "place_type": "urban_core",
+      "visits": 8
+    },
+    {
+      "id": "fixture_shadyside",
+      "name": "Walnut Street",
+      "neighborhood": "Shadyside",
+      "lat": 40.4508,
+      "lng": -79.9346,
+      "place_type": "food",
+      "visits": 3
+    }
+  ],
+  "edges": [
+    {
+      "id": "fixture_edge_1",
+      "from": "fixture_cmu",
+      "to": "fixture_shadyside",
+      "count": 2,
+      "avg_duration": 18,
+      "travel_mode": "walk"
+    }
+  ],
+  "heatpoints": [
+    { "lat": 40.4425, "lng": -79.9435, "weight": 1.4 },
+    { "lat": 40.4508, "lng": -79.9346, "weight": 0.8 }
+  ],
+  "neighborhoods": {
+    "Oakland": { "pct": 72, "discovered": 8, "total": 11 },
+    "Shadyside": { "pct": 30, "discovered": 3, "total": 10 }
+  }
+}

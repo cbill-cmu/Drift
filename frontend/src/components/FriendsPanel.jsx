@@ -2,8 +2,9 @@ import { useState } from "react";
 import { useFriends } from "../hooks/useFriends.js";
 import { useAuthStatus } from "../hooks/useAuth0.js";
 import FriendQrCard from "./FriendQrCard.jsx";
+import GroupInvitesPanel from "./GroupInvitesPanel.jsx";
 
-export default function FriendsPanel({ onViewMap, activeFriendId }) {
+export default function FriendsPanel({ groupId, groupName, onViewMap, activeFriendId }) {
   const { user } = useAuthStatus();
   const {
     me,
@@ -17,6 +18,7 @@ export default function FriendsPanel({ onViewMap, activeFriendId }) {
     addByEmail,
     accept,
     unsend,
+    clearInviteNotice,
   } = useFriends();
   const [query, setQuery] = useState("");
   const [notice, setNotice] = useState("");
@@ -29,6 +31,7 @@ export default function FriendsPanel({ onViewMap, activeFriendId }) {
     if (!value || busy) return;
     setBusy(true);
     setNotice("");
+    clearInviteNotice();
     try {
       const result = await addByEmail(value);
       setNoticeKind("hint");
@@ -50,6 +53,7 @@ export default function FriendsPanel({ onViewMap, activeFriendId }) {
     if (!friend.friendship_id || busy) return;
     setBusy(true);
     setNotice("");
+    clearInviteNotice();
     try {
       await accept(friend.friendship_id);
       setNoticeKind("hint");
@@ -66,6 +70,7 @@ export default function FriendsPanel({ onViewMap, activeFriendId }) {
     if (!friend.friendship_id || busy) return;
     setBusy(true);
     setNotice("");
+    clearInviteNotice();
     try {
       await unsend(friend.friendship_id);
       setNoticeKind("hint");
@@ -99,7 +104,9 @@ export default function FriendsPanel({ onViewMap, activeFriendId }) {
         </div>
       </form>
       <FriendQrCard email={me?.email || user?.email || ""} />
-      {inviteNotice ? <p className={inviteNoticeKind || "hint"}>{inviteNotice}</p> : null}
+      {inviteNotice && !notice ? (
+        <p className={inviteNoticeKind || "hint"}>{inviteNotice}</p>
+      ) : null}
       {notice ? <p className={noticeKind}>{notice}</p> : null}
       {error ? <p className="error">{error}</p> : null}
       {loading ? <p className="hint">Loading friends…</p> : null}
@@ -160,6 +167,8 @@ export default function FriendsPanel({ onViewMap, activeFriendId }) {
           <li className="hint">No pending requests.</li>
         ) : null}
       </ul>
+
+      <GroupInvitesPanel groupId={groupId} groupName={groupName} />
     </section>
   );
 }

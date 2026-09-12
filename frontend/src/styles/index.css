@@ -327,11 +327,11 @@ body {
 .soft-sheet {
   position: absolute;
   left: 50%;
-  bottom: 9.5rem;
+  bottom: 10.75rem;
   transform: translateX(-50%);
   z-index: 21;
   width: min(420px, calc(100% - 1.5rem));
-  max-height: min(48vh, 420px);
+  max-height: min(62vh, 560px);
   background: var(--surface);
   border-radius: var(--radius-soft);
   box-shadow: var(--shadow);
@@ -349,7 +349,8 @@ body {
 
 .soft-sheet-body {
   overflow: auto;
-  padding: 0.35rem 1rem 1rem;
+  padding: 0.35rem 1rem 1.75rem;
+  scroll-padding-bottom: 5rem;
 }
 
 .map-wrap {
@@ -772,12 +773,19 @@ body {
   font-size: 1rem;
 }
 
-.friends-panel h3 {
+.friends-panel h3,
+.group-invites h3 {
   margin-top: 1rem;
   font-size: 0.75rem;
   text-transform: uppercase;
   letter-spacing: 0.05em;
   color: var(--muted);
+}
+
+.group-invites {
+  margin-top: 1.25rem;
+  padding-top: 0.35rem;
+  border-top: 1px solid var(--line);
 }
 
 .friends-panel ul,
@@ -794,6 +802,13 @@ body {
   justify-content: space-between;
   align-items: center;
   gap: 0.5rem;
+  scroll-margin-bottom: 1.25rem;
+}
+
+.friend-row-actions {
+  display: flex;
+  flex-shrink: 0;
+  gap: 0.35rem;
 }
 
 .friend-row div {
@@ -929,7 +944,8 @@ button:focus-visible,
   }
 
   .soft-sheet {
-    bottom: 10rem;
+    bottom: 11.25rem;
+    max-height: min(58vh, 520px);
   }
 
   .heat-legend {
