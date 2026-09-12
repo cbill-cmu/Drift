@@ -1,0 +1,18 @@
+{
+  "name": "drift-mongodb-seed",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Generate and load Pittsburgh demo data into MongoDB Atlas (Person 3)",
+  "scripts": {
+    "generate": "node generate-all.js",
+    "generate:users": "node generate-users.js",
+    "generate:nodes": "node generate-nodes.js",
+    "generate:trips": "node generate-trips.js",
+    "load": "node load-to-db.js"
+  },
+  "dependencies": {
+    "dotenv": "^16.4.5",
+    "mongodb": "^6.8.0"
+  }
+}
