@@ -20,11 +20,16 @@ Hackathon build, pivoting from manual trip logging to **continuous location trac
 | **Recommendations** | Taste-based cards (`RecommendationsPanel`) from `user_place_type_profiles` |
 | **Places catalog** | Curated Pittsburgh places (`shared/pittsburgh-places/`), backend service |
 | **Map** | Leaflet + Esri tiles (not canvas anymore), nodes/edges/heat overlay |
-| **Manual trip logging** | `POST /api/trips`, `TripLoggerModal` — **kept as a fallback**, no longer the primary loop |
-| **Profile** | `ProfileModal` — account + group management |
-| **Discovery reveal** | Real auto-dismiss + entrance/exit animation (not a static stub) |
+| **Profile** | `ProfileModal` — nickname (optional) + group management, no forced onboarding step |
+| **Discovery reveal** | Real auto-dismiss + entrance/exit animation (not a static stub; currently untriggered until the GPS pipeline wires a caller) |
 
-### Not yet built — the pivot (priority order)
+**Manual trip logging has been deleted, not kept as a fallback.** `TripLoggerModal`, `useTrip.js`, and the "Log trip" dock button are gone — GPS tracking is the only path in. `POST /api/trips` still exists on the backend (schema/service untouched) but has no frontend caller anymore.
+
+### The pivot — status
+
+**Done:** Phase 0 setup — `h3-js` added to both `package.json`s, `location_traces`/`user_visited_cells` collections + indexes in `shared/mongodb-schema.js`, verified working against real coordinates. See `TASKS.md` for the full phase breakdown.
+
+**Not yet built (priority order):**
 
 1. **Location tracking pipeline** — GPS permission flow, `watchPosition` + accept filter, buffered flush to `POST /api/location/traces` (see `requirements.md` §5)
 2. **H3 cell derivation** — backend decodes traces, upserts `user_visited_cells` (§5-6)

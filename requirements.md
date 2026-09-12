@@ -12,7 +12,7 @@ Status legend: `[ ]` not started · `[~]` in progress · `[x]` done · `[cut]` d
 
 Continuous movement → per-user explored map (fog-of-war) → group overlay of who's-been-where → **surfaced unexplored suggestions for the group**.
 
-Manual trip logging is retired as the primary path. It is kept only as a fallback entry point (see §5) for demoing without live GPS.
+Manual trip logging has been **removed entirely**, not kept as a fallback — GPS tracking is the only path into the system now (see §5). There is no live manual-entry escape hatch if GPS is unreliable on demo day; see §5 and `TASKS.md`'s cut-order section for the actual mitigation (pre-seeded demo data).
 
 If a feature doesn't serve this sentence, it is out of scope for the hackathon build.
 
@@ -45,6 +45,7 @@ If a feature doesn't serve this sentence, it is out of scope for the hackathon b
 - [x] ~~Real passive background location tracking~~ → **foreground continuous tracking is now core** (see §5). True OS-level background tracking while the app is closed is still out of reach on the current web stack — see §5's honesty note — and stays a stretch goal pending a native (Capacitor) wrapper.
 
 **Still not building:**
+- [cut] Manual trip logging — deleted outright (`TripLoggerModal`, `useTrip.js`, dock entry point), not kept as a fallback. GPS is the only path into the product now; if live GPS fails during a demo, the mitigation is pre-seeded demo data (`TASKS.md` Phase 9), not a manual-entry escape hatch.
 - [cut] True OS background tracking without a native wrapper (web `Geolocation` API cannot run once the tab/app is backgrounded on iOS Safari; documenting this honestly rather than promising it)
 - [cut] Place metadata / reviews / hours (Yelp)
 - [cut] Multi-city beyond Pittsburgh
@@ -59,7 +60,7 @@ If a feature doesn't serve this sentence, it is out of scope for the hackathon b
 - [ ] Group cell-coverage aggregation (everyone / some / no one)
 - [ ] Fog-of-war overlay rendering on the existing Leaflet map, zoom-dependent resolution
 - [ ] Suggestion surfacing: unexplored cells that contain a catalogued place (reuse the existing Pittsburgh places catalog)
-- [x] Manual trip logging (form) — **kept as fallback**, not the primary path (see §5)
+- [cut] Manual trip logging (form) — removed entirely (`TripLoggerModal`, `useTrip.js`, the dock entry point all deleted); GPS is the only path in, no fallback UI exists
 - [x] Auth0 integration (login/logout; JWKS verify done)
 - [x] Groups: create/switch/invite (done — Person D)
 - [x] Friends API (done)
@@ -97,7 +98,7 @@ Existing collections (`shared/mongodb-schema.js`, unchanged): `users`, `groups`,
 Notes:
 - [ ] `location_traces` retention: rolling 30 days of raw polylines, then discard (keep only the derived `user_visited_cells`, which stay indefinitely — they're tiny: one doc per hex a user has ever entered, not per GPS ping).
 - [ ] `user_visited_cells` never stores `group_id` — cell visitation belongs to the user; group membership is applied at aggregation time, so leaving a group doesn't require rewriting history.
-- [x] Existing `nodes`/`edges`/`trips` model stays for the manual-logging fallback path and for edge/travel-time data H3 cells alone can't give you.
+- [x] Existing `nodes`/`edges`/`trips` schema and backend service are untouched — kept for edge/travel-time data H3 cells alone can't give you — but nothing currently writes to `trips` anymore since the manual-entry UI was deleted; this becomes live again only once GPS-derived edge inference (§10) is built.
 
 ---
 
@@ -140,7 +141,7 @@ Replaces the old §5 "Trip logging." Full technical spec:
 - [ ] Implement client-side distance/time accept filter
 - [ ] Implement 60s flush → `location_traces`
 - [ ] Implement server-side H3 cell derivation → `user_visited_cells`
-- [x] Manual trip form kept as a **fallback path** — useful for the demo if live GPS isn't reliable in the room, and for logging a trip that happened without the tab open
+- [cut] Manual trip form — deleted, not kept as a fallback. If live GPS is unreliable in the demo room, the mitigation is pre-seeded `user_visited_cells` for demo accounts (`TASKS.md` Phase 9), not a manual-entry form.
 
 ---
 
@@ -215,8 +216,8 @@ Classify each returned cell against `group.member_ids.length`:
 - [ ] Fog-of-war overlay layer on the map (new, §6)
 - [ ] "Start exploring" GPS permission prompt + live tracking indicator (new, §5)
 - [ ] Coverage-gap suggestion cards (new, §6)
-- [x] Manual trip logging UI — kept as fallback
-- [x] Discovery reveal — auto-dismiss + transitions (done)
+- [cut] Manual trip logging UI — deleted, not kept
+- [x] Discovery reveal — auto-dismiss + transitions (done; not currently triggered by anything until the GPS pipeline wires it up, see `TASKS.md`)
 - [x] Auth0 login / logout
 
 ---
@@ -225,7 +226,7 @@ Classify each returned cell against `group.member_ids.length`:
 
 - [ ] Native wrapper (Capacitor) for true background tracking
 - [ ] Materialized `group_cell_coverage` collection if live aggregation gets slow
-- [ ] Path-based (not just cell-based) edge inference directly from traces, replacing manual trip entry as the source of `edges`
+- [ ] Path-based (not just cell-based) edge inference directly from traces — `edges` currently has no active source at all since manual trip entry was removed; this is the eventual replacement
 
 ---
 
@@ -236,7 +237,7 @@ Classify each returned cell against `group.member_ids.length`:
 3. A cell flips from fog to "you've been here" the moment it's crossed.
 4. Switch to group view — that same cell shows as "some" (just this user) until teammates' traces also cover it.
 5. Suggestion card surfaces an uncovered, catalogued place nearby — "the group hasn't been to X yet."
-6. Fallback: if live GPS is unreliable in the demo room, use the manual trip form instead — same underlying `user_visited_cells` gets updated either way.
+6. No live fallback exists if GPS is unreliable in the room — the manual trip form was removed. Mitigate by pre-seeding `user_visited_cells` for demo accounts ahead of time (`TASKS.md` Phase 9) and testing the permission/accept-filter flow on the actual demo device beforehand.
 
 ---
 
@@ -296,4 +297,4 @@ Classify each returned cell against `group.member_ids.length`:
 - [x] Auth0 login
 - [x] Groups + friends (already done)
 
-**Cut order if needed:** suggestion cards → "some" middle tier → group merge (ship personal fog-of-war alone) → live GPS (fall back to manual form driving the same cell-derivation pipeline) → H3 zoom-level switching (ship one fixed resolution).
+**Cut order if needed:** suggestion cards → "some" middle tier → group merge (ship personal fog-of-war alone) → H3 zoom-level switching (ship one fixed resolution). Live GPS itself is never a cuttable item anymore — there is no manual-form fallback to fall back to; if GPS genuinely can't be demoed live, the mitigation is pre-seeded `user_visited_cells` (`TASKS.md` Phase 9), not a code path in the app.

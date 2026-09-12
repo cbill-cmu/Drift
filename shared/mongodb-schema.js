@@ -17,7 +17,14 @@ export const COLLECTIONS = {
   USER_PLACE_TYPE_PROFILES: "user_place_type_profiles",
   FRIENDS: "friends",
   GROUP_INVITES: "group_invites",
+  LOCATION_TRACES: "location_traces",
+  USER_VISITED_CELLS: "user_visited_cells",
 };
+
+/** H3 resolution used for the base "visited" unit (~0.1 km², city-block
+ * scale). Resolution 7 (~5 km²) is used only for zoomed-out rendering,
+ * derived on the fly via h3.cellToParent — never stored separately. */
+export const VISITED_CELL_RESOLUTION = 9;
 
 export const NODE_PLACE_TYPES = [
   "urban_core",
@@ -67,6 +74,26 @@ export const GROUP_INVITE_STATUSES = ["pending", "accepted", "declined"];
  * group_invites: {
  *   group_id, inviter_id, invitee_id, status, created_at, updated_at
  * }
+ *
+ * --- Location tracking + fog-of-war (see requirements.md §3, §5-6) ---
+ *
+ * location_traces: {
+ *   user_id, started_at, ended_at,
+ *   polyline,       // encoded string of accepted [lat,lng] fixes
+ *   point_count, distance_m, created_at
+ * }
+ * // Personal, never group_id-scoped. Rolling 30-day retention — this is
+ * // raw history, not what group overlays read from (see below).
+ *
+ * user_visited_cells: {
+ *   user_id, h3_cell,   // H3 cell at VISITED_CELL_RESOLUTION
+ *   first_visited_at, last_visited_at, visit_count
+ * }
+ * // The durable, privacy-safe derivative of location_traces. Kept
+ * // indefinitely — one doc per hex a user has ever entered, not per GPS
+ * // ping, so this stays small. Never stores group_id: group membership
+ * // is applied at aggregation time (GET /api/groups/:groupId/coverage),
+ * // not baked into the row, so leaving a group needs no data rewrite.
  */
 
 export const INDEXES = {
@@ -89,4 +116,6 @@ export const INDEXES = {
     { key: { group_id: 1, invitee_id: 1 }, unique: true },
     { key: { invitee_id: 1, status: 1 } },
   ],
+  location_traces: [{ key: { user_id: 1, started_at: -1 } }],
+  user_visited_cells: [{ key: { user_id: 1, h3_cell: 1 }, unique: true }],
 };

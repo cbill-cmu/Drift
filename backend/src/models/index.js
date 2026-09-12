@@ -10,4 +10,5 @@ export {
   INDEXES,
   FRIEND_STATUSES,
   GROUP_INVITE_STATUSES,
+  VISITED_CELL_RESOLUTION,
 } from "../../../shared/mongodb-schema.js";

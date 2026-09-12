@@ -3,9 +3,10 @@
 **Hackathon build. Pittsburgh / CMU scoped.**
 
 > **Status sync (pivoted to continuous location tracking + fog-of-war):**  
-> Shipped: Atlas seed, Auth0 (JWKS verified), groups/friends/invites, recommendations, places catalog, Leaflet map, manual trip logger (kept as fallback), discovery toast with real animation.  
-> Next: build the location-tracking pipeline and fog-of-war overlay described in this guide — this is a scope pivot, not an addition; manual trip logging is no longer the primary path.  
-> Live checklist: root [`README.md`](README.md) + [`requirements.md`](requirements.md), which now has the full technical spec (permission flow, sampling, storage, H3 cell merge, privacy, rendering). This guide keeps product/demo/architecture detail in sync with it.
+> Shipped: Atlas seed, Auth0 (JWKS verified), groups/friends/invites, recommendations, places catalog, Leaflet map, discovery toast with real animation, plus **Phase 0 of the pivot** (`h3-js` added, `location_traces`/`user_visited_cells` schema + indexes in place — see `TASKS.md`).  
+> Manual trip logging has been **deleted outright**, not kept as a fallback — `TripLoggerModal`, `useTrip.js`, and the dock entry point are gone. GPS tracking is the only path in now.  
+> Next: build the location-tracking pipeline and fog-of-war overlay described in this guide.  
+> Live checklist: root [`README.md`](README.md) + [`requirements.md`](requirements.md) + [`TASKS.md`](TASKS.md) (sequenced implementation phases), which now have the full technical spec (permission flow, sampling, storage, H3 cell merge, privacy, rendering). This guide keeps product/demo/architecture detail in sync with them.
 
 ---
 
@@ -38,7 +39,7 @@
 4. The map renders this as fog-of-war — visited areas revealed, unexplored areas covered — with the three tiers visually distinct
 5. Unexplored cells that contain a real catalogued place are surfaced as explicit "go here next" suggestions — the uncovered regions are the point, not just a visual effect
 
-Manual trip logging (the original core loop) still exists as a fallback entry point for the same underlying `user_visited_cells` data — useful when live GPS isn't available (e.g. demoing indoors) — but it's no longer how the product primarily works.
+Manual trip logging (the original core loop) has been deleted, not kept as a fallback — GPS tracking is the only entry point into `user_visited_cells` now. If live GPS isn't available (e.g. demoing indoors), the mitigation is pre-seeded demo data, not a manual-entry UI.
 
 **What makes it Drift (not just Strava or Life360):**
 - **Fog-of-war framing**, not a raw heatmap — exploration is revealed, not just intensity-shaded
@@ -61,7 +62,7 @@ Manual trip logging (the original core loop) still exists as a fallback entry po
   - **Individual view**: your own full-resolution fog-of-war map, private by default; you choose which groups your cell data contributes to.
 - Behavior generates content automatically — no manual reviews, posts, or itineraries.
 - **Suggestion engine**: uncovered ("no one") cells that intersect a catalogued place are surfaced as "go here next" cards. This runs alongside (not instead of) the existing taste-based place-type recommendation engine.
-- The original node/edge knowledge-graph model (`nodes`, `edges`, `trips` collections) is kept intact for the manual-logging fallback and for travel-time/edge data that cell visitation alone doesn't capture — it is not deleted, just no longer the primary loop.
+- The original node/edge knowledge-graph model (`nodes`, `edges`, `trips` collections and their backend service) is kept intact for travel-time/edge data that cell visitation alone doesn't capture — the schema and service are not deleted, but the manual-entry UI that used to write to it has been.
 
 ### Explicit Scope Cuts (Revised for the Pivot)
 
@@ -69,6 +70,7 @@ Manual trip logging (the original core loop) still exists as a fallback entry po
 - ~~Real passive background location tracking~~ → foreground continuous tracking is now core. True background tracking (app closed/backgrounded) is still out of reach on a plain web stack and remains a stretch item pending a native wrapper — see `requirements.md` §5 for the honest technical breakdown.
 
 **Still not building:**
+- Manual trip logging — deleted outright, not kept as a fallback
 - OS-level background tracking without a native (Capacitor) wrapper
 - Place metadata / reviews / hours (that's Yelp)
 - Multi-city support beyond Pittsburgh
@@ -80,7 +82,6 @@ Manual trip logging (the original core loop) still exists as a fallback entry po
 - Compressed trace storage + server-side H3 cell derivation
 - Group-level cell-coverage aggregation and three-tier fog-of-war rendering
 - Coverage-gap suggestion cards (uncovered cell ∩ places catalog)
-- Manual trip logging, kept as a fallback path into the same cell data
 - Auth0 integration, groups, friends, places catalog, taste recommendations (all already shipped, unaffected by this pivot)
 
 ---
@@ -126,7 +127,7 @@ Manual trip logging (the original core loop) still exists as a fallback entry po
    └──────────┘
 ```
 
-Manual trip logging still exists as a parallel input into the same `user_visited_cells` derivation — it's a fallback data source, not a separate architecture.
+Manual trip logging has been removed — GPS is the only input into `user_visited_cells` in this architecture, no parallel manual-entry path exists.
 
 ### Critical Path (The Demo Flow)
 
@@ -325,7 +326,7 @@ Auth0, friends, groups, recommendations, and the places catalog are already ship
 
 **New for the pivot** (full spec in `requirements.md` §3 and §5-6): `location_traces` (compressed GPS polylines, personal, 30-day retention) and `user_visited_cells` (durable per-user H3 resolution-9 cell visitation — the only thing group overlays ever read). Group-level coverage is computed on read via aggregation, not its own stored collection, for this phase.
 
-Everything below is the collection set that predates the pivot and stays as-is — `nodes`/`edges`/`trips` remain the backing for the manual-logging fallback path and for travel-time data cell visitation alone doesn't capture.
+Everything below is the collection set that predates the pivot and stays as-is at the schema/service level — `nodes`/`edges`/`trips` remain for travel-time data cell visitation alone doesn't capture — but the manual-entry UI that used to write to `trips` has been deleted, not kept as a fallback.
 
 ### Collections (MongoDB)
 
@@ -465,7 +466,7 @@ db.user_heatpoints.createIndex({ group_id: 1, user_id: 1 })
 - `GET /api/groups/:groupId/coverage` — the three-tier fog-of-war overlay for a group: aggregates `user_visited_cells` over `member_ids`, classifies each returned cell as everyone/some (never enumerates "no one" cells explicitly — see `requirements.md` §6).
 - `GET /api/groups/:groupId/suggestions` — coverage-gap suggestion cards: uncovered cells intersected with the places catalog.
 
-Existing endpoints (`POST /api/trips`, `GET /api/groups/:groupId/graph`, friends/groups/recommendations routes) are unchanged and stay live as the fallback/complementary paths.
+Existing endpoints (`POST /api/trips`, `GET /api/groups/:groupId/graph`, friends/groups/recommendations routes) are unchanged at the backend level and stay live, but `POST /api/trips` now has no frontend caller — the manual trip-logging UI that used to call it was deleted, not kept as a fallback.
 
 ### POST `/api/trips`
 
@@ -582,7 +583,7 @@ Always return `{ success: false, error: "..." }` on failure.
 - **FogOverlayLayer** — a Leaflet layer rendering H3 cells (`cellToBoundary` → GeoJSON) styled by tier; swaps resolution 9 ↔ 7 on zoom.
 - **SuggestionCards** — renders `GET /api/groups/:groupId/suggestions` results.
 
-Existing components (`GroupMapView`, `TripLoggerModal`, `DiscoveryReveal`, `NeighborhoodStats`, `FriendsPanel`, `GroupsPanel`, `RecommendationsPanel`, `ProfileModal`) are all already shipped and unaffected — `TripLoggerModal` stays as the manual fallback entry point into the same cell-derivation pipeline.
+Existing components (`GroupMapView`, `DiscoveryReveal`, `NeighborhoodStats`, `FriendsPanel`, `GroupsPanel`, `RecommendationsPanel`, `ProfileModal`) are all already shipped and unaffected. `TripLoggerModal` and its `useTrip.js` hook have been **deleted outright** — not kept as a fallback entry point — along with the "Log trip" dock button; `DiscoveryReveal` remains but currently has nothing left to trigger it until `LocationTracker`/the GPS pipeline wires a new caller.
 
 ### 1. GroupMapView
 
@@ -802,9 +803,9 @@ If any of these slip, you've gone off track. Escalate immediately.
 | **Coverage-gap suggestion** | An unvisited ("no one") cell that contains a catalogued place, surfaced as a "go here next" card |
 | **Trace** | A compressed polyline of a user's accepted GPS fixes over a tracking session (`location_traces`) |
 | **Accept filter** | The client-side rule (≥25m moved or ≥30s elapsed) that decides whether a raw GPS fix is kept |
-| **Node** | An area/neighborhood the group has visited (e.g., "Oakland", "Lawrenceville") — kept for the manual-logging fallback path |
-| **Edge** | A journey between two nodes (e.g., "CMU → Lawrenceville, 31 min") — kept for the fallback path |
-| **Trip** | A raw user submission of traveling from point A to point B — now a fallback data source into `user_visited_cells`, not the primary loop |
+| **Node** | An area/neighborhood the group has visited (e.g., "Oakland", "Lawrenceville") — schema/backend kept for travel-time data cells alone can't give; no active writer since manual entry was removed |
+| **Edge** | A journey between two nodes (e.g., "CMU → Lawrenceville, 31 min") — same status as Node: schema kept, no active writer currently |
+| **Trip** | A raw user submission of traveling from point A to point B — the manual-entry UI that created these has been deleted; nothing currently writes `trips` docs |
 | **Place type** | Category inferred from Google Places API or the curated catalog (urban_core, park, food, shopping, transit, residential, entertainment) |
 | **Taste profile** | User's inferred preference (% trips by place_type) |
 | **Critical path** | The demo loop: track location → cells reveal → group overlay merges → suggestion surfaces |

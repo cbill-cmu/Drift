@@ -9,17 +9,20 @@ Status legend: `[ ]` not started · `[~]` in progress · `[x]` done
 
 ---
 
-## Phase 0 — Setup (do first, ~30 min)
+## Phase 0 — Setup (do first, ~30 min) ✅ done
 
-- [ ] Add `h3-js` to `backend/package.json` and `frontend/package.json`
-- [ ] Add new Mongo collections/indexes to `shared/mongodb-schema.js`:
+- [x] Add `h3-js` to `backend/package.json` and `frontend/package.json` (`^4.5.0`, both installed)
+- [x] Add new Mongo collections/indexes to `shared/mongodb-schema.js`:
   - `LOCATION_TRACES: "location_traces"`
   - `USER_VISITED_CELLS: "user_visited_cells"`
   - Index: `user_visited_cells { user_id: 1, h3_cell: 1 } unique`
   - Index: `location_traces { user_id: 1, started_at: -1 }`
-- [ ] Add `location_traces` and `user_visited_cells` document shapes to the schema reference comment block (mirror the existing style for `heatpoints`, etc.)
+  - Also added `VISITED_CELL_RESOLUTION = 9` constant, re-exported from `backend/src/models/index.js`
+- [x] Add `location_traces` and `user_visited_cells` document shapes to the schema reference comment block (mirrors the existing style for `heatpoints`, etc.)
 
 **Done when:** both `package.json`s list `h3-js`; `npm install` succeeds in both; `mongodb-schema.js` exports the two new collection names + indexes.
+
+**Verified:** `h3.latLngToCell(40.4425, -79.9435, 9)` against real CMU coordinates returns a real cell with a 6-point boundary; `cellToParent(cell, 7)` correctly derives the zoomed-out cell. Backend and frontend both boot cleanly with the new dependency and schema changes.
 
 ---
 
