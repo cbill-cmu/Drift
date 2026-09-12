@@ -10,6 +10,7 @@ import NeighborhoodStats from "./NeighborhoodStats.jsx";
 import ProfileModal from "./ProfileModal.jsx";
 import { useAuthStatus } from "../hooks/useAuth0.js";
 import { useGroups } from "../hooks/useGroups.js";
+import { useLocationTracking } from "../hooks/useLocationTracking.js";
 
 const NAV = [
   { id: "places", label: "Places", icon: "places" },
@@ -82,6 +83,13 @@ export default function Layout({ defaultGroupId }) {
     create: createGroup,
   } = useGroups(defaultGroupId, { enabled: isAuthenticated });
   const groupId = selectedId || defaultGroupId;
+  const {
+    active: tracking,
+    error: trackingError,
+    bufferedCount: trackingBufferedCount,
+    start: startTracking,
+    stop: stopTracking,
+  } = useLocationTracking();
   // discoveryData/DiscoveryReveal is kept — it's a generic "show a reveal
   // toast" mechanism, not specific to manual trip logging. It'll be wired
   // to the GPS/fog-of-war pipeline (see TASKS.md) instead of a trip form.
@@ -212,6 +220,24 @@ export default function Layout({ defaultGroupId }) {
     <div className="layout layout-map-first">
       <header className="map-topbar">
         <strong className="brand">Drift</strong>
+        {/* Minimal control for now (Phase 1) — proper placement/styling is a
+            follow-up polish pass, see TASKS.md. */}
+        <button
+          type="button"
+          className="text-btn tracking-toggle"
+          onClick={tracking ? stopTracking : startTracking}
+        >
+          <span
+            className={
+              tracking
+                ? "status-island-dot status-island-dot-pulse"
+                : "status-island-dot status-island-dot-warn"
+            }
+            aria-hidden="true"
+          />
+          {tracking ? `Tracking… (${trackingBufferedCount} buffered)` : "Start exploring"}
+        </button>
+        {trackingError ? <span className="error tracking-error">{trackingError}</span> : null}
         <span className="group-chip">{groupName}</span>
       </header>
 

@@ -83,6 +83,18 @@ body {
   color: var(--muted);
 }
 
+/* Phase 1 placeholder control — functional, not yet polished (see
+   TASKS.md: UI pass is a deliberate follow-up, not an oversight). */
+.tracking-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.tracking-error {
+  font-size: 0.72rem;
+}
+
 .text-btn {
   border: 0;
   background: transparent;

@@ -26,18 +26,25 @@ Status legend: `[ ]` not started · `[~]` in progress · `[x]` done
 
 ---
 
-## Phase 1 — Client-side location tracking (frontend)
+## Phase 1 — Client-side location tracking (frontend) ✅ done
 
-- [ ] New hook: `frontend/src/hooks/useLocationTracking.js`
-  - Requests `Geolocation` permission on first call, not on cold app launch
+- [x] New hook: `frontend/src/hooks/useLocationTracking.js`
+  - Requests `Geolocation` permission on first call (`start()`), not on cold app launch
   - Runs `navigator.geolocation.watchPosition({ enableHighAccuracy: false, maximumAge: 15000, timeout: 10000 })`
-  - Applies the accept filter: only keep a fix if **≥25m moved OR ≥30s elapsed** since the last accepted fix (haversine distance — reuse `haversineMeters` from `backend/src/services/tripService.js` logic, ported client-side or duplicated as a small util)
-  - Pauses the watch on `document.visibilitychange` → hidden (`clearWatch`), resumes on visible
-  - Buffers accepted fixes in memory; flushes every 60s **and** on visibility-hidden (so nothing is lost when the tab backgrounds)
-- [ ] Polyline encoding util: `frontend/src/utils/polyline.js` — encode buffered `[lat,lng]` fixes into a compressed string (standard Google polyline algorithm; small, no new dependency needed — implement directly, it's ~20 lines)
-- [ ] Wire the hook into `Layout.jsx`: a "Start exploring" control that requests permission and begins tracking; a live indicator (dot/pulse) while active
+  - Accept filter implemented and verified: ≥25m moved OR ≥30s elapsed since the last accepted fix (`frontend/src/utils/haversine.js`, mirrors the backend's `haversineMeters` formula exactly)
+  - Pauses the watch on `document.visibilitychange` → hidden (`clearWatch` + immediate flush), resumes on visible
+  - Buffers accepted fixes in memory; flushes every 60s **and** on visibility-hidden
+- [x] Polyline encoding util: `frontend/src/utils/polyline.js` — standard Google polyline algorithm, encode + decode, no new dependency
+- [x] Wired into `Layout.jsx`: a "Start exploring" / "Tracking… (N buffered)" toggle in the top bar with a pulse-dot indicator (reuses existing `.status-island-dot` CSS) — intentionally minimal, a real UI pass is a separate follow-up, not an oversight
+- [x] `postLocationTrace` added to `api/client.js`, wired into the hook's flush — calls the real `POST /api/location/traces` endpoint (which doesn't exist until Phase 2) and catches/logs the expected 404 rather than surfacing it as an error, so this hook works standalone today
 
-**Done when:** opening the app, granting permission, and moving around (or simulating movement via browser dev tools' geolocation override) produces a buffered, filtered set of fixes in memory, confirmed via `console.log` before wiring up the network call in Phase 2.
+**Done when:** opening the app, granting permission, and moving around produces a buffered, filtered set of fixes in memory.
+
+**Verified live** (real permission prompts aren't reliably automatable, so `navigator.geolocation.watchPosition`/`clearWatch` were monkey-patched in a live browser tab to fire exact, controlled fixes through the actual mounted hook — not just unit-testing the pure helpers in isolation):
+- Fired 5 fixes designed to hit every branch of the accept filter (near-duplicate, distance-triggered accept, time-triggered accept, near-duplicate again) → UI showed "3 buffered", exactly matching hand-calculated expectations
+- Triggered flush (via the stop button, which calls the same `flush()` the 60s interval and visibility-hidden path use) → confirmed real `POST /api/location/traces` call fired, 404'd (expected, Phase 2 not built), caught and logged rather than crashing
+- Captured and inspected the actual flush payload: correct `point_count`, correct `started_at`/`ended_at` from the real fix timestamps, correct `distance_m` (40m, matching the deliberately-placed test fix), and the `polyline` field decoded back to the exact original two points
+- No console errors at any point
 
 ---
 
