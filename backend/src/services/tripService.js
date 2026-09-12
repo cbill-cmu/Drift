@@ -3,6 +3,7 @@ import { reverseGeocodePlaceType } from "./googlePlacesService.js";
 import { asString, idVariants, matchGroupId, sameId } from "./ids.js";
 import { getDb } from "./mongoService.js";
 import { haversineMeters, inferNeighborhood, neighborhoodPct } from "./neighborhoods.js";
+import { recomputeUserPlaceTypeProfile } from "./recommendationService.js";
 
 export const NODE_MATCH_METERS = 500;
 
@@ -96,6 +97,14 @@ export async function createTrip(rawBody, auth = {}) {
     travel_mode: input.travel_mode,
     user_created_at: now,
   });
+
+  if (actor._id) {
+    try {
+      await recomputeUserPlaceTypeProfile(db, actor._id);
+    } catch (err) {
+      console.warn("[trips] recomputeUserPlaceTypeProfile:", err.message);
+    }
+  }
 
   await bumpHeatpoint(db, COLLECTIONS.HEATPOINTS, {
     groupId: group._id,
