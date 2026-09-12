@@ -1,8 +1,13 @@
-# Drift API Contract (DRAFT — lock with Person 1 + 2 in Hour 0)
+# Drift API Contract
+
+**Status:** Implemented on `main` for trips + group/member graph. Profile endpoint still TODO.  
+**Owners:** Person 1 implements; Person 2 consumes; changes need team agreement.
 
 Base URL (local): `http://localhost:3000`  
-Auth: `Authorization: Bearer <Auth0 access token>` on all `/api/*` routes  
+Auth: `Authorization: Bearer <Auth0 access token>` (trips currently require Bearer; graph may be open depending on backend config)  
 Errors: `{ "success": false, "error": "string" }` with 400 / 401 / 500 as appropriate
+
+**Demo group_id (seed):** `6aa4d5b78c6341a27ed90e4b` — confirm with `npm run verify` after any reload.
 
 ---
 

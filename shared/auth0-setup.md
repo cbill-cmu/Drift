@@ -1,6 +1,15 @@
 # Auth0 setup (Person 3)
 
-Cap this at **~45–60 minutes**. Do not gold-plate. Share secrets in Slack/1Password — **never commit** real Client Secrets or passwords.
+Cap dashboard setup at **~45–60 minutes**. Never commit secrets.
+
+## Status
+
+- [x] Tenant created (example Domain: `dev-fgoc1y6zx1wjf88u.us.auth0.com` — confirm in your dashboard)
+- [x] SPA app + localhost callbacks for `http://localhost:5173`
+- [x] Frontend login works with `VITE_AUTH0_*` env
+- [~] API audience `https://api.drift.local` (confirm SPA authorized for API)
+- [~] Test users (Fabio + backups) — keep passwords out of git
+- [ ] Production callback / logout / web origins (when Person 4 deploys)
 
 ## Goal
 
@@ -95,10 +104,10 @@ AUTH0_AUDIENCE=https://api.drift.local
 
 ## Checklist
 
-- [ ] Tenant created
-- [ ] API audience created
-- [ ] SPA app + localhost redirect URIs
-- [ ] 10 test users (Fabio + backup)
-- [ ] Env values shared securely
-- [ ] Login smoke test passed
+- [x] Tenant created
+- [~] API audience created / SPA authorized
+- [x] SPA app + localhost redirect URIs
+- [~] Test users (Fabio + backup)
+- [x] Env values shared securely (not in git)
+- [x] Login smoke test passed (localhost)
 - [ ] Production URLs added before demo day

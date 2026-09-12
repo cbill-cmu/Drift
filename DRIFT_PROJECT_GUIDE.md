@@ -1,6 +1,11 @@
-# Drift — Complete Project Guide for 24-Hour Hackathon
+# Drift — Complete Project Guide for Hackathon
 
-**Hackathon build. Time limit: 24 hours. Pittsburgh / CMU scoped.**
+**Hackathon build. Pittsburgh / CMU scoped.**
+
+> **Status sync (4-person team, current `main`):**  
+> Shipped: Atlas seed, Auth0 login, Express trips + graph APIs, canvas map, trip logger, basic discovery toast.  
+> Next: Person 4 drives E2E; Person 2 polishes discovery; Person 1 hardens JWT; then Vultr deploy.  
+> Live checklist: root [`README.md`](README.md) + [`requirements.md`](requirements.md). This guide keeps product/demo/architecture detail.
 
 ---
 
@@ -153,66 +158,39 @@ If this loop works and animates well, **you win**. Everything else is secondary.
 
 ## Team Structure & Responsibilities
 
-**Team size: 4–5 people. Parallel work.**
+**Team size: 4 people. Parallel work.**
 
 ### Person 1: Backend Lead
 
-**What**: Trip submission endpoint, Google Places API integration, Node/Edge/HeatPoint discovery logic, MongoDB schema + queries.
+**What:** Trip submission, Places (optional key), node/edge/heat discovery, Mongo queries, JWT hardening.
 
-**Deliverables by hour 8**:
-- ✅ Express app running on localhost:3000
-- ✅ POST `/api/trips` endpoint (auth, resolve coords, Google API call, save to MongoDB)
-- ✅ GET `/api/groups/:groupId/graph` endpoint (return nodes + edges + heat for map)
-- ✅ GET `/api/users/:userId/profile` endpoint (return taste profile for recommendations)
-- ✅ MongoDB collections: users, groups, nodes, edges, trips, heatpoints, user_heatpoints, user_place_type_profiles
+**Already on `main`:** Express app; `POST /api/trips`; `GET /api/groups/:groupId/graph`; member graph; Mongo Atlas; Places helper with fallback.
 
-**Tech**: Node.js, Express, MongoDB driver (mongoose optional, raw client is fine), google-places-api npm package, axios.
-
-**Critical**: The Google Places API call is the hottest path. Cache aggressively — don't call twice for the same lat/lng.
+**Still owns:** JWKS Auth0 verification; user profile endpoint; recommendation service; API hardening.
 
 ### Person 2: Frontend Lead
 
-**What**: React app with Google Map, graph overlay, trip logger, discovery animation.
+**What:** React app — map, trip logger, discovery animation, friends UX.
 
-**Deliverables by hour 14**:
-- ✅ React app with Google Map (tiles visible)
-- ✅ d3-force or canvas graph overlay on map (nodes as circles, edges as lines)
-- ✅ Trip logger form (from, to, travel mode, duration)
-- ✅ API integration (POST trip, GET graph, display on map)
-- ✅ Discovery reveal toast/card animation (Figma or CSS, your choice)
+**Already on `main`:** Auth0 login/logout; canvas heatmap/graph; trip logger; neighborhood stats; basic discovery toast; friends panel (partial).
 
-**Tech**: React, @google-maps/js-api-loader, d3.js or canvas API, CSS animations (or framer-motion if you prefer).
-
-**Critical**: The discovery animation is the hero. Spend disproportionate time here (hours 14–20 should focus on making this animation buttery smooth).
+**Still owns:** Discovery reveal polish (demo hero); trip→toast→refresh reliability; optional Maps tiles.
 
 ### Person 3: Auth + Demo Data
 
-**What**: Auth0 tenant setup, test account creation, MongoDB seed data.
+**What:** Auth0 tenant, test accounts, Atlas seed, fixtures, handoff IDs.
 
-**Deliverables by hour 4**:
-- ✅ Auth0 tenant created, app registered, test accounts (e.g., fabio@test.com, alice@test.com)
-- ✅ Redirect URIs configured (localhost:3000, localhost:5173, vultr-ip)
-- ✅ Backend middleware for JWT validation
-- ✅ Frontend Auth0 login page configured
-- ✅ MongoDB: 1 test group, 10 test users, ~100 pre-seed nodes (Pittsburgh neighborhoods), ~2 weeks of fake trips
+**Already on `main`:** Auth0 working for login; Atlas seeded (CMU CREW); seed scripts + HANDOFF; fixtures.
 
-**Tech**: Auth0 admin console, MongoDB seed scripts (JavaScript or Python), postman or curl for testing.
+**Still owns:** Seed health (`npm run verify`); production Auth0 URLs when deploying; demo account readiness. See `shared/PERSON3_RUNBOOK.md`.
 
-**Critical**: Demo data must be rich enough to look like a real group's activity. At least 50% of Pittsburgh neighborhoods should have been visited by someone.
+### Person 4: Integration + Deploy
 
-### Person 4: Integration + Polish (Flexible Role)
+**What:** Glue E2E, unblock env/CORS, polish fixes, Vultr/PM2.
 
-**What**: Glue pieces together, test end-to-end, fix bugs, polish UX, deploy to Vultr.
+**Already true:** Verticals exist to integrate.
 
-**Responsibilities**:
-- Test backend + frontend integration (can the frontend call the backend endpoint?)
-- Test Auth0 flow (can I log in and my token appears in requests?)
-- Test the critical path (log a trip → backend processes → frontend animates) end-to-end
-- Bug fixes as they arise
-- Deploy to Vultr by hour 23
-- Document any last-minute changes
-
-**Tech**: Postman or curl for testing, SSH for deployment, PM2 for process management.
+**Still owns:** Local E2E checklist; production deploy; demo dry-run. See `shared/PERSON4_RUNBOOK.md`.
 
 ---
 

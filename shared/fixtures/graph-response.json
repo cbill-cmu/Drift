@@ -1,0 +1,2810 @@
+{
+  "success": true,
+  "group_id": "6aa4d5b78c6341a27ed90e4b",
+  "group_name": "CMU CREW",
+  "nodes": [
+    {
+      "id": "6aa4d5b78c6341a27ed90e7d",
+      "name": "East Liberty Spot 4",
+      "neighborhood": "East Liberty",
+      "lat": 40.46512666323803,
+      "lng": -79.92653074858306,
+      "place_type": "entertainment",
+      "visits": 5
+    },
+    {
+      "id": "6aa4d5b78c6341a27ed90e81",
+      "name": "East Liberty Spot 8",
+      "neighborhood": "East Liberty",
+      "lat": 40.45868733414268,
+      "lng": -79.92627373090376,
+      "place_type": "entertainment",
+      "visits": 9
+    },
+    {
+      "id": "6aa4d5b78c6341a27ed90e8b",
+      "name": "South Side Spot 1",
+      "neighborhood": "South Side",
+      "lat": 40.42522401667519,
+      "lng": -79.97188586389433,
+      "place_type": "entertainment",
+      "visits": 2
+    },
+    {
+      "id": "6aa4d5b78c6341a27ed90e8e",
+      "name": "South Side Spot 4",
+      "neighborhood": "South Side",
+      "lat": 40.42440666668444,
+      "lng": -79.9752713860719,
+      "place_type": "entertainment",
+      "visits": 5
+    },
+    {
+      "id": "6aa4d5b78c6341a27ed90e91",
+      "name": "South Side Spot 7",
+      "neighborhood": "South Side",
+      "lat": 40.42977278868707,
+      "lng": -79.97585313595324,
+      "place_type": "entertainment",
+      "visits": 8
+    },
+    {
+      "id": "6aa4d5b78c6341a27ed90e95",
+      "name": "Downtown Spot 3",
+      "neighborhood": "Downtown",
+      "lat": 40.44164361844802,
+      "lng": -80.00420190930602,
+      "place_type": "entertainment",
+      "visits": 4
+    },
+    {
+      "id": "6aa4d5b78c6341a27ed90e99",
+      "name": "Downtown Spot 7",
+      "neighborhood": "Downtown",
+      "lat": 40.44237635652383,
+      "lng": -79.99986044739708,
+      "place_type": "entertainment",
+      "visits": 8
+    },
+    {
+      "id": "6aa4d5b78c6341a27ed90e9b",
+      "name": "North Side Spot 1",
+      "neighborhood": "North Side",
+      "lat": 40.456007918849984,
+      "lng": -80.01163770738339,
+      "place_type": "entertainment",
+      "visits": 2
+    },
+    {
+      "id": "6aa4d5b78c6341a27ed90e9e",
+      "name": "North Side Spot 4",
+      "neighborhood": "North Side",
+      "lat": 40.45241341814319,
+      "lng": -80.00602277483284,
+      "place_type": "entertainment",
+      "visits": 5
+    },
+    {
+      "id": "6aa4d5b78c6341a27ed90e4e",
+      "name": "Oakland Spot 3",
+      "neighborhood": "Oakland",
+      "lat": 40.442424538596065,
+      "lng": -79.95486406588705,
+      "place_type": "food",
+      "visits": 4
+    },
+    {
+      "id": "6aa4d5b78c6341a27ed90e53",
+      "name": "Oakland Spot 8",
+      "neighborhood": "Oakland",
+      "lat": 40.437994366623464,
+      "lng": -79.95685139679867,
+      "place_type": "food",
+      "visits": 9
+    },
+    {
+      "id": "6aa4d5b78c6341a27ed90e58",
+      "name": "Oakland Spot 13",
+      "neighborhood": "Oakland",
+      "lat": 40.44495519311021,
+      "lng": -79.9541002464973,
+      "place_type": "food",
+      "visits": 6
+    },
+    {
+      "id": "6aa4d5b78c6341a27ed90e5b",
+      "name": "Shadyside Spot 2",
+      "neighborhood": "Shadyside",
+      "lat": 40.455764090838045,
+      "lng": -79.93124394935607,
+      "place_type": "food",
+      "visits": 3
+    },
+    {
+      "id": "6aa4d5b78c6341a27ed90e5f",
+      "name": "Shadyside Spot 6",
+      "neighborhood": "Shadyside",
+      "lat": 40.449624230822074,
+      "lng": -79.93641665798353,
+      "place_type": "food",
+      "visits": 7
+    },
+    {
+      "id": "6aa4d5b78c6341a27ed90e63",
+      "name": "Shadyside Spot 10",
+      "neighborhood": "Shadyside",
+      "lat": 40.45502328220376,
+      "lng": -79.93159894032358,
+      "place_type": "food",
+      "visits": 3
+    },
+    {
+      "id": "6aa4d5b78c6341a27ed90e66",
+      "name": "Bloomfield Spot 1",
+      "neighborhood": "Bloomfield",
+      "lat": 40.4609127503403,
+      "lng": -79.94624321100602,
+      "place_type": "food",
+      "visits": 2
+    },
+    {
+      "id": "6aa4d5b78c6341a27ed90e69",
+      "name": "Bloomfield Spot 4",
+      "neighborhood": "Bloomfield",
+      "lat": 40.46422123947572,
+      "lng": -79.94888853999126,
+      "place_type": "food",
+      "visits": 5
+    },
+    {
+      "id": "6aa4d5b78c6341a27ed90e6c",
+      "name": "Bloomfield Spot 7",
+      "neighborhood": "Bloomfield",
+      "lat": 40.46503487928983,
+      "lng": -79.94985958742356,
+      "place_type": "food",
+      "visits": 8
+    },
+    {
+      "id": "6aa4d5b78c6341a27ed90e6f",
+      "name": "Bloomfield Spot 10",
+      "neighborhood": "Bloomfield",
+      "lat": 40.46215853711336,
+      "lng": -79.94885759626614,
+      "place_type": "food",
+      "visits": 3
+    },
+    {
+      "id": "6aa4d5b78c6341a27ed90e71",
+      "name": "Squirrel Hill Spot 2",
+      "neighborhood": "Squirrel Hill",
+      "lat": 40.440183384663335,
+      "lng": -79.92321298164462,
+      "place_type": "food",
+      "visits": 3
+    },
+    {
+      "id": "6aa4d5b78c6341a27ed90e75",
+      "name": "Squirrel Hill Spot 6",
+      "neighborhood": "Squirrel Hill",
+      "lat": 40.43784303896133,
+      "lng": -79.91984915863333,
+      "place_type": "food",
+      "visits": 7
+    },
+    {
+      "id": "6aa4d5b78c6341a27ed90e79",
+      "name": "Squirrel Hill Spot 10",
+      "neighborhood": "Squirrel Hill",
+      "lat": 40.43420751596132,
+      "lng": -79.9204547884076,
+      "place_type": "food",
+      "visits": 3
+    },
+    {
+      "id": "6aa4d5b78c6341a27ed90e7b",
+      "name": "East Liberty Spot 2",
+      "neighborhood": "East Liberty",
+      "lat": 40.46294849910405,
+      "lng": -79.92151164270844,
+      "place_type": "food",
+      "visits": 3
+    },
+    {
+      "id": "6aa4d5b78c6341a27ed90e7f",
+      "name": "East Liberty Spot 6",
+      "neighborhood": "East Liberty",
+      "lat": 40.464801793361225,
+      "lng": -79.92427106354053,
+      "place_type": "food",
+      "visits": 7
+    },
+    {
+      "id": "6aa4d5b78c6341a27ed90e83",
+      "name": "Strip District Spot 1",
+      "neighborhood": "Strip District",
+      "lat": 40.45137841493446,
+      "lng": -79.97952294543747,
+      "place_type": "food",
+      "visits": 2
+    },
+    {
+      "id": "6aa4d5b78c6341a27ed90e86",
+      "name": "Strip District Spot 4",
+      "neighborhood": "Strip District",
+      "lat": 40.45385916145652,
+      "lng": -79.98156530648417,
+      "place_type": "food",
+      "visits": 5
+    },
+    {
+      "id": "6aa4d5b78c6341a27ed90e89",
+      "name": "Strip District Spot 7",
+      "neighborhood": "Strip District",
+      "lat": 40.45390585487337,
+      "lng": -79.9831130680351,
+      "place_type": "food",
+      "visits": 8
+    },
+    {
+      "id": "6aa4d5b78c6341a27ed90e8c",
+      "name": "South Side Spot 2",
+      "neighborhood": "South Side",
+      "lat": 40.4279842927305,
+      "lng": -79.97504896079482,
+      "place_type": "food",
+      "visits": 3
+    },
+    {
+      "id": "6aa4d5b78c6341a27ed90e8f",
+      "name": "South Side Spot 5",
+      "neighborhood": "South Side",
+      "lat": 40.430560354872576,
+      "lng": -79.9775093397757,
+      "place_type": "food",
+      "visits": 6
+    },
+    {
+      "id": "6aa4d5b78c6341a27ed90e92",
+      "name": "South Side Spot 8",
+      "neighborhood": "South Side",
+      "lat": 40.42512209033922,
+      "lng": -79.97672702688014,
+      "place_type": "food",
+      "visits": 9
+    },
+    {
+      "id": "6aa4d5b78c6341a27ed90e96",
+      "name": "Downtown Spot 4",
+      "neighborhood": "Downtown",
+      "lat": 40.44029797436519,
+      "lng": -80.00482707742775,
+      "place_type": "food",
+      "visits": 5
+    },
+    {
+      "id": "6aa4d5b78c6341a27ed90e9a",
+      "name": "Downtown Spot 8",
+      "neighborhood": "Downtown",
+      "lat": 40.443756158531855,
+      "lng": -80.00011212098534,
+      "place_type": "food",
+      "visits": 9
+    },
+    {
+      "id": "6aa4d5b78c6341a27ed90ea3",
+      "name": "Point Breeze Spot 3",
+      "neighborhood": "Point Breeze",
+      "lat": 40.449686594209304,
+      "lng": -79.90214808829394,
+      "place_type": "food",
+      "visits": 4
+    },
+    {
+      "id": "6aa4d5b78c6341a27ed90ea7",
+      "name": "Homestead Spot 2",
+      "neighborhood": "Homestead",
+      "lat": 40.40327988630245,
+      "lng": -79.91162216740766,
+      "place_type": "food",
+      "visits": 3
+    },
+    {
+      "id": "6aa4d5b78c6341a27ed90e4f",
+      "name": "Oakland Spot 4",
+      "neighborhood": "Oakland",
+      "lat": 40.43960470757816,
+      "lng": -79.9590954836428,
+      "place_type": "park",
+      "visits": 5
+    },
+    {
+      "id": "6aa4d5b78c6341a27ed90e54",
+      "name": "Oakland Spot 9",
+      "neighborhood": "Oakland",
+      "lat": 40.43952886689983,
+      "lng": -79.95757452163524,
+      "place_type": "park",
+      "visits": 2
+    },
+    {
+      "id": "6aa4d5b78c6341a27ed90e59",
+      "name": "Oakland Spot 14",
+      "neighborhood": "Oakland",
+      "lat": 40.441795914596426,
+      "lng": -79.95836389220479,
+      "place_type": "park",
+      "visits": 7
+    },
+    {
+      "id": "6aa4d5b78c6341a27ed90e73",
+      "name": "Squirrel Hill Spot 4",
+      "neighborhood": "Squirrel Hill",
+      "lat": 40.440886848040336,
+      "lng": -79.91960553666262,
+      "place_type": "park",
+      "visits": 5
+    },
+    {
+      "id": "6aa4d5b78c6341a27ed90e77",
+      "name": "Squirrel Hill Spot 8",
+      "neighborhood": "Squirrel Hill",
+      "lat": 40.435782310982404,
+      "lng": -79.919347496856,
+      "place_type": "park",
+      "visits": 9
+    },
+    {
+      "id": "6aa4d5b78c6341a27ed90e9c",
+      "name": "North Side Spot 2",
+      "neighborhood": "North Side",
+      "lat": 40.45374666355626,
+      "lng": -80.00984531131199,
+      "place_type": "park",
+      "visits": 3
+    },
+    {
+      "id": "6aa4d5b78c6341a27ed90e9f",
+      "name": "North Side Spot 5",
+      "neighborhood": "North Side",
+      "lat": 40.45414070364459,
+      "lng": -80.00778619326252,
+      "place_type": "park",
+      "visits": 6
+    },
+    {
+      "id": "6aa4d5b78c6341a27ed90ea2",
+      "name": "Point Breeze Spot 2",
+      "neighborhood": "Point Breeze",
+      "lat": 40.45017580623886,
+      "lng": -79.90981443130399,
+      "place_type": "park",
+      "visits": 3
+    },
+    {
+      "id": "6aa4d5b78c6341a27ed90ea5",
+      "name": "Point Breeze Spot 5",
+      "neighborhood": "Point Breeze",
+      "lat": 40.44394565539001,
+      "lng": -79.90993114746013,
+      "place_type": "park",
+      "visits": 6
+    },
+    {
+      "id": "6aa4d5b78c6341a27ed90e5d",
+      "name": "Shadyside Spot 4",
+      "neighborhood": "Shadyside",
+      "lat": 40.45068922249959,
+      "lng": -79.93795784894571,
+      "place_type": "residential",
+      "visits": 5
+    },
+    {
+      "id": "6aa4d5b78c6341a27ed90e61",
+      "name": "Shadyside Spot 8",
+      "neighborhood": "Shadyside",
+      "lat": 40.45618620648722,
+      "lng": -79.93200777977515,
+      "place_type": "residential",
+      "visits": 9
+    },
+    {
+      "id": "6aa4d5b78c6341a27ed90e65",
+      "name": "Shadyside Spot 12",
+      "neighborhood": "Shadyside",
+      "lat": 40.450427750515665,
+      "lng": -79.93578437141058,
+      "place_type": "residential",
+      "visits": 5
+    },
+    {
+      "id": "6aa4d5b78c6341a27ed90e68",
+      "name": "Bloomfield Spot 3",
+      "neighborhood": "Bloomfield",
+      "lat": 40.46244831689847,
+      "lng": -79.94553905979637,
+      "place_type": "residential",
+      "visits": 4
+    },
+    {
+      "id": "6aa4d5b78c6341a27ed90e6b",
+      "name": "Bloomfield Spot 6",
+      "neighborhood": "Bloomfield",
+      "lat": 40.46661177341493,
+      "lng": -79.94585548630482,
+      "place_type": "residential",
+      "visits": 7
+    },
+    {
+      "id": "6aa4d5b78c6341a27ed90e6e",
+      "name": "Bloomfield Spot 9",
+      "neighborhood": "Bloomfield",
+      "lat": 40.46155906763625,
+      "lng": -79.950917954048,
+      "place_type": "residential",
+      "visits": 2
+    },
+    {
+      "id": "6aa4d5b78c6341a27ed90e70",
+      "name": "Squirrel Hill Spot 1",
+      "neighborhood": "Squirrel Hill",
+      "lat": 40.43573608025189,
+      "lng": -79.92537767767567,
+      "place_type": "residential",
+      "visits": 2
+    },
+    {
+      "id": "6aa4d5b78c6341a27ed90e74",
+      "name": "Squirrel Hill Spot 5",
+      "neighborhood": "Squirrel Hill",
+      "lat": 40.43537044535259,
+      "lng": -79.92508954145609,
+      "place_type": "residential",
+      "visits": 6
+    },
+    {
+      "id": "6aa4d5b78c6341a27ed90e78",
+      "name": "Squirrel Hill Spot 9",
+      "neighborhood": "Squirrel Hill",
+      "lat": 40.43683334883773,
+      "lng": -79.92607067231847,
+      "place_type": "residential",
+      "visits": 2
+    },
+    {
+      "id": "6aa4d5b78c6341a27ed90ea1",
+      "name": "Point Breeze Spot 1",
+      "neighborhood": "Point Breeze",
+      "lat": 40.44973790734739,
+      "lng": -79.90994214662904,
+      "place_type": "residential",
+      "visits": 2
+    },
+    {
+      "id": "6aa4d5b78c6341a27ed90ea4",
+      "name": "Point Breeze Spot 4",
+      "neighborhood": "Point Breeze",
+      "lat": 40.44772084209945,
+      "lng": -79.90992110115724,
+      "place_type": "residential",
+      "visits": 5
+    },
+    {
+      "id": "6aa4d5b78c6341a27ed90e5a",
+      "name": "Shadyside Spot 1",
+      "neighborhood": "Shadyside",
+      "lat": 40.449088008431445,
+      "lng": -79.93130018954562,
+      "place_type": "shopping",
+      "visits": 2
+    },
+    {
+      "id": "6aa4d5b78c6341a27ed90e5e",
+      "name": "Shadyside Spot 5",
+      "neighborhood": "Shadyside",
+      "lat": 40.45506755613334,
+      "lng": -79.93325985999704,
+      "place_type": "shopping",
+      "visits": 6
+    },
+    {
+      "id": "6aa4d5b78c6341a27ed90e62",
+      "name": "Shadyside Spot 9",
+      "neighborhood": "Shadyside",
+      "lat": 40.45569767284443,
+      "lng": -79.93288485283882,
+      "place_type": "shopping",
+      "visits": 2
+    },
+    {
+      "id": "6aa4d5b78c6341a27ed90e72",
+      "name": "Squirrel Hill Spot 3",
+      "neighborhood": "Squirrel Hill",
+      "lat": 40.43972985844189,
+      "lng": -79.9192140863265,
+      "place_type": "shopping",
+      "visits": 4
+    },
+    {
+      "id": "6aa4d5b78c6341a27ed90e76",
+      "name": "Squirrel Hill Spot 7",
+      "neighborhood": "Squirrel Hill",
+      "lat": 40.43658332900895,
+      "lng": -79.9195339552441,
+      "place_type": "shopping",
+      "visits": 8
+    },
+    {
+      "id": "6aa4d5b78c6341a27ed90e7a",
+      "name": "East Liberty Spot 1",
+      "neighborhood": "East Liberty",
+      "lat": 40.46169947016874,
+      "lng": -79.92257092746098,
+      "place_type": "shopping",
+      "visits": 2
+    },
+    {
+      "id": "6aa4d5b78c6341a27ed90e7e",
+      "name": "East Liberty Spot 5",
+      "neighborhood": "East Liberty",
+      "lat": 40.460726433501456,
+      "lng": -79.9207461418504,
+      "place_type": "shopping",
+      "visits": 6
+    },
+    {
+      "id": "6aa4d5b78c6341a27ed90e82",
+      "name": "East Liberty Spot 9",
+      "neighborhood": "East Liberty",
+      "lat": 40.46428723220507,
+      "lng": -79.9243642973514,
+      "place_type": "shopping",
+      "visits": 2
+    },
+    {
+      "id": "6aa4d5b78c6341a27ed90e84",
+      "name": "Strip District Spot 2",
+      "neighborhood": "Strip District",
+      "lat": 40.45178434655919,
+      "lng": -79.98638280520733,
+      "place_type": "shopping",
+      "visits": 3
+    },
+    {
+      "id": "6aa4d5b78c6341a27ed90e87",
+      "name": "Strip District Spot 5",
+      "neighborhood": "Strip District",
+      "lat": 40.4558553809441,
+      "lng": -79.98679903942032,
+      "place_type": "shopping",
+      "visits": 6
+    },
+    {
+      "id": "6aa4d5b78c6341a27ed90e8a",
+      "name": "Strip District Spot 8",
+      "neighborhood": "Strip District",
+      "lat": 40.44901346290466,
+      "lng": -79.9818400422593,
+      "place_type": "shopping",
+      "visits": 9
+    },
+    {
+      "id": "6aa4d5b78c6341a27ed90ea6",
+      "name": "Homestead Spot 1",
+      "neighborhood": "Homestead",
+      "lat": 40.40959700196767,
+      "lng": -79.91134907422223,
+      "place_type": "shopping",
+      "visits": 2
+    },
+    {
+      "id": "6aa4d5b78c6341a27ed90ea9",
+      "name": "Homestead Spot 4",
+      "neighborhood": "Homestead",
+      "lat": 40.40500622948159,
+      "lng": -79.91383476967455,
+      "place_type": "shopping",
+      "visits": 5
+    },
+    {
+      "id": "6aa4d5b78c6341a27ed90e50",
+      "name": "Oakland Spot 5",
+      "neighborhood": "Oakland",
+      "lat": 40.44249481807899,
+      "lng": -79.95441343935467,
+      "place_type": "transit",
+      "visits": 6
+    },
+    {
+      "id": "6aa4d5b78c6341a27ed90e55",
+      "name": "Oakland Spot 10",
+      "neighborhood": "Oakland",
+      "lat": 40.4396771375253,
+      "lng": -79.95293430620453,
+      "place_type": "transit",
+      "visits": 3
+    },
+    {
+      "id": "6aa4d5b78c6341a27ed90e94",
+      "name": "Downtown Spot 2",
+      "neighborhood": "Downtown",
+      "lat": 40.4399141974494,
+      "lng": -80.00542815824096,
+      "place_type": "transit",
+      "visits": 3
+    },
+    {
+      "id": "6aa4d5b78c6341a27ed90e98",
+      "name": "Downtown Spot 6",
+      "neighborhood": "Downtown",
+      "lat": 40.43843674216072,
+      "lng": -79.99865948620621,
+      "place_type": "transit",
+      "visits": 7
+    },
+    {
+      "id": "6aa4d5b78c6341a27ed90e4c",
+      "name": "CMU",
+      "neighborhood": "Oakland",
+      "lat": 40.4425,
+      "lng": -79.9435,
+      "place_type": "urban_core",
+      "visits": 7
+    },
+    {
+      "id": "6aa4d5b78c6341a27ed90e4d",
+      "name": "Oakland Spot 2",
+      "neighborhood": "Oakland",
+      "lat": 40.44031328212578,
+      "lng": -79.95268563731891,
+      "place_type": "urban_core",
+      "visits": 3
+    },
+    {
+      "id": "6aa4d5b78c6341a27ed90e51",
+      "name": "Oakland Spot 6",
+      "neighborhood": "Oakland",
+      "lat": 40.44444540287626,
+      "lng": -79.95471887187725,
+      "place_type": "urban_core",
+      "visits": 7
+    },
+    {
+      "id": "6aa4d5b78c6341a27ed90e52",
+      "name": "Oakland Spot 7",
+      "neighborhood": "Oakland",
+      "lat": 40.43840758154054,
+      "lng": -79.95833504779033,
+      "place_type": "urban_core",
+      "visits": 8
+    },
+    {
+      "id": "6aa4d5b78c6341a27ed90e56",
+      "name": "Oakland Spot 11",
+      "neighborhood": "Oakland",
+      "lat": 40.445458651516994,
+      "lng": -79.95914118913808,
+      "place_type": "urban_core",
+      "visits": 4
+    },
+    {
+      "id": "6aa4d5b78c6341a27ed90e57",
+      "name": "Oakland Spot 12",
+      "neighborhood": "Oakland",
+      "lat": 40.44573182858238,
+      "lng": -79.95321226249081,
+      "place_type": "urban_core",
+      "visits": 5
+    },
+    {
+      "id": "6aa4d5b78c6341a27ed90e5c",
+      "name": "Shadyside Spot 3",
+      "neighborhood": "Shadyside",
+      "lat": 40.44910676985668,
+      "lng": -79.9335756827697,
+      "place_type": "urban_core",
+      "visits": 4
+    },
+    {
+      "id": "6aa4d5b78c6341a27ed90e60",
+      "name": "Shadyside Spot 7",
+      "neighborhood": "Shadyside",
+      "lat": 40.4491529576175,
+      "lng": -79.93421509612169,
+      "place_type": "urban_core",
+      "visits": 8
+    },
+    {
+      "id": "6aa4d5b78c6341a27ed90e64",
+      "name": "Shadyside Spot 11",
+      "neighborhood": "Shadyside",
+      "lat": 40.45242125502278,
+      "lng": -79.93509194212768,
+      "place_type": "urban_core",
+      "visits": 4
+    },
+    {
+      "id": "6aa4d5b78c6341a27ed90e67",
+      "name": "Bloomfield Spot 2",
+      "neighborhood": "Bloomfield",
+      "lat": 40.46037724355261,
+      "lng": -79.95033292519491,
+      "place_type": "urban_core",
+      "visits": 3
+    },
+    {
+      "id": "6aa4d5b78c6341a27ed90e6a",
+      "name": "Bloomfield Spot 5",
+      "neighborhood": "Bloomfield",
+      "lat": 40.46577139972212,
+      "lng": -79.94497972740385,
+      "place_type": "urban_core",
+      "visits": 6
+    },
+    {
+      "id": "6aa4d5b78c6341a27ed90e6d",
+      "name": "Bloomfield Spot 8",
+      "neighborhood": "Bloomfield",
+      "lat": 40.46349874410754,
+      "lng": -79.94919416281499,
+      "place_type": "urban_core",
+      "visits": 9
+    },
+    {
+      "id": "6aa4d5b78c6341a27ed90e7c",
+      "name": "East Liberty Spot 3",
+      "neighborhood": "East Liberty",
+      "lat": 40.46403508943654,
+      "lng": -79.92559028791025,
+      "place_type": "urban_core",
+      "visits": 4
+    },
+    {
+      "id": "6aa4d5b78c6341a27ed90e80",
+      "name": "East Liberty Spot 7",
+      "neighborhood": "East Liberty",
+      "lat": 40.46078830704004,
+      "lng": -79.92416347090646,
+      "place_type": "urban_core",
+      "visits": 8
+    },
+    {
+      "id": "6aa4d5b78c6341a27ed90e85",
+      "name": "Strip District Spot 3",
+      "neighborhood": "Strip District",
+      "lat": 40.45326843238738,
+      "lng": -79.98679062403032,
+      "place_type": "urban_core",
+      "visits": 4
+    },
+    {
+      "id": "6aa4d5b78c6341a27ed90e88",
+      "name": "Strip District Spot 6",
+      "neighborhood": "Strip District",
+      "lat": 40.45100209485414,
+      "lng": -79.98340848903145,
+      "place_type": "urban_core",
+      "visits": 7
+    },
+    {
+      "id": "6aa4d5b78c6341a27ed90e8d",
+      "name": "South Side Spot 3",
+      "neighborhood": "South Side",
+      "lat": 40.42849140180822,
+      "lng": -79.97555149627705,
+      "place_type": "urban_core",
+      "visits": 4
+    },
+    {
+      "id": "6aa4d5b78c6341a27ed90e90",
+      "name": "South Side Spot 6",
+      "neighborhood": "South Side",
+      "lat": 40.430576432392684,
+      "lng": -79.97295870853745,
+      "place_type": "urban_core",
+      "visits": 7
+    },
+    {
+      "id": "6aa4d5b78c6341a27ed90e93",
+      "name": "Downtown Spot 1",
+      "neighborhood": "Downtown",
+      "lat": 40.437754691554034,
+      "lng": -79.99986463109848,
+      "place_type": "urban_core",
+      "visits": 2
+    },
+    {
+      "id": "6aa4d5b78c6341a27ed90e97",
+      "name": "Downtown Spot 5",
+      "neighborhood": "Downtown",
+      "lat": 40.43813953629309,
+      "lng": -80.00348068302354,
+      "place_type": "urban_core",
+      "visits": 6
+    },
+    {
+      "id": "6aa4d5b78c6341a27ed90e9d",
+      "name": "North Side Spot 3",
+      "neighborhood": "North Side",
+      "lat": 40.450619379880926,
+      "lng": -80.01171438074854,
+      "place_type": "urban_core",
+      "visits": 4
+    },
+    {
+      "id": "6aa4d5b78c6341a27ed90ea0",
+      "name": "North Side Spot 6",
+      "neighborhood": "North Side",
+      "lat": 40.451205710786425,
+      "lng": -80.00805447126174,
+      "place_type": "urban_core",
+      "visits": 7
+    },
+    {
+      "id": "6aa4d5b78c6341a27ed90ea8",
+      "name": "Homestead Spot 3",
+      "neighborhood": "Homestead",
+      "lat": 40.40291247651657,
+      "lng": -79.91472713305943,
+      "place_type": "urban_core",
+      "visits": 4
+    },
+    {
+      "id": "6aa4d5b78c6341a27ed90eaa",
+      "name": "Lawrenceville Strip",
+      "neighborhood": "Lawrenceville",
+      "lat": 40.4501,
+      "lng": -79.9585,
+      "place_type": "urban_core",
+      "visits": 1
+    }
+  ],
+  "edges": [
+    {
+      "id": "6aa4d5b78c6341a27ed90f52",
+      "from": "6aa4d5b78c6341a27ed90e4c",
+      "to": "6aa4d5b78c6341a27ed90e5b",
+      "count": 1,
+      "avg_duration": 40,
+      "travel_mode": "walk"
+    },
+    {
+      "id": "6aa4d5b78c6341a27ed90f43",
+      "from": "6aa4d5b78c6341a27ed90e4c",
+      "to": "6aa4d5b78c6341a27ed90e5c",
+      "count": 1,
+      "avg_duration": 42,
+      "travel_mode": "walk"
+    },
+    {
+      "id": "6aa4d5b78c6341a27ed90eab",
+      "from": "6aa4d5b78c6341a27ed90e4c",
+      "to": "6aa4d5b78c6341a27ed90e5d",
+      "count": 1,
+      "avg_duration": 10,
+      "travel_mode": "walk"
+    },
+    {
+      "id": "6aa4d5b78c6341a27ed90f0a",
+      "from": "6aa4d5b78c6341a27ed90e4c",
+      "to": "6aa4d5b78c6341a27ed90e62",
+      "count": 1,
+      "avg_duration": 25,
+      "travel_mode": "walk"
+    },
+    {
+      "id": "6aa4d5b78c6341a27ed90f6f",
+      "from": "6aa4d5b78c6341a27ed90e4c",
+      "to": "6aa4d5b78c6341a27ed90e83",
+      "count": 1,
+      "avg_duration": 25,
+      "travel_mode": "bus"
+    },
+    {
+      "id": "6aa4d5b78c6341a27ed90f70",
+      "from": "6aa4d5b78c6341a27ed90e4c",
+      "to": "6aa4d5b78c6341a27ed90e8b",
+      "count": 1,
+      "avg_duration": 28,
+      "travel_mode": "uber"
+    },
+    {
+      "id": "6aa4d5b78c6341a27ed90f53",
+      "from": "6aa4d5b78c6341a27ed90e4d",
+      "to": "6aa4d5b78c6341a27ed90e5b",
+      "count": 1,
+      "avg_duration": 40,
+      "travel_mode": "walk"
+    },
+    {
+      "id": "6aa4d5b78c6341a27ed90f45",
+      "from": "6aa4d5b78c6341a27ed90e4d",
+      "to": "6aa4d5b78c6341a27ed90e5c",
+      "count": 1,
+      "avg_duration": 42,
+      "travel_mode": "walk"
+    },
+    {
+      "id": "6aa4d5b78c6341a27ed90eae",
+      "from": "6aa4d5b78c6341a27ed90e4d",
+      "to": "6aa4d5b78c6341a27ed90e5d",
+      "count": 1,
+      "avg_duration": 10,
+      "travel_mode": "walk"
+    },
+    {
+      "id": "6aa4d5b78c6341a27ed90f5d",
+      "from": "6aa4d5b78c6341a27ed90e4d",
+      "to": "6aa4d5b78c6341a27ed90e62",
+      "count": 1,
+      "avg_duration": 19,
+      "travel_mode": "walk"
+    },
+    {
+      "id": "6aa4d5b78c6341a27ed90f54",
+      "from": "6aa4d5b78c6341a27ed90e4e",
+      "to": "6aa4d5b78c6341a27ed90e5b",
+      "count": 1,
+      "avg_duration": 40,
+      "travel_mode": "walk"
+    },
+    {
+      "id": "6aa4d5b78c6341a27ed90f47",
+      "from": "6aa4d5b78c6341a27ed90e4e",
+      "to": "6aa4d5b78c6341a27ed90e5c",
+      "count": 1,
+      "avg_duration": 42,
+      "travel_mode": "walk"
+    },
+    {
+      "id": "6aa4d5b78c6341a27ed90eaf",
+      "from": "6aa4d5b78c6341a27ed90e4e",
+      "to": "6aa4d5b78c6341a27ed90e5d",
+      "count": 1,
+      "avg_duration": 10,
+      "travel_mode": "walk"
+    },
+    {
+      "id": "6aa4d5b78c6341a27ed90f55",
+      "from": "6aa4d5b78c6341a27ed90e4f",
+      "to": "6aa4d5b78c6341a27ed90e5b",
+      "count": 1,
+      "avg_duration": 40,
+      "travel_mode": "walk"
+    },
+    {
+      "id": "6aa4d5b78c6341a27ed90f49",
+      "from": "6aa4d5b78c6341a27ed90e4f",
+      "to": "6aa4d5b78c6341a27ed90e5c",
+      "count": 1,
+      "avg_duration": 42,
+      "travel_mode": "walk"
+    },
+    {
+      "id": "6aa4d5b78c6341a27ed90eb0",
+      "from": "6aa4d5b78c6341a27ed90e4f",
+      "to": "6aa4d5b78c6341a27ed90e5d",
+      "count": 1,
+      "avg_duration": 10,
+      "travel_mode": "walk"
+    },
+    {
+      "id": "6aa4d5b78c6341a27ed90f56",
+      "from": "6aa4d5b78c6341a27ed90e50",
+      "to": "6aa4d5b78c6341a27ed90e5b",
+      "count": 1,
+      "avg_duration": 40,
+      "travel_mode": "walk"
+    },
+    {
+      "id": "6aa4d5b78c6341a27ed90f4b",
+      "from": "6aa4d5b78c6341a27ed90e50",
+      "to": "6aa4d5b78c6341a27ed90e5c",
+      "count": 1,
+      "avg_duration": 42,
+      "travel_mode": "walk"
+    },
+    {
+      "id": "6aa4d5b78c6341a27ed90eb1",
+      "from": "6aa4d5b78c6341a27ed90e50",
+      "to": "6aa4d5b78c6341a27ed90e5d",
+      "count": 1,
+      "avg_duration": 10,
+      "travel_mode": "walk"
+    },
+    {
+      "id": "6aa4d5b78c6341a27ed90f57",
+      "from": "6aa4d5b78c6341a27ed90e51",
+      "to": "6aa4d5b78c6341a27ed90e5b",
+      "count": 1,
+      "avg_duration": 40,
+      "travel_mode": "walk"
+    },
+    {
+      "id": "6aa4d5b78c6341a27ed90f4c",
+      "from": "6aa4d5b78c6341a27ed90e51",
+      "to": "6aa4d5b78c6341a27ed90e5c",
+      "count": 1,
+      "avg_duration": 42,
+      "travel_mode": "walk"
+    },
+    {
+      "id": "6aa4d5b78c6341a27ed90eb2",
+      "from": "6aa4d5b78c6341a27ed90e51",
+      "to": "6aa4d5b78c6341a27ed90e5d",
+      "count": 1,
+      "avg_duration": 10,
+      "travel_mode": "walk"
+    },
+    {
+      "id": "6aa4d5b78c6341a27ed90ef7",
+      "from": "6aa4d5b78c6341a27ed90e51",
+      "to": "6aa4d5b78c6341a27ed90e62",
+      "count": 1,
+      "avg_duration": 25,
+      "travel_mode": "walk"
+    },
+    {
+      "id": "6aa4d5b78c6341a27ed90eed",
+      "from": "6aa4d5b78c6341a27ed90e51",
+      "to": "6aa4d5b78c6341a27ed90e63",
+      "count": 1,
+      "avg_duration": 27,
+      "travel_mode": "walk"
+    },
+    {
+      "id": "6aa4d5b78c6341a27ed90eda",
+      "from": "6aa4d5b78c6341a27ed90e51",
+      "to": "6aa4d5b78c6341a27ed90e64",
+      "count": 1,
+      "avg_duration": 29,
+      "travel_mode": "walk"
+    },
+    {
+      "id": "6aa4d5b78c6341a27ed90eb3",
+      "from": "6aa4d5b78c6341a27ed90e52",
+      "to": "6aa4d5b78c6341a27ed90e5d",
+      "count": 1,
+      "avg_duration": 10,
+      "travel_mode": "walk"
+    },
+    {
+      "id": "6aa4d5b78c6341a27ed90efa",
+      "from": "6aa4d5b78c6341a27ed90e52",
+      "to": "6aa4d5b78c6341a27ed90e62",
+      "count": 1,
+      "avg_duration": 25,
+      "travel_mode": "walk"
+    },
+    {
+      "id": "6aa4d5b78c6341a27ed90eb4",
+      "from": "6aa4d5b78c6341a27ed90e53",
+      "to": "6aa4d5b78c6341a27ed90e5d",
+      "count": 1,
+      "avg_duration": 10,
+      "travel_mode": "walk"
+    },
+    {
+      "id": "6aa4d5b78c6341a27ed90efc",
+      "from": "6aa4d5b78c6341a27ed90e53",
+      "to": "6aa4d5b78c6341a27ed90e62",
+      "count": 1,
+      "avg_duration": 25,
+      "travel_mode": "walk"
+    },
+    {
+      "id": "6aa4d5b78c6341a27ed90eb5",
+      "from": "6aa4d5b78c6341a27ed90e54",
+      "to": "6aa4d5b78c6341a27ed90e5d",
+      "count": 1,
+      "avg_duration": 10,
+      "travel_mode": "walk"
+    },
+    {
+      "id": "6aa4d5b78c6341a27ed90efe",
+      "from": "6aa4d5b78c6341a27ed90e54",
+      "to": "6aa4d5b78c6341a27ed90e62",
+      "count": 1,
+      "avg_duration": 25,
+      "travel_mode": "walk"
+    },
+    {
+      "id": "6aa4d5b78c6341a27ed90eb6",
+      "from": "6aa4d5b78c6341a27ed90e55",
+      "to": "6aa4d5b78c6341a27ed90e5d",
+      "count": 1,
+      "avg_duration": 10,
+      "travel_mode": "walk"
+    },
+    {
+      "id": "6aa4d5b78c6341a27ed90f00",
+      "from": "6aa4d5b78c6341a27ed90e55",
+      "to": "6aa4d5b78c6341a27ed90e62",
+      "count": 1,
+      "avg_duration": 25,
+      "travel_mode": "walk"
+    },
+    {
+      "id": "6aa4d5b78c6341a27ed90f4d",
+      "from": "6aa4d5b78c6341a27ed90e56",
+      "to": "6aa4d5b78c6341a27ed90e5b",
+      "count": 1,
+      "avg_duration": 40,
+      "travel_mode": "walk"
+    },
+    {
+      "id": "6aa4d5b78c6341a27ed90f3a",
+      "from": "6aa4d5b78c6341a27ed90e56",
+      "to": "6aa4d5b78c6341a27ed90e5c",
+      "count": 1,
+      "avg_duration": 42,
+      "travel_mode": "walk"
+    },
+    {
+      "id": "6aa4d5b78c6341a27ed90f2f",
+      "from": "6aa4d5b78c6341a27ed90e56",
+      "to": "6aa4d5b78c6341a27ed90e5d",
+      "count": 1,
+      "avg_duration": 44,
+      "travel_mode": "walk"
+    },
+    {
+      "id": "6aa4d5b78c6341a27ed90f02",
+      "from": "6aa4d5b78c6341a27ed90e56",
+      "to": "6aa4d5b78c6341a27ed90e62",
+      "count": 1,
+      "avg_duration": 25,
+      "travel_mode": "walk"
+    },
+    {
+      "id": "6aa4d5b78c6341a27ed90f4f",
+      "from": "6aa4d5b78c6341a27ed90e57",
+      "to": "6aa4d5b78c6341a27ed90e5b",
+      "count": 1,
+      "avg_duration": 40,
+      "travel_mode": "walk"
+    },
+    {
+      "id": "6aa4d5b78c6341a27ed90f3d",
+      "from": "6aa4d5b78c6341a27ed90e57",
+      "to": "6aa4d5b78c6341a27ed90e5c",
+      "count": 1,
+      "avg_duration": 42,
+      "travel_mode": "walk"
+    },
+    {
+      "id": "6aa4d5b78c6341a27ed90f04",
+      "from": "6aa4d5b78c6341a27ed90e57",
+      "to": "6aa4d5b78c6341a27ed90e62",
+      "count": 1,
+      "avg_duration": 25,
+      "travel_mode": "walk"
+    },
+    {
+      "id": "6aa4d5b78c6341a27ed90f50",
+      "from": "6aa4d5b78c6341a27ed90e58",
+      "to": "6aa4d5b78c6341a27ed90e5b",
+      "count": 1,
+      "avg_duration": 40,
+      "travel_mode": "walk"
+    },
+    {
+      "id": "6aa4d5b78c6341a27ed90f3f",
+      "from": "6aa4d5b78c6341a27ed90e58",
+      "to": "6aa4d5b78c6341a27ed90e5c",
+      "count": 1,
+      "avg_duration": 42,
+      "travel_mode": "walk"
+    },
+    {
+      "id": "6aa4d5b78c6341a27ed90f06",
+      "from": "6aa4d5b78c6341a27ed90e58",
+      "to": "6aa4d5b78c6341a27ed90e62",
+      "count": 1,
+      "avg_duration": 25,
+      "travel_mode": "walk"
+    },
+    {
+      "id": "6aa4d5b78c6341a27ed90f51",
+      "from": "6aa4d5b78c6341a27ed90e59",
+      "to": "6aa4d5b78c6341a27ed90e5b",
+      "count": 1,
+      "avg_duration": 40,
+      "travel_mode": "walk"
+    },
+    {
+      "id": "6aa4d5b78c6341a27ed90f41",
+      "from": "6aa4d5b78c6341a27ed90e59",
+      "to": "6aa4d5b78c6341a27ed90e5c",
+      "count": 1,
+      "avg_duration": 42,
+      "travel_mode": "walk"
+    },
+    {
+      "id": "6aa4d5b78c6341a27ed90f08",
+      "from": "6aa4d5b78c6341a27ed90e59",
+      "to": "6aa4d5b78c6341a27ed90e62",
+      "count": 1,
+      "avg_duration": 25,
+      "travel_mode": "walk"
+    },
+    {
+      "id": "6aa4d5b78c6341a27ed90f05",
+      "from": "6aa4d5b78c6341a27ed90e5a",
+      "to": "6aa4d5b78c6341a27ed90e66",
+      "count": 1,
+      "avg_duration": 30,
+      "travel_mode": "bus"
+    },
+    {
+      "id": "6aa4d5b78c6341a27ed90f5a",
+      "from": "6aa4d5b78c6341a27ed90e5a",
+      "to": "6aa4d5b78c6341a27ed90e6a",
+      "count": 1,
+      "avg_duration": 43,
+      "travel_mode": "bus"
+    },
+    {
+      "id": "6aa4d5b78c6341a27ed90f14",
+      "from": "6aa4d5b78c6341a27ed90e5a",
+      "to": "6aa4d5b78c6341a27ed90e6f",
+      "count": 1,
+      "avg_duration": 28,
+      "travel_mode": "bus"
+    },
+    {
+      "id": "6aa4d5b78c6341a27ed90f07",
+      "from": "6aa4d5b78c6341a27ed90e5b",
+      "to": "6aa4d5b78c6341a27ed90e66",
+      "count": 1,
+      "avg_duration": 30,
+      "travel_mode": "bus"
+    },
+    {
+      "id": "6aa4d5b78c6341a27ed90eb7",
+      "from": "6aa4d5b78c6341a27ed90e5b",
+      "to": "6aa4d5b78c6341a27ed90e6a",
+      "count": 2,
+      "avg_duration": 28,
+      "travel_mode": "bus"
+    },
+    {
+      "id": "6aa4d5b78c6341a27ed90eac",
+      "from": "6aa4d5b78c6341a27ed90e5b",
+      "to": "6aa4d5b78c6341a27ed90e6b",
+      "count": 1,
+      "avg_duration": 15,
+      "travel_mode": "bus"
+    },
+    {
+      "id": "6aa4d5b78c6341a27ed90f15",
+      "from": "6aa4d5b78c6341a27ed90e5b",
+      "to": "6aa4d5b78c6341a27ed90e6f",
+      "count": 1,
+      "avg_duration": 28,
+      "travel_mode": "bus"
+    },
+    {
+      "id": "6aa4d5b78c6341a27ed90f09",
+      "from": "6aa4d5b78c6341a27ed90e5c",
+      "to": "6aa4d5b78c6341a27ed90e66",
+      "count": 1,
+      "avg_duration": 30,
+      "travel_mode": "bus"
+    },
+    {
+      "id": "6aa4d5b78c6341a27ed90eba",
+      "from": "6aa4d5b78c6341a27ed90e5c",
+      "to": "6aa4d5b78c6341a27ed90e6a",
+      "count": 2,
+      "avg_duration": 28,
+      "travel_mode": "bus"
+    },
+    {
+      "id": "6aa4d5b78c6341a27ed90f16",
+      "from": "6aa4d5b78c6341a27ed90e5c",
+      "to": "6aa4d5b78c6341a27ed90e6f",
+      "count": 1,
+      "avg_duration": 28,
+      "travel_mode": "bus"
+    },
+    {
+      "id": "6aa4d5b78c6341a27ed90f0b",
+      "from": "6aa4d5b78c6341a27ed90e5d",
+      "to": "6aa4d5b78c6341a27ed90e66",
+      "count": 1,
+      "avg_duration": 30,
+      "travel_mode": "bus"
+    },
+    {
+      "id": "6aa4d5b78c6341a27ed90ebc",
+      "from": "6aa4d5b78c6341a27ed90e5d",
+      "to": "6aa4d5b78c6341a27ed90e6a",
+      "count": 2,
+      "avg_duration": 28,
+      "travel_mode": "bus"
+    },
+    {
+      "id": "6aa4d5b78c6341a27ed90f17",
+      "from": "6aa4d5b78c6341a27ed90e5d",
+      "to": "6aa4d5b78c6341a27ed90e6f",
+      "count": 1,
+      "avg_duration": 28,
+      "travel_mode": "bus"
+    },
+    {
+      "id": "6aa4d5b78c6341a27ed90ebe",
+      "from": "6aa4d5b78c6341a27ed90e5e",
+      "to": "6aa4d5b78c6341a27ed90e6a",
+      "count": 2,
+      "avg_duration": 28,
+      "travel_mode": "bus"
+    },
+    {
+      "id": "6aa4d5b78c6341a27ed90ec0",
+      "from": "6aa4d5b78c6341a27ed90e5f",
+      "to": "6aa4d5b78c6341a27ed90e6a",
+      "count": 2,
+      "avg_duration": 28,
+      "travel_mode": "bus"
+    },
+    {
+      "id": "6aa4d5b78c6341a27ed90ef8",
+      "from": "6aa4d5b78c6341a27ed90e60",
+      "to": "6aa4d5b78c6341a27ed90e66",
+      "count": 1,
+      "avg_duration": 30,
+      "travel_mode": "bus"
+    },
+    {
+      "id": "6aa4d5b78c6341a27ed90eee",
+      "from": "6aa4d5b78c6341a27ed90e60",
+      "to": "6aa4d5b78c6341a27ed90e67",
+      "count": 1,
+      "avg_duration": 32,
+      "travel_mode": "bus"
+    },
+    {
+      "id": "6aa4d5b78c6341a27ed90ec2",
+      "from": "6aa4d5b78c6341a27ed90e60",
+      "to": "6aa4d5b78c6341a27ed90e6a",
+      "count": 2,
+      "avg_duration": 28,
+      "travel_mode": "bus"
+    },
+    {
+      "id": "6aa4d5b78c6341a27ed90f0c",
+      "from": "6aa4d5b78c6341a27ed90e60",
+      "to": "6aa4d5b78c6341a27ed90e6f",
+      "count": 1,
+      "avg_duration": 28,
+      "travel_mode": "bus"
+    },
+    {
+      "id": "6aa4d5b78c6341a27ed90efb",
+      "from": "6aa4d5b78c6341a27ed90e61",
+      "to": "6aa4d5b78c6341a27ed90e66",
+      "count": 1,
+      "avg_duration": 30,
+      "travel_mode": "bus"
+    },
+    {
+      "id": "6aa4d5b78c6341a27ed90ec4",
+      "from": "6aa4d5b78c6341a27ed90e61",
+      "to": "6aa4d5b78c6341a27ed90e6a",
+      "count": 2,
+      "avg_duration": 28,
+      "travel_mode": "bus"
+    },
+    {
+      "id": "6aa4d5b78c6341a27ed90f0f",
+      "from": "6aa4d5b78c6341a27ed90e61",
+      "to": "6aa4d5b78c6341a27ed90e6f",
+      "count": 1,
+      "avg_duration": 28,
+      "travel_mode": "bus"
+    },
+    {
+      "id": "6aa4d5b78c6341a27ed90efd",
+      "from": "6aa4d5b78c6341a27ed90e62",
+      "to": "6aa4d5b78c6341a27ed90e66",
+      "count": 1,
+      "avg_duration": 30,
+      "travel_mode": "bus"
+    },
+    {
+      "id": "6aa4d5b78c6341a27ed90ec6",
+      "from": "6aa4d5b78c6341a27ed90e62",
+      "to": "6aa4d5b78c6341a27ed90e6a",
+      "count": 2,
+      "avg_duration": 28,
+      "travel_mode": "bus"
+    },
+    {
+      "id": "6aa4d5b78c6341a27ed90f10",
+      "from": "6aa4d5b78c6341a27ed90e62",
+      "to": "6aa4d5b78c6341a27ed90e6f",
+      "count": 1,
+      "avg_duration": 28,
+      "travel_mode": "bus"
+    },
+    {
+      "id": "6aa4d5b78c6341a27ed90eff",
+      "from": "6aa4d5b78c6341a27ed90e63",
+      "to": "6aa4d5b78c6341a27ed90e66",
+      "count": 1,
+      "avg_duration": 30,
+      "travel_mode": "bus"
+    },
+    {
+      "id": "6aa4d5b78c6341a27ed90ec8",
+      "from": "6aa4d5b78c6341a27ed90e63",
+      "to": "6aa4d5b78c6341a27ed90e6a",
+      "count": 1,
+      "avg_duration": 13,
+      "travel_mode": "bus"
+    },
+    {
+      "id": "6aa4d5b78c6341a27ed90f11",
+      "from": "6aa4d5b78c6341a27ed90e63",
+      "to": "6aa4d5b78c6341a27ed90e6f",
+      "count": 1,
+      "avg_duration": 28,
+      "travel_mode": "bus"
+    },
+    {
+      "id": "6aa4d5b78c6341a27ed90f01",
+      "from": "6aa4d5b78c6341a27ed90e64",
+      "to": "6aa4d5b78c6341a27ed90e66",
+      "count": 1,
+      "avg_duration": 30,
+      "travel_mode": "bus"
+    },
+    {
+      "id": "6aa4d5b78c6341a27ed90eca",
+      "from": "6aa4d5b78c6341a27ed90e64",
+      "to": "6aa4d5b78c6341a27ed90e6a",
+      "count": 1,
+      "avg_duration": 13,
+      "travel_mode": "bus"
+    },
+    {
+      "id": "6aa4d5b78c6341a27ed90f12",
+      "from": "6aa4d5b78c6341a27ed90e64",
+      "to": "6aa4d5b78c6341a27ed90e6f",
+      "count": 1,
+      "avg_duration": 28,
+      "travel_mode": "bus"
+    },
+    {
+      "id": "6aa4d5b78c6341a27ed90f03",
+      "from": "6aa4d5b78c6341a27ed90e65",
+      "to": "6aa4d5b78c6341a27ed90e66",
+      "count": 1,
+      "avg_duration": 30,
+      "travel_mode": "bus"
+    },
+    {
+      "id": "6aa4d5b78c6341a27ed90f58",
+      "from": "6aa4d5b78c6341a27ed90e65",
+      "to": "6aa4d5b78c6341a27ed90e6a",
+      "count": 1,
+      "avg_duration": 43,
+      "travel_mode": "bus"
+    },
+    {
+      "id": "6aa4d5b78c6341a27ed90f4e",
+      "from": "6aa4d5b78c6341a27ed90e65",
+      "to": "6aa4d5b78c6341a27ed90e6b",
+      "count": 1,
+      "avg_duration": 45,
+      "travel_mode": "bus"
+    },
+    {
+      "id": "6aa4d5b78c6341a27ed90f3b",
+      "from": "6aa4d5b78c6341a27ed90e65",
+      "to": "6aa4d5b78c6341a27ed90e6c",
+      "count": 1,
+      "avg_duration": 47,
+      "travel_mode": "bus"
+    },
+    {
+      "id": "6aa4d5b78c6341a27ed90f13",
+      "from": "6aa4d5b78c6341a27ed90e65",
+      "to": "6aa4d5b78c6341a27ed90e6f",
+      "count": 1,
+      "avg_duration": 28,
+      "travel_mode": "bus"
+    },
+    {
+      "id": "6aa4d5b78c6341a27ed90f1f",
+      "from": "6aa4d5b78c6341a27ed90e66",
+      "to": "6aa4d5b78c6341a27ed90e70",
+      "count": 1,
+      "avg_duration": 31,
+      "travel_mode": "car"
+    },
+    {
+      "id": "6aa4d5b78c6341a27ed90ed6",
+      "from": "6aa4d5b78c6341a27ed90e66",
+      "to": "6aa4d5b78c6341a27ed90e75",
+      "count": 2,
+      "avg_duration": 31,
+      "travel_mode": "car"
+    },
+    {
+      "id": "6aa4d5b78c6341a27ed90ec9",
+      "from": "6aa4d5b78c6341a27ed90e66",
+      "to": "6aa4d5b78c6341a27ed90e76",
+      "count": 2,
+      "avg_duration": 33,
+      "travel_mode": "car"
+    },
+    {
+      "id": "6aa4d5b78c6341a27ed90f71",
+      "from": "6aa4d5b78c6341a27ed90e66",
+      "to": "6aa4d5b78c6341a27ed90eaa",
+      "count": 1,
+      "avg_duration": 12,
+      "travel_mode": "walk"
+    },
+    {
+      "id": "6aa4d5b78c6341a27ed90f21",
+      "from": "6aa4d5b78c6341a27ed90e67",
+      "to": "6aa4d5b78c6341a27ed90e70",
+      "count": 1,
+      "avg_duration": 31,
+      "travel_mode": "car"
+    },
+    {
+      "id": "6aa4d5b78c6341a27ed90ed7",
+      "from": "6aa4d5b78c6341a27ed90e67",
+      "to": "6aa4d5b78c6341a27ed90e75",
+      "count": 2,
+      "avg_duration": 31,
+      "travel_mode": "car"
+    },
+    {
+      "id": "6aa4d5b78c6341a27ed90ecb",
+      "from": "6aa4d5b78c6341a27ed90e67",
+      "to": "6aa4d5b78c6341a27ed90e76",
+      "count": 2,
+      "avg_duration": 33,
+      "travel_mode": "car"
+    },
+    {
+      "id": "6aa4d5b78c6341a27ed90f23",
+      "from": "6aa4d5b78c6341a27ed90e68",
+      "to": "6aa4d5b78c6341a27ed90e70",
+      "count": 1,
+      "avg_duration": 31,
+      "travel_mode": "car"
+    },
+    {
+      "id": "6aa4d5b78c6341a27ed90ecc",
+      "from": "6aa4d5b78c6341a27ed90e68",
+      "to": "6aa4d5b78c6341a27ed90e75",
+      "count": 2,
+      "avg_duration": 31,
+      "travel_mode": "car"
+    },
+    {
+      "id": "6aa4d5b78c6341a27ed90eb8",
+      "from": "6aa4d5b78c6341a27ed90e68",
+      "to": "6aa4d5b78c6341a27ed90e76",
+      "count": 2,
+      "avg_duration": 33,
+      "travel_mode": "car"
+    },
+    {
+      "id": "6aa4d5b78c6341a27ed90ead",
+      "from": "6aa4d5b78c6341a27ed90e68",
+      "to": "6aa4d5b78c6341a27ed90e77",
+      "count": 2,
+      "avg_duration": 15,
+      "travel_mode": "car"
+    },
+    {
+      "id": "6aa4d5b78c6341a27ed90f25",
+      "from": "6aa4d5b78c6341a27ed90e69",
+      "to": "6aa4d5b78c6341a27ed90e70",
+      "count": 1,
+      "avg_duration": 31,
+      "travel_mode": "car"
+    },
+    {
+      "id": "6aa4d5b78c6341a27ed90ecf",
+      "from": "6aa4d5b78c6341a27ed90e69",
+      "to": "6aa4d5b78c6341a27ed90e75",
+      "count": 2,
+      "avg_duration": 31,
+      "travel_mode": "car"
+    },
+    {
+      "id": "6aa4d5b78c6341a27ed90ebb",
+      "from": "6aa4d5b78c6341a27ed90e69",
+      "to": "6aa4d5b78c6341a27ed90e76",
+      "count": 2,
+      "avg_duration": 33,
+      "travel_mode": "car"
+    },
+    {
+      "id": "6aa4d5b78c6341a27ed90f27",
+      "from": "6aa4d5b78c6341a27ed90e6a",
+      "to": "6aa4d5b78c6341a27ed90e70",
+      "count": 1,
+      "avg_duration": 31,
+      "travel_mode": "car"
+    },
+    {
+      "id": "6aa4d5b78c6341a27ed90ed0",
+      "from": "6aa4d5b78c6341a27ed90e6a",
+      "to": "6aa4d5b78c6341a27ed90e75",
+      "count": 2,
+      "avg_duration": 31,
+      "travel_mode": "car"
+    },
+    {
+      "id": "6aa4d5b78c6341a27ed90ebd",
+      "from": "6aa4d5b78c6341a27ed90e6a",
+      "to": "6aa4d5b78c6341a27ed90e76",
+      "count": 2,
+      "avg_duration": 33,
+      "travel_mode": "car"
+    },
+    {
+      "id": "6aa4d5b78c6341a27ed90f29",
+      "from": "6aa4d5b78c6341a27ed90e6b",
+      "to": "6aa4d5b78c6341a27ed90e70",
+      "count": 1,
+      "avg_duration": 31,
+      "travel_mode": "car"
+    },
+    {
+      "id": "6aa4d5b78c6341a27ed90ed1",
+      "from": "6aa4d5b78c6341a27ed90e6b",
+      "to": "6aa4d5b78c6341a27ed90e75",
+      "count": 2,
+      "avg_duration": 31,
+      "travel_mode": "car"
+    },
+    {
+      "id": "6aa4d5b78c6341a27ed90ebf",
+      "from": "6aa4d5b78c6341a27ed90e6b",
+      "to": "6aa4d5b78c6341a27ed90e76",
+      "count": 2,
+      "avg_duration": 33,
+      "travel_mode": "car"
+    },
+    {
+      "id": "6aa4d5b78c6341a27ed90f2b",
+      "from": "6aa4d5b78c6341a27ed90e6c",
+      "to": "6aa4d5b78c6341a27ed90e70",
+      "count": 1,
+      "avg_duration": 31,
+      "travel_mode": "car"
+    },
+    {
+      "id": "6aa4d5b78c6341a27ed90ed2",
+      "from": "6aa4d5b78c6341a27ed90e6c",
+      "to": "6aa4d5b78c6341a27ed90e75",
+      "count": 2,
+      "avg_duration": 31,
+      "travel_mode": "car"
+    },
+    {
+      "id": "6aa4d5b78c6341a27ed90ec1",
+      "from": "6aa4d5b78c6341a27ed90e6c",
+      "to": "6aa4d5b78c6341a27ed90e76",
+      "count": 2,
+      "avg_duration": 33,
+      "travel_mode": "car"
+    },
+    {
+      "id": "6aa4d5b78c6341a27ed90f18",
+      "from": "6aa4d5b78c6341a27ed90e6d",
+      "to": "6aa4d5b78c6341a27ed90e70",
+      "count": 1,
+      "avg_duration": 31,
+      "travel_mode": "car"
+    },
+    {
+      "id": "6aa4d5b78c6341a27ed90f0d",
+      "from": "6aa4d5b78c6341a27ed90e6d",
+      "to": "6aa4d5b78c6341a27ed90e71",
+      "count": 1,
+      "avg_duration": 33,
+      "travel_mode": "car"
+    },
+    {
+      "id": "6aa4d5b78c6341a27ed90ef9",
+      "from": "6aa4d5b78c6341a27ed90e6d",
+      "to": "6aa4d5b78c6341a27ed90e72",
+      "count": 1,
+      "avg_duration": 35,
+      "travel_mode": "car"
+    },
+    {
+      "id": "6aa4d5b78c6341a27ed90ed3",
+      "from": "6aa4d5b78c6341a27ed90e6d",
+      "to": "6aa4d5b78c6341a27ed90e75",
+      "count": 2,
+      "avg_duration": 31,
+      "travel_mode": "car"
+    },
+    {
+      "id": "6aa4d5b78c6341a27ed90ec3",
+      "from": "6aa4d5b78c6341a27ed90e6d",
+      "to": "6aa4d5b78c6341a27ed90e76",
+      "count": 2,
+      "avg_duration": 33,
+      "travel_mode": "car"
+    },
+    {
+      "id": "6aa4d5b78c6341a27ed90f1b",
+      "from": "6aa4d5b78c6341a27ed90e6e",
+      "to": "6aa4d5b78c6341a27ed90e70",
+      "count": 1,
+      "avg_duration": 31,
+      "travel_mode": "car"
+    },
+    {
+      "id": "6aa4d5b78c6341a27ed90ed4",
+      "from": "6aa4d5b78c6341a27ed90e6e",
+      "to": "6aa4d5b78c6341a27ed90e75",
+      "count": 2,
+      "avg_duration": 31,
+      "travel_mode": "car"
+    },
+    {
+      "id": "6aa4d5b78c6341a27ed90ec5",
+      "from": "6aa4d5b78c6341a27ed90e6e",
+      "to": "6aa4d5b78c6341a27ed90e76",
+      "count": 2,
+      "avg_duration": 33,
+      "travel_mode": "car"
+    },
+    {
+      "id": "6aa4d5b78c6341a27ed90f1d",
+      "from": "6aa4d5b78c6341a27ed90e6f",
+      "to": "6aa4d5b78c6341a27ed90e70",
+      "count": 1,
+      "avg_duration": 31,
+      "travel_mode": "car"
+    },
+    {
+      "id": "6aa4d5b78c6341a27ed90ed5",
+      "from": "6aa4d5b78c6341a27ed90e6f",
+      "to": "6aa4d5b78c6341a27ed90e75",
+      "count": 2,
+      "avg_duration": 31,
+      "travel_mode": "car"
+    },
+    {
+      "id": "6aa4d5b78c6341a27ed90ec7",
+      "from": "6aa4d5b78c6341a27ed90e6f",
+      "to": "6aa4d5b78c6341a27ed90e76",
+      "count": 2,
+      "avg_duration": 33,
+      "travel_mode": "car"
+    },
+    {
+      "id": "6aa4d5b78c6341a27ed90f31",
+      "from": "6aa4d5b78c6341a27ed90e70",
+      "to": "6aa4d5b78c6341a27ed90e7c",
+      "count": 1,
+      "avg_duration": 34,
+      "travel_mode": "uber"
+    },
+    {
+      "id": "6aa4d5b78c6341a27ed90f1e",
+      "from": "6aa4d5b78c6341a27ed90e70",
+      "to": "6aa4d5b78c6341a27ed90e7d",
+      "count": 1,
+      "avg_duration": 36,
+      "travel_mode": "uber"
+    },
+    {
+      "id": "6aa4d5b78c6341a27ed90ee7",
+      "from": "6aa4d5b78c6341a27ed90e70",
+      "to": "6aa4d5b78c6341a27ed90e80",
+      "count": 1,
+      "avg_duration": 19,
+      "travel_mode": "uber"
+    },
+    {
+      "id": "6aa4d5b78c6341a27ed90f6a",
+      "from": "6aa4d5b78c6341a27ed90e70",
+      "to": "6aa4d5b78c6341a27ed90e81",
+      "count": 1,
+      "avg_duration": 49,
+      "travel_mode": "uber"
+    },
+    {
+      "id": "6aa4d5b78c6341a27ed90f32",
+      "from": "6aa4d5b78c6341a27ed90e71",
+      "to": "6aa4d5b78c6341a27ed90e7c",
+      "count": 1,
+      "avg_duration": 34,
+      "travel_mode": "uber"
+    },
+    {
+      "id": "6aa4d5b78c6341a27ed90f20",
+      "from": "6aa4d5b78c6341a27ed90e71",
+      "to": "6aa4d5b78c6341a27ed90e7d",
+      "count": 1,
+      "avg_duration": 36,
+      "travel_mode": "uber"
+    },
+    {
+      "id": "6aa4d5b78c6341a27ed90ee9",
+      "from": "6aa4d5b78c6341a27ed90e71",
+      "to": "6aa4d5b78c6341a27ed90e80",
+      "count": 1,
+      "avg_duration": 19,
+      "travel_mode": "uber"
+    },
+    {
+      "id": "6aa4d5b78c6341a27ed90f6c",
+      "from": "6aa4d5b78c6341a27ed90e71",
+      "to": "6aa4d5b78c6341a27ed90e81",
+      "count": 1,
+      "avg_duration": 49,
+      "travel_mode": "uber"
+    },
+    {
+      "id": "6aa4d5b78c6341a27ed90f33",
+      "from": "6aa4d5b78c6341a27ed90e72",
+      "to": "6aa4d5b78c6341a27ed90e7c",
+      "count": 1,
+      "avg_duration": 34,
+      "travel_mode": "uber"
+    },
+    {
+      "id": "6aa4d5b78c6341a27ed90f22",
+      "from": "6aa4d5b78c6341a27ed90e72",
+      "to": "6aa4d5b78c6341a27ed90e7d",
+      "count": 1,
+      "avg_duration": 36,
+      "travel_mode": "uber"
+    },
+    {
+      "id": "6aa4d5b78c6341a27ed90eeb",
+      "from": "6aa4d5b78c6341a27ed90e72",
+      "to": "6aa4d5b78c6341a27ed90e80",
+      "count": 1,
+      "avg_duration": 19,
+      "travel_mode": "uber"
+    },
+    {
+      "id": "6aa4d5b78c6341a27ed90f6e",
+      "from": "6aa4d5b78c6341a27ed90e72",
+      "to": "6aa4d5b78c6341a27ed90e81",
+      "count": 1,
+      "avg_duration": 49,
+      "travel_mode": "uber"
+    },
+    {
+      "id": "6aa4d5b78c6341a27ed90f59",
+      "from": "6aa4d5b78c6341a27ed90e73",
+      "to": "6aa4d5b78c6341a27ed90e7a",
+      "count": 1,
+      "avg_duration": 13,
+      "travel_mode": "uber"
+    },
+    {
+      "id": "6aa4d5b78c6341a27ed90f34",
+      "from": "6aa4d5b78c6341a27ed90e73",
+      "to": "6aa4d5b78c6341a27ed90e7c",
+      "count": 1,
+      "avg_duration": 34,
+      "travel_mode": "uber"
+    },
+    {
+      "id": "6aa4d5b78c6341a27ed90f24",
+      "from": "6aa4d5b78c6341a27ed90e73",
+      "to": "6aa4d5b78c6341a27ed90e7d",
+      "count": 1,
+      "avg_duration": 36,
+      "travel_mode": "uber"
+    },
+    {
+      "id": "6aa4d5b78c6341a27ed90ed8",
+      "from": "6aa4d5b78c6341a27ed90e73",
+      "to": "6aa4d5b78c6341a27ed90e80",
+      "count": 1,
+      "avg_duration": 19,
+      "travel_mode": "uber"
+    },
+    {
+      "id": "6aa4d5b78c6341a27ed90ecd",
+      "from": "6aa4d5b78c6341a27ed90e73",
+      "to": "6aa4d5b78c6341a27ed90e81",
+      "count": 2,
+      "avg_duration": 35,
+      "travel_mode": "uber"
+    },
+    {
+      "id": "6aa4d5b78c6341a27ed90eb9",
+      "from": "6aa4d5b78c6341a27ed90e73",
+      "to": "6aa4d5b78c6341a27ed90e82",
+      "count": 2,
+      "avg_duration": 17,
+      "travel_mode": "uber"
+    },
+    {
+      "id": "6aa4d5b78c6341a27ed90f35",
+      "from": "6aa4d5b78c6341a27ed90e74",
+      "to": "6aa4d5b78c6341a27ed90e7c",
+      "count": 1,
+      "avg_duration": 34,
+      "travel_mode": "uber"
+    },
+    {
+      "id": "6aa4d5b78c6341a27ed90f26",
+      "from": "6aa4d5b78c6341a27ed90e74",
+      "to": "6aa4d5b78c6341a27ed90e7d",
+      "count": 1,
+      "avg_duration": 36,
+      "travel_mode": "uber"
+    },
+    {
+      "id": "6aa4d5b78c6341a27ed90edb",
+      "from": "6aa4d5b78c6341a27ed90e74",
+      "to": "6aa4d5b78c6341a27ed90e80",
+      "count": 1,
+      "avg_duration": 19,
+      "travel_mode": "uber"
+    },
+    {
+      "id": "6aa4d5b78c6341a27ed90f5e",
+      "from": "6aa4d5b78c6341a27ed90e74",
+      "to": "6aa4d5b78c6341a27ed90e81",
+      "count": 1,
+      "avg_duration": 49,
+      "travel_mode": "uber"
+    },
+    {
+      "id": "6aa4d5b78c6341a27ed90f36",
+      "from": "6aa4d5b78c6341a27ed90e75",
+      "to": "6aa4d5b78c6341a27ed90e7c",
+      "count": 1,
+      "avg_duration": 34,
+      "travel_mode": "uber"
+    },
+    {
+      "id": "6aa4d5b78c6341a27ed90f28",
+      "from": "6aa4d5b78c6341a27ed90e75",
+      "to": "6aa4d5b78c6341a27ed90e7d",
+      "count": 1,
+      "avg_duration": 36,
+      "travel_mode": "uber"
+    },
+    {
+      "id": "6aa4d5b78c6341a27ed90edd",
+      "from": "6aa4d5b78c6341a27ed90e75",
+      "to": "6aa4d5b78c6341a27ed90e80",
+      "count": 1,
+      "avg_duration": 19,
+      "travel_mode": "uber"
+    },
+    {
+      "id": "6aa4d5b78c6341a27ed90f60",
+      "from": "6aa4d5b78c6341a27ed90e75",
+      "to": "6aa4d5b78c6341a27ed90e81",
+      "count": 1,
+      "avg_duration": 49,
+      "travel_mode": "uber"
+    },
+    {
+      "id": "6aa4d5b78c6341a27ed90f37",
+      "from": "6aa4d5b78c6341a27ed90e76",
+      "to": "6aa4d5b78c6341a27ed90e7c",
+      "count": 1,
+      "avg_duration": 34,
+      "travel_mode": "uber"
+    },
+    {
+      "id": "6aa4d5b78c6341a27ed90f2a",
+      "from": "6aa4d5b78c6341a27ed90e76",
+      "to": "6aa4d5b78c6341a27ed90e7d",
+      "count": 1,
+      "avg_duration": 36,
+      "travel_mode": "uber"
+    },
+    {
+      "id": "6aa4d5b78c6341a27ed90edf",
+      "from": "6aa4d5b78c6341a27ed90e76",
+      "to": "6aa4d5b78c6341a27ed90e80",
+      "count": 1,
+      "avg_duration": 19,
+      "travel_mode": "uber"
+    },
+    {
+      "id": "6aa4d5b78c6341a27ed90f62",
+      "from": "6aa4d5b78c6341a27ed90e76",
+      "to": "6aa4d5b78c6341a27ed90e81",
+      "count": 1,
+      "avg_duration": 49,
+      "travel_mode": "uber"
+    },
+    {
+      "id": "6aa4d5b78c6341a27ed90f38",
+      "from": "6aa4d5b78c6341a27ed90e77",
+      "to": "6aa4d5b78c6341a27ed90e7c",
+      "count": 1,
+      "avg_duration": 34,
+      "travel_mode": "uber"
+    },
+    {
+      "id": "6aa4d5b78c6341a27ed90f2c",
+      "from": "6aa4d5b78c6341a27ed90e77",
+      "to": "6aa4d5b78c6341a27ed90e7d",
+      "count": 1,
+      "avg_duration": 36,
+      "travel_mode": "uber"
+    },
+    {
+      "id": "6aa4d5b78c6341a27ed90ee1",
+      "from": "6aa4d5b78c6341a27ed90e77",
+      "to": "6aa4d5b78c6341a27ed90e80",
+      "count": 1,
+      "avg_duration": 19,
+      "travel_mode": "uber"
+    },
+    {
+      "id": "6aa4d5b78c6341a27ed90f64",
+      "from": "6aa4d5b78c6341a27ed90e77",
+      "to": "6aa4d5b78c6341a27ed90e81",
+      "count": 1,
+      "avg_duration": 49,
+      "travel_mode": "uber"
+    },
+    {
+      "id": "6aa4d5b78c6341a27ed90f2d",
+      "from": "6aa4d5b78c6341a27ed90e78",
+      "to": "6aa4d5b78c6341a27ed90e7c",
+      "count": 1,
+      "avg_duration": 34,
+      "travel_mode": "uber"
+    },
+    {
+      "id": "6aa4d5b78c6341a27ed90f19",
+      "from": "6aa4d5b78c6341a27ed90e78",
+      "to": "6aa4d5b78c6341a27ed90e7d",
+      "count": 1,
+      "avg_duration": 36,
+      "travel_mode": "uber"
+    },
+    {
+      "id": "6aa4d5b78c6341a27ed90f0e",
+      "from": "6aa4d5b78c6341a27ed90e78",
+      "to": "6aa4d5b78c6341a27ed90e7e",
+      "count": 1,
+      "avg_duration": 38,
+      "travel_mode": "uber"
+    },
+    {
+      "id": "6aa4d5b78c6341a27ed90ee3",
+      "from": "6aa4d5b78c6341a27ed90e78",
+      "to": "6aa4d5b78c6341a27ed90e80",
+      "count": 1,
+      "avg_duration": 19,
+      "travel_mode": "uber"
+    },
+    {
+      "id": "6aa4d5b78c6341a27ed90f66",
+      "from": "6aa4d5b78c6341a27ed90e78",
+      "to": "6aa4d5b78c6341a27ed90e81",
+      "count": 1,
+      "avg_duration": 49,
+      "travel_mode": "uber"
+    },
+    {
+      "id": "6aa4d5b78c6341a27ed90f30",
+      "from": "6aa4d5b78c6341a27ed90e79",
+      "to": "6aa4d5b78c6341a27ed90e7c",
+      "count": 1,
+      "avg_duration": 34,
+      "travel_mode": "uber"
+    },
+    {
+      "id": "6aa4d5b78c6341a27ed90f1c",
+      "from": "6aa4d5b78c6341a27ed90e79",
+      "to": "6aa4d5b78c6341a27ed90e7d",
+      "count": 1,
+      "avg_duration": 36,
+      "travel_mode": "uber"
+    },
+    {
+      "id": "6aa4d5b78c6341a27ed90ee5",
+      "from": "6aa4d5b78c6341a27ed90e79",
+      "to": "6aa4d5b78c6341a27ed90e80",
+      "count": 1,
+      "avg_duration": 19,
+      "travel_mode": "uber"
+    },
+    {
+      "id": "6aa4d5b78c6341a27ed90f68",
+      "from": "6aa4d5b78c6341a27ed90e79",
+      "to": "6aa4d5b78c6341a27ed90e81",
+      "count": 1,
+      "avg_duration": 49,
+      "travel_mode": "uber"
+    },
+    {
+      "id": "6aa4d5b78c6341a27ed90f1a",
+      "from": "6aa4d5b78c6341a27ed90e7a",
+      "to": "6aa4d5b78c6341a27ed90e4c",
+      "count": 1,
+      "avg_duration": 41,
+      "travel_mode": "train"
+    },
+    {
+      "id": "6aa4d5b78c6341a27ed90f65",
+      "from": "6aa4d5b78c6341a27ed90e7a",
+      "to": "6aa4d5b78c6341a27ed90e50",
+      "count": 1,
+      "avg_duration": 14,
+      "travel_mode": "train"
+    },
+    {
+      "id": "6aa4d5b78c6341a27ed90ef3",
+      "from": "6aa4d5b78c6341a27ed90e7a",
+      "to": "6aa4d5b78c6341a27ed90e53",
+      "count": 1,
+      "avg_duration": 22,
+      "travel_mode": "train"
+    },
+    {
+      "id": "6aa4d5b78c6341a27ed90ee4",
+      "from": "6aa4d5b78c6341a27ed90e7a",
+      "to": "6aa4d5b78c6341a27ed90e54",
+      "count": 1,
+      "avg_duration": 24,
+      "travel_mode": "train"
+    },
+    {
+      "id": "6aa4d5b78c6341a27ed90f39",
+      "from": "6aa4d5b78c6341a27ed90e7a",
+      "to": "6aa4d5b78c6341a27ed90e58",
+      "count": 2,
+      "avg_duration": 37,
+      "travel_mode": "train"
+    },
+    {
+      "id": "6aa4d5b78c6341a27ed90f2e",
+      "from": "6aa4d5b78c6341a27ed90e7a",
+      "to": "6aa4d5b78c6341a27ed90e59",
+      "count": 1,
+      "avg_duration": 39,
+      "travel_mode": "train"
+    },
+    {
+      "id": "6aa4d5b78c6341a27ed90f67",
+      "from": "6aa4d5b78c6341a27ed90e7b",
+      "to": "6aa4d5b78c6341a27ed90e50",
+      "count": 1,
+      "avg_duration": 14,
+      "travel_mode": "train"
+    },
+    {
+      "id": "6aa4d5b78c6341a27ed90ef4",
+      "from": "6aa4d5b78c6341a27ed90e7b",
+      "to": "6aa4d5b78c6341a27ed90e53",
+      "count": 1,
+      "avg_duration": 22,
+      "travel_mode": "train"
+    },
+    {
+      "id": "6aa4d5b78c6341a27ed90ee6",
+      "from": "6aa4d5b78c6341a27ed90e7b",
+      "to": "6aa4d5b78c6341a27ed90e54",
+      "count": 1,
+      "avg_duration": 24,
+      "travel_mode": "train"
+    },
+    {
+      "id": "6aa4d5b78c6341a27ed90f3c",
+      "from": "6aa4d5b78c6341a27ed90e7b",
+      "to": "6aa4d5b78c6341a27ed90e58",
+      "count": 1,
+      "avg_duration": 37,
+      "travel_mode": "train"
+    },
+    {
+      "id": "6aa4d5b78c6341a27ed90f69",
+      "from": "6aa4d5b78c6341a27ed90e7c",
+      "to": "6aa4d5b78c6341a27ed90e50",
+      "count": 1,
+      "avg_duration": 14,
+      "travel_mode": "train"
+    },
+    {
+      "id": "6aa4d5b78c6341a27ed90ef5",
+      "from": "6aa4d5b78c6341a27ed90e7c",
+      "to": "6aa4d5b78c6341a27ed90e53",
+      "count": 1,
+      "avg_duration": 22,
+      "travel_mode": "train"
+    },
+    {
+      "id": "6aa4d5b78c6341a27ed90ee8",
+      "from": "6aa4d5b78c6341a27ed90e7c",
+      "to": "6aa4d5b78c6341a27ed90e54",
+      "count": 1,
+      "avg_duration": 24,
+      "travel_mode": "train"
+    },
+    {
+      "id": "6aa4d5b78c6341a27ed90f3e",
+      "from": "6aa4d5b78c6341a27ed90e7c",
+      "to": "6aa4d5b78c6341a27ed90e58",
+      "count": 1,
+      "avg_duration": 37,
+      "travel_mode": "train"
+    },
+    {
+      "id": "6aa4d5b78c6341a27ed90f6b",
+      "from": "6aa4d5b78c6341a27ed90e7d",
+      "to": "6aa4d5b78c6341a27ed90e50",
+      "count": 1,
+      "avg_duration": 14,
+      "travel_mode": "train"
+    },
+    {
+      "id": "6aa4d5b78c6341a27ed90ef6",
+      "from": "6aa4d5b78c6341a27ed90e7d",
+      "to": "6aa4d5b78c6341a27ed90e53",
+      "count": 1,
+      "avg_duration": 22,
+      "travel_mode": "train"
+    },
+    {
+      "id": "6aa4d5b78c6341a27ed90eea",
+      "from": "6aa4d5b78c6341a27ed90e7d",
+      "to": "6aa4d5b78c6341a27ed90e54",
+      "count": 1,
+      "avg_duration": 24,
+      "travel_mode": "train"
+    },
+    {
+      "id": "6aa4d5b78c6341a27ed90f40",
+      "from": "6aa4d5b78c6341a27ed90e7d",
+      "to": "6aa4d5b78c6341a27ed90e58",
+      "count": 1,
+      "avg_duration": 37,
+      "travel_mode": "train"
+    },
+    {
+      "id": "6aa4d5b78c6341a27ed90f6d",
+      "from": "6aa4d5b78c6341a27ed90e7e",
+      "to": "6aa4d5b78c6341a27ed90e50",
+      "count": 1,
+      "avg_duration": 14,
+      "travel_mode": "train"
+    },
+    {
+      "id": "6aa4d5b78c6341a27ed90eec",
+      "from": "6aa4d5b78c6341a27ed90e7e",
+      "to": "6aa4d5b78c6341a27ed90e53",
+      "count": 2,
+      "avg_duration": 22,
+      "travel_mode": "train"
+    },
+    {
+      "id": "6aa4d5b78c6341a27ed90ed9",
+      "from": "6aa4d5b78c6341a27ed90e7e",
+      "to": "6aa4d5b78c6341a27ed90e54",
+      "count": 2,
+      "avg_duration": 24,
+      "travel_mode": "train"
+    },
+    {
+      "id": "6aa4d5b78c6341a27ed90ece",
+      "from": "6aa4d5b78c6341a27ed90e7e",
+      "to": "6aa4d5b78c6341a27ed90e55",
+      "count": 1,
+      "avg_duration": 26,
+      "travel_mode": "train"
+    },
+    {
+      "id": "6aa4d5b78c6341a27ed90f42",
+      "from": "6aa4d5b78c6341a27ed90e7e",
+      "to": "6aa4d5b78c6341a27ed90e58",
+      "count": 1,
+      "avg_duration": 37,
+      "travel_mode": "train"
+    },
+    {
+      "id": "6aa4d5b78c6341a27ed90f5c",
+      "from": "6aa4d5b78c6341a27ed90e7f",
+      "to": "6aa4d5b78c6341a27ed90e50",
+      "count": 2,
+      "avg_duration": 14,
+      "travel_mode": "train"
+    },
+    {
+      "id": "6aa4d5b78c6341a27ed90f5b",
+      "from": "6aa4d5b78c6341a27ed90e7f",
+      "to": "6aa4d5b78c6341a27ed90e51",
+      "count": 1,
+      "avg_duration": 16,
+      "travel_mode": "train"
+    },
+    {
+      "id": "6aa4d5b78c6341a27ed90eef",
+      "from": "6aa4d5b78c6341a27ed90e7f",
+      "to": "6aa4d5b78c6341a27ed90e53",
+      "count": 1,
+      "avg_duration": 22,
+      "travel_mode": "train"
+    },
+    {
+      "id": "6aa4d5b78c6341a27ed90edc",
+      "from": "6aa4d5b78c6341a27ed90e7f",
+      "to": "6aa4d5b78c6341a27ed90e54",
+      "count": 1,
+      "avg_duration": 24,
+      "travel_mode": "train"
+    },
+    {
+      "id": "6aa4d5b78c6341a27ed90f44",
+      "from": "6aa4d5b78c6341a27ed90e7f",
+      "to": "6aa4d5b78c6341a27ed90e58",
+      "count": 1,
+      "avg_duration": 37,
+      "travel_mode": "train"
+    },
+    {
+      "id": "6aa4d5b78c6341a27ed90f5f",
+      "from": "6aa4d5b78c6341a27ed90e80",
+      "to": "6aa4d5b78c6341a27ed90e50",
+      "count": 1,
+      "avg_duration": 14,
+      "travel_mode": "train"
+    },
+    {
+      "id": "6aa4d5b78c6341a27ed90ef0",
+      "from": "6aa4d5b78c6341a27ed90e80",
+      "to": "6aa4d5b78c6341a27ed90e53",
+      "count": 1,
+      "avg_duration": 22,
+      "travel_mode": "train"
+    },
+    {
+      "id": "6aa4d5b78c6341a27ed90ede",
+      "from": "6aa4d5b78c6341a27ed90e80",
+      "to": "6aa4d5b78c6341a27ed90e54",
+      "count": 1,
+      "avg_duration": 24,
+      "travel_mode": "train"
+    },
+    {
+      "id": "6aa4d5b78c6341a27ed90f46",
+      "from": "6aa4d5b78c6341a27ed90e80",
+      "to": "6aa4d5b78c6341a27ed90e58",
+      "count": 1,
+      "avg_duration": 37,
+      "travel_mode": "train"
+    },
+    {
+      "id": "6aa4d5b78c6341a27ed90f61",
+      "from": "6aa4d5b78c6341a27ed90e81",
+      "to": "6aa4d5b78c6341a27ed90e50",
+      "count": 1,
+      "avg_duration": 14,
+      "travel_mode": "train"
+    },
+    {
+      "id": "6aa4d5b78c6341a27ed90ef1",
+      "from": "6aa4d5b78c6341a27ed90e81",
+      "to": "6aa4d5b78c6341a27ed90e53",
+      "count": 1,
+      "avg_duration": 22,
+      "travel_mode": "train"
+    },
+    {
+      "id": "6aa4d5b78c6341a27ed90ee0",
+      "from": "6aa4d5b78c6341a27ed90e81",
+      "to": "6aa4d5b78c6341a27ed90e54",
+      "count": 1,
+      "avg_duration": 24,
+      "travel_mode": "train"
+    },
+    {
+      "id": "6aa4d5b78c6341a27ed90f48",
+      "from": "6aa4d5b78c6341a27ed90e81",
+      "to": "6aa4d5b78c6341a27ed90e58",
+      "count": 1,
+      "avg_duration": 37,
+      "travel_mode": "train"
+    },
+    {
+      "id": "6aa4d5b78c6341a27ed90f63",
+      "from": "6aa4d5b78c6341a27ed90e82",
+      "to": "6aa4d5b78c6341a27ed90e50",
+      "count": 1,
+      "avg_duration": 14,
+      "travel_mode": "train"
+    },
+    {
+      "id": "6aa4d5b78c6341a27ed90ef2",
+      "from": "6aa4d5b78c6341a27ed90e82",
+      "to": "6aa4d5b78c6341a27ed90e53",
+      "count": 1,
+      "avg_duration": 22,
+      "travel_mode": "train"
+    },
+    {
+      "id": "6aa4d5b78c6341a27ed90ee2",
+      "from": "6aa4d5b78c6341a27ed90e82",
+      "to": "6aa4d5b78c6341a27ed90e54",
+      "count": 1,
+      "avg_duration": 24,
+      "travel_mode": "train"
+    },
+    {
+      "id": "6aa4d5b78c6341a27ed90f4a",
+      "from": "6aa4d5b78c6341a27ed90e82",
+      "to": "6aa4d5b78c6341a27ed90e58",
+      "count": 1,
+      "avg_duration": 37,
+      "travel_mode": "train"
+    }
+  ],
+  "heatpoints": [
+    {
+      "lat": 40.42522401667519,
+      "lng": -79.97188586389433,
+      "weight": 1.2
+    },
+    {
+      "lat": 40.43420751596132,
+      "lng": -79.9204547884076,
+      "weight": 4
+    },
+    {
+      "lat": 40.43537044535259,
+      "lng": -79.92508954145609,
+      "weight": 4
+    },
+    {
+      "lat": 40.43573608025189,
+      "lng": -79.92537767767567,
+      "weight": 15.999999999999996
+    },
+    {
+      "lat": 40.435782310982404,
+      "lng": -79.919347496856,
+      "weight": 6.4
+    },
+    {
+      "lat": 40.43658332900895,
+      "lng": -79.9195339552441,
+      "weight": 27.999999999999993
+    },
+    {
+      "lat": 40.43683334883773,
+      "lng": -79.92607067231847,
+      "weight": 5
+    },
+    {
+      "lat": 40.43784303896133,
+      "lng": -79.91984915863333,
+      "weight": 27.999999999999993
+    },
+    {
+      "lat": 40.437994366623464,
+      "lng": -79.95685139679867,
+      "weight": 13.999999999999998
+    },
+    {
+      "lat": 40.43840758154054,
+      "lng": -79.95833504779033,
+      "weight": 2
+    },
+    {
+      "lat": 40.43952886689983,
+      "lng": -79.95757452163524,
+      "weight": 13.999999999999998
+    },
+    {
+      "lat": 40.43960470757816,
+      "lng": -79.9590954836428,
+      "weight": 3
+    },
+    {
+      "lat": 40.4396771375253,
+      "lng": -79.95293430620453,
+      "weight": 3.2
+    },
+    {
+      "lat": 40.43972985844189,
+      "lng": -79.9192140863265,
+      "weight": 5.2
+    },
+    {
+      "lat": 40.440183384663335,
+      "lng": -79.92321298164462,
+      "weight": 5.2
+    },
+    {
+      "lat": 40.44031328212578,
+      "lng": -79.95268563731891,
+      "weight": 4
+    },
+    {
+      "lat": 40.440886848040336,
+      "lng": -79.91960553666262,
+      "weight": 8
+    },
+    {
+      "lat": 40.441795914596426,
+      "lng": -79.95836389220479,
+      "weight": 4.2
+    },
+    {
+      "lat": 40.442424538596065,
+      "lng": -79.95486406588705,
+      "weight": 3
+    },
+    {
+      "lat": 40.44249481807899,
+      "lng": -79.95441343935467,
+      "weight": 14.999999999999996
+    },
+    {
+      "lat": 40.4425,
+      "lng": -79.9435,
+      "weight": 7.2
+    },
+    {
+      "lat": 40.44444540287626,
+      "lng": -79.95471887187725,
+      "weight": 7.2
+    },
+    {
+      "lat": 40.44495519311021,
+      "lng": -79.9541002464973,
+      "weight": 14.999999999999996
+    },
+    {
+      "lat": 40.445458651516994,
+      "lng": -79.95914118913808,
+      "weight": 4
+    },
+    {
+      "lat": 40.44573182858238,
+      "lng": -79.95321226249081,
+      "weight": 3
+    },
+    {
+      "lat": 40.449088008431445,
+      "lng": -79.93130018954562,
+      "weight": 3
+    },
+    {
+      "lat": 40.44910676985668,
+      "lng": -79.9335756827697,
+      "weight": 15.999999999999996
+    },
+    {
+      "lat": 40.4491529576175,
+      "lng": -79.93421509612169,
+      "weight": 5
+    },
+    {
+      "lat": 40.449624230822074,
+      "lng": -79.93641665798353,
+      "weight": 2
+    },
+    {
+      "lat": 40.4501,
+      "lng": -79.9585,
+      "weight": 1.2
+    },
+    {
+      "lat": 40.450427750515665,
+      "lng": -79.93578437141058,
+      "weight": 5
+    },
+    {
+      "lat": 40.45068922249959,
+      "lng": -79.93795784894571,
+      "weight": 17.2
+    },
+    {
+      "lat": 40.45137841493446,
+      "lng": -79.97952294543747,
+      "weight": 1.2
+    },
+    {
+      "lat": 40.45242125502278,
+      "lng": -79.93509194212768,
+      "weight": 4.2
+    },
+    {
+      "lat": 40.45502328220376,
+      "lng": -79.93159894032358,
+      "weight": 4.2
+    },
+    {
+      "lat": 40.45506755613334,
+      "lng": -79.93325985999704,
+      "weight": 2
+    },
+    {
+      "lat": 40.45569767284443,
+      "lng": -79.93288485283882,
+      "weight": 17.199999999999996
+    },
+    {
+      "lat": 40.455764090838045,
+      "lng": -79.93124394935607,
+      "weight": 16.999999999999996
+    },
+    {
+      "lat": 40.45618620648722,
+      "lng": -79.93200777977515,
+      "weight": 4
+    },
+    {
+      "lat": 40.45868733414268,
+      "lng": -79.92627373090376,
+      "weight": 17.199999999999996
+    },
+    {
+      "lat": 40.46037724355261,
+      "lng": -79.95033292519491,
+      "weight": 6.2
+    },
+    {
+      "lat": 40.460726433501456,
+      "lng": -79.9207461418504,
+      "weight": 8.2
+    },
+    {
+      "lat": 40.46078830704004,
+      "lng": -79.92416347090646,
+      "weight": 15.999999999999996
+    },
+    {
+      "lat": 40.4609127503403,
+      "lng": -79.94624321100602,
+      "weight": 17.999999999999996
+    },
+    {
+      "lat": 40.46155906763625,
+      "lng": -79.950917954048,
+      "weight": 5
+    },
+    {
+      "lat": 40.46169947016874,
+      "lng": -79.92257092746098,
+      "weight": 8.2
+    },
+    {
+      "lat": 40.46215853711336,
+      "lng": -79.94885759626614,
+      "weight": 16.999999999999996
+    },
+    {
+      "lat": 40.46244831689847,
+      "lng": -79.94553905979637,
+      "weight": 7
+    },
+    {
+      "lat": 40.46294849910405,
+      "lng": -79.92151164270844,
+      "weight": 4
+    },
+    {
+      "lat": 40.46349874410754,
+      "lng": -79.94919416281499,
+      "weight": 7
+    },
+    {
+      "lat": 40.46403508943654,
+      "lng": -79.92559028791025,
+      "weight": 15.999999999999996
+    },
+    {
+      "lat": 40.46422123947572,
+      "lng": -79.94888853999126,
+      "weight": 5
+    },
+    {
+      "lat": 40.46428723220507,
+      "lng": -79.9243642973514,
+      "weight": 6.4
+    },
+    {
+      "lat": 40.464801793361225,
+      "lng": -79.92427106354053,
+      "weight": 6
+    },
+    {
+      "lat": 40.46503487928983,
+      "lng": -79.94985958742356,
+      "weight": 6.2
+    },
+    {
+      "lat": 40.46512666323803,
+      "lng": -79.92653074858306,
+      "weight": 15.999999999999996
+    },
+    {
+      "lat": 40.46577139972212,
+      "lng": -79.94497972740385,
+      "weight": 28.99999999999999
+    },
+    {
+      "lat": 40.46661177341493,
+      "lng": -79.94585548630482,
+      "weight": 7.4
+    }
+  ],
+  "neighborhoods": {
+    "Oakland": {
+      "pct": 100,
+      "discovered": 14,
+      "total": 14
+    },
+    "Shadyside": {
+      "pct": 100,
+      "discovered": 12,
+      "total": 12
+    },
+    "Bloomfield": {
+      "pct": 91,
+      "discovered": 10,
+      "total": 11
+    },
+    "Squirrel Hill": {
+      "pct": 83,
+      "discovered": 10,
+      "total": 12
+    },
+    "East Liberty": {
+      "pct": 82,
+      "discovered": 9,
+      "total": 11
+    },
+    "Strip District": {
+      "pct": 80,
+      "discovered": 8,
+      "total": 10
+    },
+    "South Side": {
+      "pct": 67,
+      "discovered": 8,
+      "total": 12
+    },
+    "Downtown": {
+      "pct": 67,
+      "discovered": 8,
+      "total": 12
+    },
+    "North Side": {
+      "pct": 60,
+      "discovered": 6,
+      "total": 10
+    },
+    "Point Breeze": {
+      "pct": 56,
+      "discovered": 5,
+      "total": 9
+    },
+    "Homestead": {
+      "pct": 50,
+      "discovered": 4,
+      "total": 8
+    },
+    "Lawrenceville": {
+      "pct": 9,
+      "discovered": 1,
+      "total": 11
+    }
+  }
+}

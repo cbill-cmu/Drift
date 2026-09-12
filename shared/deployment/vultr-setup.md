@@ -1,6 +1,14 @@
-# Vultr + PM2 deployment (Person 3 — later hours)
+# Vultr + PM2 deployment (Person 4 — after local E2E)
 
-Do this after the critical path works locally. Database stays on **MongoDB Atlas**.
+Do this only after the critical path works locally (see `PERSON4_RUNBOOK.md`). Database stays on **MongoDB Atlas**.
+
+## Status
+
+- [ ] VPS provisioned
+- [ ] Backend under PM2
+- [ ] Frontend built and hosted
+- [ ] Auth0 production URLs (Person 3)
+- [ ] Production E2E pass
 
 ## Checklist
 

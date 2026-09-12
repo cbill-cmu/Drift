@@ -9,7 +9,8 @@
     "generate:users": "node generate-users.js",
     "generate:nodes": "node generate-nodes.js",
     "generate:trips": "node generate-trips.js",
-    "load": "node load-to-db.js"
+    "load": "node load-to-db.js",
+    "verify": "node verify-seed.js"
   },
   "dependencies": {
     "dotenv": "^16.4.5",

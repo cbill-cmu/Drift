@@ -1,0 +1,13 @@
+{
+  "success": true,
+  "actor_name": "Fabio",
+  "new_node": null,
+  "new_edge": {
+    "id": "demo-edge",
+    "from": "CMU",
+    "to": "Lawrenceville",
+    "duration_min": 31
+  },
+  "neighborhood_pct_before": 9,
+  "neighborhood_pct_after": 18
+}

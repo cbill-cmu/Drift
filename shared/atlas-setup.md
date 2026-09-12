@@ -1,8 +1,16 @@
 # MongoDB Atlas setup (Person 3)
 
-Use **MongoDB Atlas** (student credit and/or free forever M0). Do **not** self-host Mongo on Vultr — Vultr is for the API/frontend only.
+Use **MongoDB Atlas** free M0 (GitHub Education / $50 credit optional — not required). Do **not** self-host Mongo on Vultr.
 
-## Hour 0 checklist
+## Status
+
+- [x] M0 cluster created
+- [x] App DB user + network access configured
+- [x] `MONGODB_URI` in team `.env` files (not in git)
+- [x] Database `drift` seeded (see `mongodb-seed/HANDOFF.md`)
+- [x] Indexes created via seed load
+
+## Hour 0 checklist (historical)
 
 - [ ] Create Atlas account / join team project
 - [ ] Create **M0 free cluster** (or use student $50 credit if needed)
