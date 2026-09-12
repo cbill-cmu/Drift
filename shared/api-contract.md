@@ -7,7 +7,7 @@ Base URL (local): `http://localhost:3000`
 Auth: `Authorization: Bearer <Auth0 access token>` on all `/api/*` routes below.  
 Errors: `{ "success": false, "error": "string" }` with 400 / 401 / 403 / 404 / 409 / 500 as appropriate
 
-**Demo group_id (seed):** `6aa507373e4c8b8fc47e6428` — confirm with `npm run verify` after any reload.
+**Group ids** come from `GET /api/groups` after login (create in Profile, or accept an invite). Do not hardcode a seed ObjectId — the old CMU CREW id is gone from Atlas.
 
 ---
 

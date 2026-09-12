@@ -6,7 +6,7 @@ React + Vite UI for Drift: Auth0 login, canvas heatmap/graph map, trip logger, d
 
 ```bash
 cp .env.example .env
-# VITE_AUTH0_*, VITE_API_BASE_URL, VITE_DEMO_GROUP_ID
+# VITE_AUTH0_*, VITE_API_BASE_URL — leave VITE_DEMO_GROUP_ID blank
 npm install
 npm run dev
 ```
@@ -32,7 +32,7 @@ Edit only under `frontend/` unless pairing with Person 4. Call APIs per [`shared
 | Friends panel | Partial — members from API or fixtures; add-friend is local stub |
 | Friend map fixtures | Fallback when member-graph fails |
 
-Default group: `VITE_DEMO_GROUP_ID` or `6aa507373e4c8b8fc47e6428`.
+No hardcoded demo group. After login, create a group in Profile (or accept an invite). `VITE_DEMO_GROUP_ID` is optional and only used if you already belong to that Atlas group.
 
 ## Still TODO (Person 2)
 

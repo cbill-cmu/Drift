@@ -1,49 +1,40 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { fetchGroupSuggestions } from "../api/client.js";
+import { fetchMyExploredPlaces } from "../api/client.js";
 import { withDistance } from "../utils/distance.js";
 
 const POLL_MS = 15000;
 
 /**
- * Uncovered catalog places for the group, nearest-first when origin is known.
+ * Catalog places that sit inside the current user's visited H3 cells.
  */
-export function useGroupSuggestions({
-  groupId,
-  enabled = true,
-  limit = 48,
-  origin = null,
-  refreshKey = 0,
-} = {}) {
+export function useExploredPlaces({ enabled = true, origin = null, refreshKey = 0 } = {}) {
   const [raw, setRaw] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
   const reload = useCallback(async () => {
-    if (!enabled || !groupId) {
+    if (!enabled) {
       setRaw([]);
       return;
     }
     setLoading(true);
     setError(null);
     try {
-      const payload = await fetchGroupSuggestions(groupId, { limit });
-      setRaw(Array.isArray(payload?.suggestions) ? payload.suggestions : []);
+      const payload = await fetchMyExploredPlaces();
+      setRaw(Array.isArray(payload?.places) ? payload.places : []);
     } catch (err) {
-      setError(err.message || "Failed to load suggestions");
+      setError(err.message || "Failed to load explored places");
     } finally {
       setLoading(false);
     }
-  }, [enabled, groupId, limit]);
+  }, [enabled]);
 
   useEffect(() => {
     reload();
   }, [reload, refreshKey]);
 
-  // Poll like useVisitedCells/useGroupCoverage so newly-visited cells drop
-  // their catalog places out of "unexplored" while a walk is still in
-  // progress, not just ~1.2s after tracking stops (refreshKey's trigger).
   useEffect(() => {
-    if (!enabled || !groupId) return undefined;
+    if (!enabled) return undefined;
     const id = setInterval(reload, POLL_MS);
     function onVisible() {
       if (!document.hidden) reload();
@@ -53,7 +44,7 @@ export function useGroupSuggestions({
       clearInterval(id);
       document.removeEventListener("visibilitychange", onVisible);
     };
-  }, [enabled, groupId, reload]);
+  }, [enabled, reload]);
 
   const originLat = origin?.lat;
   const originLng = origin?.lng;

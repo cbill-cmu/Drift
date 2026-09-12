@@ -115,7 +115,7 @@ export async function fetchUserProfile(userId) {
 }
 
 /** GET /api/groups/:groupId/suggestions — uncovered catalog places */
-export async function fetchGroupSuggestions(groupId, { limit = 24 } = {}) {
+export async function fetchGroupSuggestions(groupId, { limit = 48 } = {}) {
   try {
     const { data } = await api.get(`/api/groups/${groupId}/suggestions`, {
       params: { limit },
@@ -155,6 +155,16 @@ export async function fetchMyVisitedCells() {
     return data;
   } catch (err) {
     throw apiError(err, "Failed to load visited cells");
+  }
+}
+
+/** GET /api/users/me/explored-places — catalog places inside visited hexes */
+export async function fetchMyExploredPlaces() {
+  try {
+    const { data } = await api.get("/api/users/me/explored-places");
+    return data;
+  } catch (err) {
+    throw apiError(err, "Failed to load explored places");
   }
 }
 

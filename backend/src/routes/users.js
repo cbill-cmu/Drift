@@ -2,7 +2,7 @@ import { Router } from "express";
 
 import { COLLECTIONS } from "../models/index.js";
 import { asString, idVariants } from "../services/ids.js";
-import { listVisitedCells } from "../services/locationService.js";
+import { getExploredCatalogPlaces, listVisitedCells } from "../services/locationService.js";
 import { getDb } from "../services/mongoService.js";
 import { HttpError, deleteCurrentUser, publicUser, updateCurrentUser, upsertCurrentUser } from "../services/userService.js";
 
@@ -112,6 +112,32 @@ router.get("/me/visited-cells", async (req, res) => {
     }
     console.error("[users] GET /me/visited-cells failed:", err);
     return res.status(500).json({ success: false, error: "Failed to load visited cells" });
+  }
+});
+
+/**
+ * GET /api/users/me/explored-places
+ * Catalog places that fall inside the current user's visited H3 cells.
+ */
+router.get("/me/explored-places", async (req, res) => {
+  try {
+    const { user } = await upsertCurrentUser(req.auth || {});
+    const db = getDb();
+    const cells = await listVisitedCells(db, user._id);
+    const places = await getExploredCatalogPlaces(
+      db,
+      cells.map((cell) => cell.h3_cell)
+    );
+    return res.json({ success: true, places });
+  } catch (err) {
+    if (err instanceof HttpError) {
+      return res.status(err.status).json({ success: false, error: err.message });
+    }
+    if (err?.message?.includes("Mongo not connected")) {
+      return res.status(500).json({ success: false, error: "Mongo not connected" });
+    }
+    console.error("[users] GET /me/explored-places failed:", err);
+    return res.status(500).json({ success: false, error: "Failed to load explored places" });
   }
 });
 

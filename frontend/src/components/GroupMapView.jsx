@@ -20,6 +20,8 @@ export default function GroupMapView({
   refreshKey = 0,
   fogRefreshKey = 0,
   fogMode = "personal",
+  visitedCells: visitedCellsProp,
+  fogLoading: fogLoadingProp,
   onSelectPlace,
   suggestions = [],
   suggestionsLoading = false,
@@ -31,9 +33,12 @@ export default function GroupMapView({
     friendId,
     refreshKey,
   });
-  const { cells: visitedCells, loading: fogLoading } = useVisitedCells({
+  const visitedFromHook = useVisitedCells({
     refreshKey: fogRefreshKey,
+    enabled: visitedCellsProp === undefined,
   });
+  const visitedCells = visitedCellsProp ?? visitedFromHook.cells;
+  const fogLoading = fogLoadingProp ?? visitedFromHook.loading;
   const {
     everyone,
     some,
@@ -55,10 +60,12 @@ export default function GroupMapView({
     if (!el) return undefined;
     const observer = new ResizeObserver((entries) => {
       const box = entries[0].contentRect;
-      setSize({
-        width: Math.floor(box.width),
-        height: Math.floor(box.height),
-      });
+      const width = Math.floor(box.width);
+      const height = Math.floor(box.height);
+      if (width < 8 || height < 8) return;
+      setSize((prev) =>
+        prev.width === width && prev.height === height ? prev : { width, height }
+      );
     });
     observer.observe(el);
     return () => observer.disconnect();
@@ -73,6 +80,7 @@ export default function GroupMapView({
           graph={data || { nodes: [], edges: [], heatpoints: [] }}
           width={size.width}
           height={size.height}
+          viewKey={`${groupId || ""}:${friendId || ""}`}
           selectedNodeId={selectedNodeId}
           onSelectNode={onSelectNode}
           visitedCells={visitedCells}
@@ -86,7 +94,10 @@ export default function GroupMapView({
         />
       ) : null}
 
-      {fogMode === "personal" && !fogLoading && visitedCells.length === 0 ? (
+      {!groupId && !friendId ? (
+        <p className="fog-hint">Create a group in Profile to share coverage</p>
+      ) : null}
+      {fogMode === "personal" && groupId && !fogLoading && visitedCells.length === 0 ? (
         <p className="fog-hint">Unexplored — start exploring to lift the fog</p>
       ) : null}
       {fogMode === "group" && !coverageLoading && everyone.length === 0 && some.length === 0 ? (
@@ -112,7 +123,7 @@ export default function GroupMapView({
         <div className="suggestion-dock">
           <SuggestionCards
             items={suggestions}
-            limit={8}
+            limit={12}
             compact
             origin={origin}
             selectedId={suggestionId(selectedPlace)}
@@ -138,7 +149,10 @@ export default function GroupMapView({
 
             <div className="status-island-copy">
               {loading ? <p>Loading graph…</p> : null}
-              {usingFixture ? <p>Local fixture</p> : null}
+              {usingFixture && !groupId && !friendId ? (
+                <p>No group yet — create one in Profile</p>
+              ) : null}
+              {usingFixture && (groupId || friendId) ? <p>Local fixture</p> : null}
               {error && !usingFixture ? <p className="status-island-error">{error}</p> : null}
               {friendId && !loading && !usingFixture && !error ? (
                 <p>Friend map</p>

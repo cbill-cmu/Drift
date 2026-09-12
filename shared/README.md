@@ -24,4 +24,4 @@ npm run load       # inserts into Atlas (wipes collections — new IDs!)
 npm run verify     # prints group_id + refreshes fixtures/
 ```
 
-After every `load`, Slack the new `group_id` to Person 2 (`VITE_DEMO_GROUP_ID`).
+Do **not** `npm run load` on the shared Atlas. Teammates create their own group in Profile after login — see [`mongodb-seed/HANDOFF.md`](mongodb-seed/HANDOFF.md).

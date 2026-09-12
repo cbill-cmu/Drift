@@ -1182,6 +1182,16 @@ body {
   font-weight: 600;
 }
 
+.explored-places:not(:last-child) {
+  margin-bottom: 0.85rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid var(--line);
+}
+
+.explored-places .overall-pct {
+  margin-bottom: 0.5rem;
+}
+
 .neighborhood-stats > ul {
   gap: 0.05rem;
 }

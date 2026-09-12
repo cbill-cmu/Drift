@@ -15,7 +15,13 @@ export function useMapGraph({ groupId, friendId, refreshKey = 0 }) {
   const [usingFixture, setUsingFixture] = useState(false);
 
   const reload = useCallback(async () => {
-    if (!friendId && !groupId) return;
+    if (!friendId && !groupId) {
+      setData(normalizeGraph(groupGraphFixture));
+      setUsingFixture(true);
+      setError(null);
+      setLoading(false);
+      return;
+    }
     setLoading(true);
     setError(null);
     try {

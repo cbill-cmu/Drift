@@ -1,4 +1,4 @@
-import { useEffect, useMemo } from "react";
+import { useEffect, useMemo, useRef } from "react";
 import {
   CircleMarker,
   MapContainer,
@@ -10,26 +10,52 @@ import {
 } from "react-leaflet";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
-import { cellToLatLng } from "h3-js";
-import { boundsFromNodes } from "../utils/projection.js";
+import { latLngToCell } from "h3-js";
 import { getBasemap } from "../utils/basemap.js";
+import { FOG_STORED_RESOLUTION } from "../utils/fogGeoJSON.js";
+import { cellIdSet, suggestionId } from "../utils/suggestions.js";
 import FogOverlayLayer from "./FogOverlayLayer.jsx";
 import SuggestionPins from "./SuggestionPins.jsx";
-import { suggestionId } from "../utils/suggestions.js";
 
 const PITTSBURGH = [40.4406, -79.9959];
 const BASEMAP = getBasemap();
 
-function FitGraphBounds({ points }) {
+function FitGraphBounds({ points, resetKey }) {
   const map = useMap();
+  const fittedForKey = useRef(null);
+  const userMoved = useRef(false);
+  const ignoreMove = useRef(false);
 
   useEffect(() => {
-    if (!points.length) return;
+    fittedForKey.current = null;
+    userMoved.current = false;
+  }, [resetKey]);
+
+  useEffect(() => {
+    const markUser = () => {
+      if (!ignoreMove.current) userMoved.current = true;
+    };
+    map.on("zoomstart", markUser);
+    map.on("dragstart", markUser);
+    return () => {
+      map.off("zoomstart", markUser);
+      map.off("dragstart", markUser);
+    };
+  }, [map]);
+
+  useEffect(() => {
+    if (!points.length || userMoved.current) return undefined;
+    if (fittedForKey.current === resetKey) return undefined;
     const b = L.latLngBounds(points.map((p) => [p.lat, p.lng]));
-    if (b.isValid()) {
-      map.fitBounds(b.pad(0.16), { animate: false, maxZoom: 14 });
-    }
-  }, [map, points]);
+    if (!b.isValid()) return undefined;
+    ignoreMove.current = true;
+    map.fitBounds(b.pad(0.16), { animate: false, maxZoom: 14 });
+    fittedForKey.current = resetKey;
+    const unlock = window.setTimeout(() => {
+      ignoreMove.current = false;
+    }, 0);
+    return () => window.clearTimeout(unlock);
+  }, [map, points, resetKey]);
 
   return null;
 }
@@ -69,6 +95,7 @@ export default function GraphMap({
   origin = null,
   selectedSuggestion = null,
   onSelectSuggestion,
+  viewKey = "default",
 }) {
   const nodes = useMemo(
     () =>
@@ -102,38 +129,32 @@ export default function GraphMap({
     return lines.sort((a, b) => b.count - a.count).slice(0, 48);
   }, [graph, nodeById]);
 
-  const labeled = useMemo(
-    () =>
-      [...nodes]
-        .sort((a, b) => (b.visits || 0) - (a.visits || 0))
-        .slice(0, 40),
+  const labeled = useMemo(() => {
+    const explored =
+      fogMode === "group"
+        ? cellIdSet([...everyoneCells, ...someCells])
+        : cellIdSet(visitedCells);
+    return [...nodes]
+      .filter((node) => {
+        try {
+          return !explored.has(latLngToCell(node.lat, node.lng, FOG_STORED_RESOLUTION));
+        } catch {
+          return true;
+        }
+      })
+      .sort((a, b) => (b.visits || 0) - (a.visits || 0))
+      .slice(0, 40);
+  }, [nodes, fogMode, visitedCells, everyoneCells, someCells]);
+
+  const openSuggestions = useMemo(() => {
+    const explored = cellIdSet(visitedCells);
+    return (suggestions || []).filter((item) => !item.h3_cell || !explored.has(item.h3_cell));
+  }, [suggestions, visitedCells]);
+
+  const fitPoints = useMemo(
+    () => nodes.map((node) => ({ lat: node.lat, lng: node.lng })),
     [nodes]
   );
-
-  const fitPoints = useMemo(() => {
-    const source =
-      fogMode === "group" ? [...everyoneCells, ...someCells] : visitedCells || [];
-    const fogPoints = [];
-    for (const cell of source) {
-      const id = typeof cell === "string" ? cell : cell?.h3_cell;
-      if (!id) continue;
-      try {
-        const [lat, lng] = cellToLatLng(id);
-        if (Number.isFinite(lat) && Number.isFinite(lng)) {
-          fogPoints.push({ lat, lng });
-        }
-      } catch {
-        /* skip invalid indexes */
-      }
-    }
-    const all = [...nodes, ...fogPoints];
-    const b = boundsFromNodes(all);
-    return [
-      { lat: b.south, lng: b.west },
-      { lat: b.north, lng: b.east },
-      ...all,
-    ];
-  }, [nodes, visitedCells, fogMode, everyoneCells, someCells]);
 
   if (!graph || width < 8 || height < 8) {
     return (
@@ -173,11 +194,11 @@ export default function GraphMap({
           everyone={everyoneCells}
           some={someCells}
         />
-        <FitGraphBounds points={fitPoints} />
+        <FitGraphBounds points={fitPoints} resetKey={viewKey} />
         <MapSizeSync width={width} height={height} />
         <FlyToPlace place={selectedSuggestion} />
         <SuggestionPins
-          items={suggestions}
+          items={openSuggestions}
           origin={origin}
           selectedId={suggestionId(selectedSuggestion)}
           onSelectPlace={onSelectSuggestion}

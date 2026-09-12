@@ -233,7 +233,7 @@ async function main() {
   });
   console.log("[load] group_id:", groupId.toHexString());
   console.log("[load] fabio_user_id:", fabioId.toHexString());
-  console.log("[load] Next: npm run verify  (then update HANDOFF.md + VITE_DEMO_GROUP_ID)");
+  console.log("[load] Next: npm run verify. Do not paste this group_id into teammates' .env — they should create a group in Profile.");
 
   await client.close();
 }

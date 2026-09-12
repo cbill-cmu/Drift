@@ -39,11 +39,11 @@ Hackathon build, pivoting from manual trip logging to **continuous location trac
 6. **Privacy controls** — per-group opt-out of contributing cell data (§8)
 7. **Deploy** — Vultr + PM2 + production Auth0 callbacks (still open, unrelated to the pivot)
 
-### Demo group (seed)
+### First run after a pull
 
-- **group_id:** `6aa507373e4c8b8fc47e6428` (also `VITE_DEMO_GROUP_ID`) — re-check via `npm run verify` after any seed reload, IDs drift
-- **group_name:** `CMU CREW`
-- Details: [`shared/mongodb-seed/HANDOFF.md`](shared/mongodb-seed/HANDOFF.md)
+Leave `VITE_DEMO_GROUP_ID` blank. Log in, then **create a group in Profile** (or join one you are invited to). Do not paste a seed ObjectId — the old **CMU CREW** id is gone from Atlas and 404s.
+
+Details: [`shared/mongodb-seed/HANDOFF.md`](shared/mongodb-seed/HANDOFF.md)
 
 ---
 
@@ -97,7 +97,7 @@ cp frontend/.env.example frontend/.env
 cp shared/mongodb-seed/.env.example shared/mongodb-seed/.env
 ```
 
-Fill Auth0 + `MONGODB_URI` (never commit `.env`).
+Fill Auth0 + `MONGODB_URI` (never commit `.env`). Leave `VITE_DEMO_GROUP_ID` blank. After login, create a group in Profile.
 
 | Who | Commands |
 |-----|----------|
@@ -118,6 +118,7 @@ Frontend needs a **reachable** `VITE_API_BASE_URL` (Person 1’s machine or shar
 | [requirements.md](requirements.md) | Requirements checklist with current `[x]` / `[~]` / `[ ]` |
 | [GITHUB_WORKFLOW.md](GITHUB_WORKFLOW.md) | Branches, ownership, remaining work |
 | [DRIFT_PROJECT_GUIDE.md](DRIFT_PROJECT_GUIDE.md) | Product, demo script, architecture |
+| [shared/mongodb-seed/HANDOFF.md](shared/mongodb-seed/HANDOFF.md) | First-run after a pull |
 | [shared/PERSON3_RUNBOOK.md](shared/PERSON3_RUNBOOK.md) | Auth/seed health |
 | [shared/PERSON4_RUNBOOK.md](shared/PERSON4_RUNBOOK.md) | E2E + deploy |
 | [shared/api-contract.md](shared/api-contract.md) | HTTP contract |

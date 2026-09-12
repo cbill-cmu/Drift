@@ -19,15 +19,15 @@ npm run seed:coverage
 ```
 
 **Pass:** prints `group_id`, counts, fog flags (`campus_seeded`, `lawrenceville_fogged`), refreshes fixtures.  
-**If you re-`load`:** IDs change — immediately Slack Person 2 the new `VITE_DEMO_GROUP_ID`.  
-**Demo fog without wiping accounts:** `npm run seed:coverage -- --group "CMU CREW"` (or your live group name).
+**Do not `npm run load` on the shared Atlas** — that wipes real Auth0 accounts. Teammates should leave `VITE_DEMO_GROUP_ID` blank and create a group in Profile.  
+**Demo fog without wiping accounts:** `npm run seed:coverage -- --group "Sleep"` (or the group name you belong to).
 
 ## Help teammates
 
 | Who | You provide |
 |-----|-------------|
 | Person 1 | Same `MONGODB_URI`; schema + contract; seed shape for graph queries |
-| Person 2 | `group_id`; Auth0 Domain/Client ID/Audience; fixtures if API down |
+| Person 2 | Auth0 Domain/Client ID/Audience; fixtures if API down. **Not** a hardcoded `group_id`. |
 | Person 4 | Demo accounts (`fabio@test.com`); confirm seed before E2E; Auth0 **production** callback URLs when they deploy |
 
 ## Still TODO (Person 3)

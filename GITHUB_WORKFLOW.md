@@ -55,7 +55,7 @@ See root [`README.md`](README.md) for the full done / TODO table.
 
 ### Person 3 — Auth + seed
 
-- [ ] `npm run verify` health; re-Slack `group_id` after any reload
+- [ ] `npm run verify` health (do **not** `npm run load` on the shared Atlas)
 - [ ] Production Auth0 callback URLs when P4 deploys
 - [ ] Demo accounts ready (Fabio + backup)
 
@@ -86,8 +86,8 @@ Prefer short-lived branches and small PRs. Require 1 review when possible.
 
 1. P1: backend on `:3000` with Atlas URI  
 2. P2: frontend `VITE_API_BASE_URL=http://localhost:3000` (or P1’s LAN/tunnel URL)  
-3. P3: verify seed + `VITE_DEMO_GROUP_ID`  
-4. P4: walk login → map → CMU→Lawrenceville trip → toast  
+3. P3: `npm run verify` (do **not** `npm run load` on the shared Atlas)  
+4. Everyone: login → Profile → create or join a group → map
 
 **Empty map on someone’s laptop:** almost always API not reachable — not “seed missing.”
 

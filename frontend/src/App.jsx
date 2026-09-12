@@ -3,8 +3,7 @@ import { setAuthEmailGetter, setAuthTokenGetter } from "./api/client.js";
 import { useAuthStatus } from "./hooks/useAuth0.js";
 import { useLayoutEffect } from "react";
 
-const GROUP_ID =
-  import.meta.env.VITE_DEMO_GROUP_ID || "6aa507373e4c8b8fc47e6428";
+const GROUP_ID = String(import.meta.env.VITE_DEMO_GROUP_ID || "").trim();
 
 /**
  * Root app (Person 2).

@@ -11,11 +11,13 @@ import VisitedPlacesList from "./VisitedPlacesList.jsx";
 import NeighborhoodStats from "./NeighborhoodStats.jsx";
 import ProfileModal from "./ProfileModal.jsx";
 import { useAuthStatus } from "../hooks/useAuth0.js";
+import { useExploredPlaces } from "../hooks/useExploredPlaces.js";
 import { useGroups } from "../hooks/useGroups.js";
 import { useGroupSuggestions } from "../hooks/useGroupSuggestions.js";
 import { useGroupVisitedPlaces } from "../hooks/useGroupVisitedPlaces.js";
 import { useLocationTracking } from "../hooks/useLocationTracking.js";
-import { suggestionId } from "../utils/suggestions.js";
+import { useVisitedCells } from "../hooks/useVisitedCells.js";
+import { cellIdSet, suggestionId } from "../utils/suggestions.js";
 
 const NAV = [
   { id: "places", label: "Places", icon: "places" },
@@ -87,7 +89,7 @@ export default function Layout({ defaultGroupId }) {
     create: createGroup,
     leave: leaveGroup,
   } = useGroups(defaultGroupId, { enabled: isAuthenticated });
-  const groupId = selectedId || defaultGroupId;
+  const groupId = selectedId || "";
   const {
     active: tracking,
     error: trackingError,
@@ -104,13 +106,17 @@ export default function Layout({ defaultGroupId }) {
   }, [lastFix]);
   const [fogRefreshKey, setFogRefreshKey] = useState(0);
   const [fogMode, setFogMode] = useState("personal");
+  const { cells: visitedCells, loading: fogLoading } = useVisitedCells({
+    enabled: isAuthenticated,
+    refreshKey: fogRefreshKey,
+  });
   const {
     items: suggestions,
     loading: suggestionsLoading,
   } = useGroupSuggestions({
     groupId,
     enabled: Boolean(isAuthenticated && groupId),
-    limit: 24,
+    limit: 48,
     origin,
     refreshKey: fogRefreshKey,
   });
@@ -124,6 +130,38 @@ export default function Layout({ defaultGroupId }) {
     origin,
     refreshKey: fogRefreshKey,
   });
+  const {
+    items: exploredPlaces,
+    loading: exploredLoading,
+  } = useExploredPlaces({
+    enabled: isAuthenticated,
+    origin,
+    refreshKey: fogRefreshKey,
+  });
+  const visitedSet = useMemo(() => cellIdSet(visitedCells), [visitedCells]);
+  const hiddenPlaceIds = useMemo(() => {
+    const ids = new Set();
+    for (const item of visitedPlaces) {
+      if (item.place_id) ids.add(item.place_id);
+      if (item.h3_cell) ids.add(item.h3_cell);
+    }
+    for (const item of exploredPlaces) {
+      if (item.place_id) ids.add(item.place_id);
+      if (item.h3_cell) ids.add(item.h3_cell);
+    }
+    return ids;
+  }, [visitedPlaces, exploredPlaces]);
+  const openSuggestions = useMemo(
+    () =>
+      suggestions.filter((item) => {
+        if (item.h3_cell && (visitedSet.has(item.h3_cell) || hiddenPlaceIds.has(item.h3_cell))) {
+          return false;
+        }
+        if (item.place_id && hiddenPlaceIds.has(item.place_id)) return false;
+        return true;
+      }),
+    [suggestions, visitedSet, hiddenPlaceIds]
+  );
   // discoveryData/DiscoveryReveal is kept — it's a generic "show a reveal
   // toast" mechanism, not specific to manual trip logging. It'll be wired
   // to the GPS/fog-of-war pipeline (see TASKS.md) instead of a trip form.
@@ -170,13 +208,13 @@ export default function Layout({ defaultGroupId }) {
   }, []);
 
   const handleSelectPlace = useCallback(
-    (place) => {
+    (place, { closeSheet = true } = {}) => {
       setSelectedPlace(place || null);
       const match = (displayedGraph?.nodes || []).find(
         (node) => node.name?.toLowerCase() === place?.location_name?.toLowerCase()
       );
       setSelectedNode(match || null);
-      setSheet(null);
+      if (closeSheet) setSheet(null);
     },
     [displayedGraph]
   );
@@ -199,9 +237,8 @@ export default function Layout({ defaultGroupId }) {
 
   const groupName =
     selected?.name ||
-    displayedGraph?.group_name ||
-    import.meta.env.VITE_DEMO_GROUP_NAME ||
-    "CMU CREW";
+    (groupId ? displayedGraph?.group_name : "") ||
+    (groupId ? "Group" : "No group");
 
   const displayName = account?.display_name || user?.name || user?.email || "You";
 
@@ -325,8 +362,10 @@ export default function Layout({ defaultGroupId }) {
           onBackToGroup={() => setActiveFriend(null)}
           fogRefreshKey={fogRefreshKey}
           fogMode={fogMode}
+          visitedCells={visitedCells}
+          fogLoading={fogLoading}
           onSelectPlace={handleSelectPlace}
-          suggestions={suggestions}
+          suggestions={openSuggestions}
           suggestionsLoading={suggestionsLoading}
           origin={origin}
           selectedPlace={selectedPlace}
@@ -362,23 +401,26 @@ export default function Layout({ defaultGroupId }) {
             {sheet === "places" ? (
               <>
                 <VisitedPlacesList
-                  items={visitedPlaces}
-                  loading={visitedPlacesLoading}
+                  items={visitedPlaces.length ? visitedPlaces : exploredPlaces}
+                  loading={visitedPlacesLoading || exploredLoading}
                   selectedId={suggestionId(selectedPlace)}
                   onSelectPlace={handleSelectPlace}
                 />
-                <NeighborhoodStats
-                  neighborhoods={displayedGraph?.neighborhoods}
-                  nodes={displayedGraph?.nodes}
-                  selectedNodeId={selectedNode?.id}
-                  onSelectNode={setSelectedNode}
-                />
+                {displayedGraph?.neighborhoods &&
+                Object.keys(displayedGraph.neighborhoods).length ? (
+                  <NeighborhoodStats
+                    neighborhoods={displayedGraph.neighborhoods}
+                    nodes={displayedGraph.nodes}
+                    selectedNodeId={selectedNode?.id}
+                    onSelectNode={setSelectedNode}
+                  />
+                ) : null}
               </>
             ) : null}
             {sheet === "recs" ? (
               <>
                 <SuggestionCards
-                  items={suggestions}
+                  items={openSuggestions}
                   limit={20}
                   origin={origin}
                   selectedId={suggestionId(selectedPlace)}

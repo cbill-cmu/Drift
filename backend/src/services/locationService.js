@@ -1,4 +1,4 @@
-import { latLngToCell } from "h3-js";
+import { gridDisk, latLngToCell } from "h3-js";
 
 import {
   COLLECTIONS,
@@ -209,7 +209,50 @@ export async function getGroupCoverage(db, group) {
   return classifyCoverage(rows, contributorIds.length);
 }
 
-const SUGGESTION_LIMIT = 24;
+const SUGGESTION_LIMIT = 48;
+
+function expandVisitedCells(cellIds, ring = 1) {
+  const out = new Set();
+  for (const id of cellIds || []) {
+    if (!id) continue;
+    out.add(id);
+    try {
+      for (const neighbor of gridDisk(id, ring)) out.add(neighbor);
+    } catch {
+      /* skip invalid indexes */
+    }
+  }
+  return out;
+}
+
+function pickSpread(places, limit) {
+  const cap = Math.max(1, Number(limit) || SUGGESTION_LIMIT);
+  if (places.length <= cap) return places;
+  const remaining = [...places];
+  const selected = [];
+  const take = remaining.splice(Math.floor(remaining.length / 2), 1)[0];
+  if (take) selected.push(take);
+  while (selected.length < cap && remaining.length) {
+    let bestIdx = 0;
+    let bestScore = -1;
+    for (let i = 0; i < remaining.length; i += 1) {
+      const candidate = remaining[i];
+      let nearest = Infinity;
+      for (const kept of selected) {
+        const dLat = candidate.lat - kept.lat;
+        const dLng = (candidate.lng - kept.lng) * 1.3;
+        const d = dLat * dLat + dLng * dLng;
+        if (d < nearest) nearest = d;
+      }
+      if (nearest > bestScore) {
+        bestScore = nearest;
+        bestIdx = i;
+      }
+    }
+    selected.push(remaining.splice(bestIdx, 1)[0]);
+  }
+  return selected;
+}
 
 /**
  * Catalog places whose H3 cells the group has not visited (implicit "no one").
@@ -241,9 +284,52 @@ export async function getCoverageGapSuggestions(db, group, { limit = SUGGESTION_
     });
   }
 
-  return [...byCell.values()]
-    .sort((a, b) => a.name.localeCompare(b.name))
-    .slice(0, Math.max(1, Number(limit) || SUGGESTION_LIMIT));
+  return pickSpread([...byCell.values()], limit);
+}
+
+/**
+ * Catalog places whose H3 cells the user has already visited.
+ */
+export async function getExploredCatalogPlaces(db, cellIds, { limit = 80 } = {}) {
+  const exact = new Set((cellIds || []).filter(Boolean));
+  const covered = expandVisitedCells(cellIds, 1);
+  if (!covered.size) return [];
+  const places = await db
+    .collection(PLACES_CATALOG)
+    .find({ lat: { $type: "number" }, lng: { $type: "number" } })
+    .toArray();
+
+  const ranked = [];
+  for (const place of places) {
+    if (!Number.isFinite(place.lat) || !Number.isFinite(place.lng)) continue;
+    const cell = latLngToCell(place.lat, place.lng, VISITED_CELL_RESOLUTION);
+    if (!covered.has(cell)) continue;
+    const pub = publicPlace(place);
+    if (!pub?.name) continue;
+    ranked.push({
+      exact: exact.has(cell) ? 1 : 0,
+      h3_cell: cell,
+      place_id: pub.id,
+      name: pub.name,
+      neighborhood: pub.neighborhood || "",
+      place_type: pub.place_type || pub.category || "",
+      lat: pub.lat,
+      lng: pub.lng,
+    });
+  }
+
+  ranked.sort((a, b) => b.exact - a.exact || a.name.localeCompare(b.name));
+  const seen = new Set();
+  const out = [];
+  for (const place of ranked) {
+    const key = place.name.trim().toLowerCase();
+    if (seen.has(key)) continue;
+    seen.add(key);
+    const { exact: _exact, ...rest } = place;
+    out.push(rest);
+    if (out.length >= Math.max(1, Number(limit) || 80)) break;
+  }
+  return out;
 }
 
 const VISITED_PLACES_LIMIT = 40;

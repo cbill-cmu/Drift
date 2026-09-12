@@ -12,6 +12,7 @@
     "generate:coverage": "node generate-coverage.js",
     "load": "node load-to-db.js",
     "seed:coverage": "node seed-coverage.js",
+    "seed:explored-places": "node seed-explored-places.js",
     "clear": "node clear-db.js",
     "verify": "node verify-seed.js"
   },

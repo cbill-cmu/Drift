@@ -158,7 +158,7 @@ router.get("/:groupId/suggestions", requireAuth, requireWellFormedParams, requir
   try {
     const group = req.groupDoc;
     const rawLimit = Number(req.query.limit);
-    const limit = Number.isFinite(rawLimit) ? Math.min(40, Math.max(1, Math.floor(rawLimit))) : 24;
+    const limit = Number.isFinite(rawLimit) ? Math.min(80, Math.max(1, Math.floor(rawLimit))) : 48;
     const suggestions = await getCoverageGapSuggestions(getDb(), group, { limit });
     return res.json({
       success: true,
