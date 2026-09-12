@@ -112,8 +112,12 @@ export default function FriendsPanel({ onViewMap, activeFriendId }) {
               <strong>{friend.display_name}</strong>
               <span className="hint">{friend.email}</span>
             </div>
-            <button type="button" className="btn-sun" onClick={() => onViewMap?.(friend)}>
-              {activeFriendId === friend.id ? "Viewing" : "View map"}
+            <button
+              type="button"
+              className={activeFriendId === friend.id ? "btn-paper" : "btn-sun"}
+              onClick={() => onViewMap?.(friend)}
+            >
+              {activeFriendId === friend.id ? "Stop viewing" : "View map"}
             </button>
           </li>
         ))}

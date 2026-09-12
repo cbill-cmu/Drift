@@ -65,6 +65,36 @@ export async function fetchUserProfile(userId) {
   return data;
 }
 
+/** POST /api/users/me — create or fetch the Mongo user for this Auth0 login */
+export async function ensureCurrentUser() {
+  try {
+    const { data } = await api.post("/api/users/me");
+    return data;
+  } catch (err) {
+    throw apiError(err, "Failed to create account");
+  }
+}
+
+/** PATCH /api/users/me */
+export async function updateCurrentUser(body) {
+  try {
+    const { data } = await api.patch("/api/users/me", body);
+    return data;
+  } catch (err) {
+    throw apiError(err, "Failed to update profile");
+  }
+}
+
+/** DELETE /api/users/me */
+export async function deleteCurrentUser() {
+  try {
+    const { data } = await api.delete("/api/users/me");
+    return data;
+  } catch (err) {
+    throw apiError(err, "Failed to delete account");
+  }
+}
+
 /** Personal / friend graph for a member of the group. */
 export async function fetchFriendGraph(userId, groupId) {
   try {

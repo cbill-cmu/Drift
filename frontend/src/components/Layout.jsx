@@ -1,9 +1,11 @@
 import { useCallback, useEffect, useState } from "react";
+import { ensureCurrentUser } from "../api/client.js";
 import { readAddFriendParam } from "../utils/friendInvite.js";
 import DiscoveryReveal from "./DiscoveryReveal.jsx";
 import FriendsPanel from "./FriendsPanel.jsx";
 import GroupMapView from "./GroupMapView.jsx";
 import NeighborhoodStats from "./NeighborhoodStats.jsx";
+import ProfileModal from "./ProfileModal.jsx";
 import TripLoggerModal from "./TripLoggerModal.jsx";
 import { useAuthStatus } from "../hooks/useAuth0.js";
 
@@ -66,6 +68,27 @@ export default function Layout({ groupId }) {
   const [selectedNode, setSelectedNode] = useState(null);
   const [refreshKey, setRefreshKey] = useState(0);
   const [loginError, setLoginError] = useState(null);
+  const [account, setAccount] = useState(null);
+  const [showSettings, setShowSettings] = useState(false);
+  const [needsOnboarding, setNeedsOnboarding] = useState(false);
+
+  useEffect(() => {
+    if (!isAuthenticated) return;
+    let cancelled = false;
+    ensureCurrentUser()
+      .then((data) => {
+        if (cancelled) return;
+        const profile = data?.user || null;
+        setAccount(profile);
+        setNeedsOnboarding(Boolean(data?.created) || profile?.profile_complete === false);
+      })
+      .catch((err) => {
+        console.error("[auth] ensureCurrentUser failed:", err);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [isAuthenticated, user?.sub]);
 
   const handleGraph = useCallback((graph) => {
     setDisplayedGraph(graph);
@@ -80,7 +103,13 @@ export default function Layout({ groupId }) {
     import.meta.env.VITE_DEMO_GROUP_NAME ||
     "CMU CREW";
 
+  const displayName = account?.display_name || user?.name || user?.email || "You";
+
   function viewFriend(friend) {
+    if (activeFriend?.id === friend.id) {
+      setActiveFriend(null);
+      return;
+    }
     setActiveFriend(friend);
     setSheet(null);
   }
@@ -146,6 +175,20 @@ export default function Layout({ groupId }) {
     <div className="layout layout-map-first">
       <header className="map-topbar">
         <strong className="brand">Drift</strong>
+        <button
+          type="button"
+          className="icon-btn"
+          aria-label="Account settings"
+          title="Account settings"
+          onClick={() => setShowSettings(true)}
+        >
+          <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true">
+            <path
+              fill="currentColor"
+              d="M19.14 12.94c.04-.31.06-.63.06-.94s-.02-.63-.06-.94l2.03-1.58a.5.5 0 0 0 .12-.64l-1.92-3.32a.5.5 0 0 0-.6-.22l-2.39.96a7.07 7.07 0 0 0-1.63-.94l-.36-2.54a.5.5 0 0 0-.5-.42h-3.84a.5.5 0 0 0-.5.42l-.36 2.54c-.59.24-1.13.55-1.63.94l-2.39-.96a.5.5 0 0 0-.6.22L2.77 8.84a.5.5 0 0 0 .12.64l2.03 1.58c-.04.31-.06.63-.06.94s.02.63.06.94L2.89 13.94a.5.5 0 0 0-.12.64l1.92 3.32c.13.22.4.31.64.22l2.39-.96c.5.39 1.04.7 1.63.94l.36 2.54c.05.24.26.42.5.42h3.84c.24 0 .45-.18.5-.42l.36 2.54c.59-.24 1.13-.55 1.63-.94l2.39.96c.24.09.51 0 .64-.22l1.92-3.32a.5.5 0 0 0-.12-.64l-2.03-1.58ZM12 15.5A3.5 3.5 0 1 1 12 8.5a3.5 3.5 0 0 1 0 7Z"
+            />
+          </svg>
+        </button>
       </header>
 
       <main className="layout-main">
@@ -190,11 +233,21 @@ export default function Layout({ groupId }) {
             {sheet === "profile" ? (
               <section className="profile-sheet">
                 <div className="profile-avatar" aria-hidden="true">
-                  {(user?.name || user?.email || "?").slice(0, 1).toUpperCase()}
+                  {displayName.slice(0, 1).toUpperCase()}
                 </div>
-                <p className="profile-name">{user?.name || "You"}</p>
+                <p className="profile-name">{displayName}</p>
                 <p className="hint">{user?.email}</p>
                 <p className="profile-group">{groupName}</p>
+                {activeFriend ? (
+                  <p className="hint">Viewing {activeFriend.display_name}</p>
+                ) : null}
+                <button
+                  type="button"
+                  className="btn-paper"
+                  onClick={() => setShowSettings(true)}
+                >
+                  Account settings
+                </button>
                 <button
                   type="button"
                   className="btn-paper profile-logout"
@@ -260,6 +313,23 @@ export default function Layout({ groupId }) {
       <DiscoveryReveal
         discoveryData={discoveryData}
         onDismiss={() => setDiscoveryData(null)}
+      />
+      <ProfileModal
+        isOpen={needsOnboarding || showSettings}
+        user={account}
+        authUser={user}
+        required={needsOnboarding}
+        onClose={() => setShowSettings(false)}
+        onSaved={(profile) => {
+          setAccount(profile);
+          setNeedsOnboarding(false);
+          setShowSettings(false);
+        }}
+        onDeleted={() => {
+          logout({
+            logoutParams: { returnTo: window.location.origin },
+          });
+        }}
       />
     </div>
   );
