@@ -93,3 +93,12 @@ export function buildVisitedCellGeoJSON(cells) {
   }
   return { type: "FeatureCollection", features };
 }
+
+export function cellList(cells) {
+  const out = [];
+  for (const cell of cells || []) {
+    if (typeof cell === "string" && cell) out.push({ h3_cell: cell });
+    else if (cell?.h3_cell) out.push(cell);
+  }
+  return out;
+}

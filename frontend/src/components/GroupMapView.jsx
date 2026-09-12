@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { useMapGraph } from "../hooks/useGroupGraph.js";
+import { useGroupCoverage } from "../hooks/useGroupCoverage.js";
 import { useVisitedCells } from "../hooks/useVisitedCells.js";
 import GraphMap from "./GraphMap.jsx";
 
@@ -16,6 +17,7 @@ export default function GroupMapView({
   onBackToGroup,
   refreshKey = 0,
   fogRefreshKey = 0,
+  fogMode = "personal",
 }) {
   const { data, loading, error, reload, usingFixture } = useMapGraph({
     groupId,
@@ -24,6 +26,15 @@ export default function GroupMapView({
   });
   const { cells: visitedCells, loading: fogLoading } = useVisitedCells({
     refreshKey: fogRefreshKey,
+  });
+  const {
+    everyone,
+    some,
+    loading: coverageLoading,
+  } = useGroupCoverage({
+    groupId,
+    refreshKey: fogRefreshKey,
+    enabled: fogMode === "group" && Boolean(groupId),
   });
   const wrapRef = useRef(null);
   const [size, setSize] = useState({ width: 0, height: 0 });
@@ -58,11 +69,33 @@ export default function GroupMapView({
           selectedNodeId={selectedNodeId}
           onSelectNode={onSelectNode}
           visitedCells={visitedCells}
+          fogMode={fogMode}
+          everyoneCells={everyone}
+          someCells={some}
         />
       ) : null}
 
-      {!fogLoading && visitedCells.length === 0 ? (
+      {fogMode === "personal" && !fogLoading && visitedCells.length === 0 ? (
         <p className="fog-hint">Unexplored — start exploring to lift the fog</p>
+      ) : null}
+      {fogMode === "group" && !coverageLoading && everyone.length === 0 && some.length === 0 ? (
+        <p className="fog-hint">No group coverage yet — explore, then switch back</p>
+      ) : null}
+      {fogMode === "group" ? (
+        <div className="fog-legend" aria-label="Group coverage">
+          <span>
+            <i className="fog-swatch fog-swatch-everyone" aria-hidden="true" />
+            Everyone
+          </span>
+          <span>
+            <i className="fog-swatch fog-swatch-some" aria-hidden="true" />
+            Some
+          </span>
+          <span>
+            <i className="fog-swatch fog-swatch-none" aria-hidden="true" />
+            No one
+          </span>
+        </div>
       ) : null}
 
       {showIsland ? (

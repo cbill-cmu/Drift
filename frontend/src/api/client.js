@@ -114,6 +114,16 @@ export async function fetchUserProfile(userId) {
   return data;
 }
 
+/** GET /api/groups/:groupId/coverage — everyone / some visited cells */
+export async function fetchGroupCoverage(groupId) {
+  try {
+    const { data } = await api.get(`/api/groups/${groupId}/coverage`);
+    return data;
+  } catch (err) {
+    throw apiError(err, "Failed to load group coverage");
+  }
+}
+
 /** GET /api/users/me/visited-cells — personal fog-of-war hexes */
 export async function fetchMyVisitedCells() {
   try {

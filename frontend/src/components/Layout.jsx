@@ -91,6 +91,7 @@ export default function Layout({ defaultGroupId }) {
     stop: stopTracking,
   } = useLocationTracking();
   const [fogRefreshKey, setFogRefreshKey] = useState(0);
+  const [fogMode, setFogMode] = useState("personal");
   // discoveryData/DiscoveryReveal is kept — it's a generic "show a reveal
   // toast" mechanism, not specific to manual trip logging. It'll be wired
   // to the GPS/fog-of-war pipeline (see TASKS.md) instead of a trip form.
@@ -247,6 +248,23 @@ export default function Layout({ defaultGroupId }) {
           {tracking ? `Tracking… (${trackingBufferedCount} buffered)` : "Start exploring"}
         </button>
         {trackingError ? <span className="error tracking-error">{trackingError}</span> : null}
+        <div className="fog-mode-toggle" role="group" aria-label="Fog view">
+          <button
+            type="button"
+            className={fogMode === "personal" ? "is-on" : ""}
+            onClick={() => setFogMode("personal")}
+          >
+            You
+          </button>
+          <button
+            type="button"
+            className={fogMode === "group" ? "is-on" : ""}
+            disabled={!groupId}
+            onClick={() => setFogMode("group")}
+          >
+            Group
+          </button>
+        </div>
         <span className="group-chip">{groupName}</span>
       </header>
 
@@ -259,6 +277,7 @@ export default function Layout({ defaultGroupId }) {
           onSelectNode={setSelectedNode}
           onBackToGroup={() => setActiveFriend(null)}
           fogRefreshKey={fogRefreshKey}
+          fogMode={fogMode}
         />
       </main>
 

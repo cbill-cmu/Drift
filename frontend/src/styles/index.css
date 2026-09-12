@@ -91,6 +91,38 @@ body {
   gap: 0.4rem;
 }
 
+.fog-mode-toggle {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.12rem;
+  gap: 0;
+  border-radius: var(--radius-pill);
+  background: rgba(255, 255, 255, 0.92);
+  box-shadow: var(--shadow);
+}
+
+.fog-mode-toggle button {
+  border: 0;
+  background: transparent;
+  color: var(--muted);
+  font: inherit;
+  font-size: 0.78rem;
+  font-weight: 700;
+  padding: 0.28rem 0.72rem;
+  border-radius: var(--radius-pill);
+  cursor: pointer;
+}
+
+.fog-mode-toggle button.is-on {
+  background: var(--mint);
+  color: var(--mint-ink);
+}
+
+.fog-mode-toggle button:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
 .tracking-error {
   font-size: 0.72rem;
 }
@@ -522,6 +554,57 @@ body {
   pointer-events: none;
   box-shadow: var(--shadow);
   white-space: nowrap;
+}
+
+.fog-legend {
+  position: absolute;
+  left: 1.1rem;
+  top: 4.65rem;
+  z-index: 3;
+  display: flex;
+  flex-direction: column;
+  gap: 0.32rem;
+  padding: 0.55rem 0.75rem;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.92);
+  box-shadow: var(--shadow);
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--ink);
+  pointer-events: none;
+}
+
+.fog-legend span {
+  display: flex;
+  align-items: center;
+  gap: 0.42rem;
+}
+
+.fog-swatch {
+  width: 0.92rem;
+  height: 0.92rem;
+  border-radius: 3px;
+  display: inline-block;
+}
+
+.fog-swatch-everyone {
+  background: var(--mint-deep);
+}
+
+.fog-swatch-some {
+  background: repeating-linear-gradient(
+    38deg,
+    var(--mint) 0 3px,
+    var(--mint-deep) 3px 6px
+  );
+}
+
+.fog-swatch-none {
+  background: rgba(23, 36, 36, 0.55);
+}
+
+.leaflet-overlay-pane .fog-tier-some {
+  fill: url(#drift-some-hatch) !important;
 }
 
 .map-loading,

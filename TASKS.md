@@ -103,11 +103,13 @@ Status legend: `[ ]` not started · `[~]` in progress · `[x]` done
 
 ## Phase 5 — Group overlay rendering (three tiers)
 
-- [ ] Extend `FogOverlayLayer.jsx` to accept a `mode: "personal" | "group"` prop
-- [ ] Group mode: three fill styles — solid mint for "everyone," lighter/hatched mint for "some," translucent gray fog for "no one" (reuse `--mint` / `--mint-deep` tokens already in `styles/index.css`)
-- [ ] Toggle in `Layout.jsx` or `GroupMapView.jsx` to switch personal ↔ group view (can reuse the existing `activeFriend`/group-switch UI patterns already in place)
+- [x] Extend `FogOverlayLayer.jsx` to accept a `mode: "personal" | "group"` prop
+- [x] Group mode: three fill styles — solid mint for "everyone," lighter/hatched mint for "some," translucent gray fog for "no one" (reuse `--mint` / `--mint-deep` tokens already in `styles/index.css`)
+- [x] Toggle in `Layout.jsx` or `GroupMapView.jsx` to switch personal ↔ group view (can reuse the existing `activeFriend`/group-switch UI patterns already in place)
 
 **Done when:** viewing a group with mixed member coverage visibly shows the three-tier distinction on screen — take a screenshot and confirm the tiers are actually distinguishable, not just three shades of the same color.
+
+**Implemented:** `FogOverlayLayer` `mode="group"` punches holes for everyone+some, fills everyone solid `--mint-deep`, fills some with hatched `--mint`, and leaves the rest as gray fog. Top-bar **You / Group** toggle; legend on the map. Confirm the three tiers on a group with mixed coverage after login.
 
 ---
 

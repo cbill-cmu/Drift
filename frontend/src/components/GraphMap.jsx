@@ -50,6 +50,9 @@ export default function GraphMap({
   selectedNodeId,
   onSelectNode,
   visitedCells = [],
+  fogMode = "personal",
+  everyoneCells = [],
+  someCells = [],
 }) {
   const nodes = useMemo(
     () =>
@@ -92,8 +95,10 @@ export default function GraphMap({
   );
 
   const fitPoints = useMemo(() => {
+    const source =
+      fogMode === "group" ? [...everyoneCells, ...someCells] : visitedCells || [];
     const fogPoints = [];
-    for (const cell of visitedCells || []) {
+    for (const cell of source) {
       const id = typeof cell === "string" ? cell : cell?.h3_cell;
       if (!id) continue;
       try {
@@ -112,7 +117,7 @@ export default function GraphMap({
       { lat: b.north, lng: b.east },
       ...all,
     ];
-  }, [nodes, visitedCells]);
+  }, [nodes, visitedCells, fogMode, everyoneCells, someCells]);
 
   if (!graph || width < 8 || height < 8) {
     return (
@@ -146,7 +151,12 @@ export default function GraphMap({
           {...(BASEMAP.subdomains ? { subdomains: BASEMAP.subdomains } : {})}
         />
         <ZoomControl position="bottomright" />
-        <FogOverlayLayer cells={visitedCells} />
+        <FogOverlayLayer
+          mode={fogMode}
+          cells={visitedCells}
+          everyone={everyoneCells}
+          some={someCells}
+        />
         <FitGraphBounds points={fitPoints} />
         <MapSizeSync width={width} height={height} />
 
