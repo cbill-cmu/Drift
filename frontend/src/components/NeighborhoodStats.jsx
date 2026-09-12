@@ -28,7 +28,6 @@ export default function NeighborhoodStats({
 
   return (
     <section className="neighborhood-stats">
-      <h2>Locations</h2>
       {entries.length === 0 ? (
         <p className="hint">No stats yet.</p>
       ) : (
@@ -42,8 +41,8 @@ export default function NeighborhoodStats({
               <details open={Boolean(focusHood)}>
                 <summary>
                   <div className="stat-row">
-                    <span>{name}</span>
-                    <span>
+                    <span className="stat-name">{name}</span>
+                    <span className="stat-meta">
                       {data.pct}%
                       {places.length ? ` · ${places.length} stops` : ""}
                     </span>
