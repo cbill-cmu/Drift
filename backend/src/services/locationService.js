@@ -6,6 +6,7 @@ import {
   VISITED_CELL_RESOLUTION,
 } from "../models/index.js";
 import { decodePolyline } from "../utils/polyline.js";
+import { idVariants } from "./ids.js";
 import { HttpError } from "./userService.js";
 
 const MAX_POLYLINE_CHARS = 100_000;
@@ -120,6 +121,22 @@ export async function deriveVisitedCells(db, userId, points, lastVisitedAt = new
     cells_upserted: (result.upsertedCount || 0) + (result.modifiedCount || 0) + (result.matchedCount || 0),
     unique_cells: counts.size,
   };
+}
+
+export async function listVisitedCells(db, userId) {
+  await ensureIndexes(db);
+  const docs = await db
+    .collection(COLLECTIONS.USER_VISITED_CELLS)
+    .find({ $or: idVariants(userId).map((value) => ({ user_id: value })) })
+    .project({ h3_cell: 1, visit_count: 1, _id: 0 })
+    .toArray();
+
+  return docs
+    .filter((doc) => typeof doc.h3_cell === "string" && doc.h3_cell)
+    .map((doc) => ({
+      h3_cell: doc.h3_cell,
+      visit_count: Number.isFinite(doc.visit_count) ? doc.visit_count : 1,
+    }));
 }
 
 async function ensureIndexes(db) {

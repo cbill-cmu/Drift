@@ -68,14 +68,16 @@ Status legend: `[ ]` not started · `[~]` in progress · `[x]` done
 
 **Do not start Phase 4 until this works and looks right on screen.**
 
-- [ ] New route: `GET /api/users/me/visited-cells` — returns the current user's `user_visited_cells` as `[{ h3_cell, visit_count }]`
-- [ ] New component: `frontend/src/components/FogOverlayLayer.jsx`
+- [x] New route: `GET /api/users/me/visited-cells` — returns the current user's `user_visited_cells` as `[{ h3_cell, visit_count }]`
+- [x] New component: `frontend/src/components/FogOverlayLayer.jsx`
   - For each returned cell, `h3.cellToBoundary(cell)` → GeoJSON polygon
   - Render as a Leaflet `GeoJSON` layer on top of the existing map
   - Personal view: visited cells rendered clear/normal map; a semi-opaque gray fog layer covers everything else (invert the usual "highlight visited" pattern — the *unvisited* area gets the overlay treatment)
-- [ ] Wire into `GroupMapView.jsx` alongside the existing graph/heat rendering
+- [x] Wire into `GroupMapView.jsx` alongside the existing graph/heat rendering
 
 **Done when:** after Phase 1+2 produce real visited cells for your own account, loading the map shows your own explored area revealed and everything else fogged — confirmed visually, not just via API response shape.
+
+**Verified so far:** unauthenticated `GET /api/users/me/visited-cells` returns 401 (route exists, Auth0 required). Invert-mask GeoJSON for CMU cell `892a847317bffff` has a closed hole punched in the world polygon; empty cell list is full fog. Vite compiles `FogOverlayLayer` / `GraphMap`. Live look-on-screen still needs a logged-in session (login gate blocks the map).
 
 ---
 

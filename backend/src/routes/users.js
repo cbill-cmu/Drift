@@ -2,6 +2,7 @@ import { Router } from "express";
 
 import { COLLECTIONS } from "../models/index.js";
 import { asString, idVariants } from "../services/ids.js";
+import { listVisitedCells } from "../services/locationService.js";
 import { getDb } from "../services/mongoService.js";
 import { HttpError, deleteCurrentUser, publicUser, updateCurrentUser, upsertCurrentUser } from "../services/userService.js";
 
@@ -90,6 +91,27 @@ router.delete("/me", async (req, res) => {
     }
     console.error("[users] DELETE /me failed:", err);
     return res.status(500).json({ success: false, error: "Failed to delete account" });
+  }
+});
+
+/**
+ * GET /api/users/me/visited-cells
+ * Personal fog-of-war source: the current user's H3 cells.
+ */
+router.get("/me/visited-cells", async (req, res) => {
+  try {
+    const { user } = await upsertCurrentUser(req.auth || {});
+    const cells = await listVisitedCells(getDb(), user._id);
+    return res.json({ success: true, cells });
+  } catch (err) {
+    if (err instanceof HttpError) {
+      return res.status(err.status).json({ success: false, error: err.message });
+    }
+    if (err?.message?.includes("Mongo not connected")) {
+      return res.status(500).json({ success: false, error: "Mongo not connected" });
+    }
+    console.error("[users] GET /me/visited-cells failed:", err);
+    return res.status(500).json({ success: false, error: "Failed to load visited cells" });
   }
 });
 

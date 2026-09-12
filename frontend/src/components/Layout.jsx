@@ -90,6 +90,7 @@ export default function Layout({ defaultGroupId }) {
     start: startTracking,
     stop: stopTracking,
   } = useLocationTracking();
+  const [fogRefreshKey, setFogRefreshKey] = useState(0);
   // discoveryData/DiscoveryReveal is kept — it's a generic "show a reveal
   // toast" mechanism, not specific to manual trip logging. It'll be wired
   // to the GPS/fog-of-war pipeline (see TASKS.md) instead of a trip form.
@@ -121,6 +122,14 @@ export default function Layout({ defaultGroupId }) {
       cancelled = true;
     };
   }, [isAuthenticated, user?.sub]);
+
+  useEffect(() => {
+    if (tracking) return undefined;
+    const timer = setTimeout(() => {
+      setFogRefreshKey((key) => key + 1);
+    }, 1200);
+    return () => clearTimeout(timer);
+  }, [tracking]);
 
   const handleGraph = useCallback((graph) => {
     setDisplayedGraph(graph);
@@ -249,6 +258,7 @@ export default function Layout({ defaultGroupId }) {
           selectedNodeId={selectedNode?.id}
           onSelectNode={setSelectedNode}
           onBackToGroup={() => setActiveFriend(null)}
+          fogRefreshKey={fogRefreshKey}
         />
       </main>
 

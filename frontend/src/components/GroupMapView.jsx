@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { useMapGraph } from "../hooks/useGroupGraph.js";
+import { useVisitedCells } from "../hooks/useVisitedCells.js";
 import GraphMap from "./GraphMap.jsx";
 
 /**
@@ -14,11 +15,15 @@ export default function GroupMapView({
   onSelectNode,
   onBackToGroup,
   refreshKey = 0,
+  fogRefreshKey = 0,
 }) {
   const { data, loading, error, reload, usingFixture } = useMapGraph({
     groupId,
     friendId,
     refreshKey,
+  });
+  const { cells: visitedCells, loading: fogLoading } = useVisitedCells({
+    refreshKey: fogRefreshKey,
   });
   const wrapRef = useRef(null);
   const [size, setSize] = useState({ width: 0, height: 0 });
@@ -52,7 +57,12 @@ export default function GroupMapView({
           height={size.height}
           selectedNodeId={selectedNodeId}
           onSelectNode={onSelectNode}
+          visitedCells={visitedCells}
         />
+      ) : null}
+
+      {!fogLoading && visitedCells.length === 0 ? (
+        <p className="fog-hint">Unexplored — start exploring to lift the fog</p>
       ) : null}
 
       {showIsland ? (

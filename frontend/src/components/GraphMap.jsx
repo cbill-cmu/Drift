@@ -9,7 +9,9 @@ import {
 } from "react-leaflet";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
+import { cellToLatLng } from "h3-js";
 import { boundsFromNodes } from "../utils/projection.js";
+import FogOverlayLayer from "./FogOverlayLayer.jsx";
 
 /**
  * Soft free raster basemap — no API key, no MapLibre worker.
@@ -53,6 +55,7 @@ export default function GraphMap({
   height,
   selectedNodeId,
   onSelectNode,
+  visitedCells = [],
 }) {
   const nodes = useMemo(
     () =>
@@ -95,13 +98,27 @@ export default function GraphMap({
   );
 
   const fitPoints = useMemo(() => {
-    const b = boundsFromNodes(nodes);
+    const fogPoints = [];
+    for (const cell of visitedCells || []) {
+      const id = typeof cell === "string" ? cell : cell?.h3_cell;
+      if (!id) continue;
+      try {
+        const [lat, lng] = cellToLatLng(id);
+        if (Number.isFinite(lat) && Number.isFinite(lng)) {
+          fogPoints.push({ lat, lng });
+        }
+      } catch {
+        /* skip invalid indexes */
+      }
+    }
+    const all = [...nodes, ...fogPoints];
+    const b = boundsFromNodes(all);
     return [
       { lat: b.south, lng: b.west },
       { lat: b.north, lng: b.east },
-      ...nodes,
+      ...all,
     ];
-  }, [nodes]);
+  }, [nodes, visitedCells]);
 
   if (!graph || width < 8 || height < 8) {
     return (
@@ -124,6 +141,7 @@ export default function GraphMap({
         attributionControl
       >
         <TileLayer url={SOFT_TILES} attribution={SOFT_ATTR} maxZoom={16} />
+        <FogOverlayLayer cells={visitedCells} />
         <FitGraphBounds points={fitPoints} />
         <MapSizeSync width={width} height={height} />
 

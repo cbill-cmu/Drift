@@ -477,6 +477,29 @@ body {
   border-right-color: rgba(255, 255, 255, 0.95);
 }
 
+.drift-leaflet .leaflet-fog-pane {
+  pointer-events: none;
+}
+
+.fog-hint {
+  position: absolute;
+  left: 50%;
+  bottom: calc(var(--sheet-bottom-clearance) + 0.35rem);
+  transform: translateX(-50%);
+  z-index: 3;
+  margin: 0;
+  padding: 0.35rem 0.8rem;
+  border-radius: var(--radius-pill);
+  background: rgba(255, 255, 255, 0.9);
+  color: var(--muted);
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  pointer-events: none;
+  box-shadow: var(--shadow);
+  white-space: nowrap;
+}
+
 .map-loading,
 .map-fatal {
   position: absolute;

@@ -114,6 +114,16 @@ export async function fetchUserProfile(userId) {
   return data;
 }
 
+/** GET /api/users/me/visited-cells — personal fog-of-war hexes */
+export async function fetchMyVisitedCells() {
+  try {
+    const { data } = await api.get("/api/users/me/visited-cells");
+    return data;
+  } catch (err) {
+    throw apiError(err, "Failed to load visited cells");
+  }
+}
+
 /** POST /api/users/me — create or fetch the Mongo user for this Auth0 login */
 export async function ensureCurrentUser() {
   try {
