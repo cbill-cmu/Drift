@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
+import { readAddFriendParam } from "../utils/friendInvite.js";
 import DiscoveryReveal from "./DiscoveryReveal.jsx";
 import FriendsPanel from "./FriendsPanel.jsx";
 import GroupMapView from "./GroupMapView.jsx";
@@ -25,7 +26,9 @@ export default function Layout({ groupId }) {
   } = useAuthStatus();
   const [showTripLogger, setShowTripLogger] = useState(false);
   const [discoveryData, setDiscoveryData] = useState(null);
-  const [activeTab, setActiveTab] = useState("locations");
+  const [activeTab, setActiveTab] = useState(() =>
+    readAddFriendParam() ? "friends" : "locations"
+  );
   const [activeFriend, setActiveFriend] = useState(null);
   const [displayedGraph, setDisplayedGraph] = useState(null);
   const [selectedNode, setSelectedNode] = useState(null);
@@ -49,9 +52,13 @@ export default function Layout({ groupId }) {
     setLoginError(null);
     try {
       await loginWithRedirect({
+        appState: {
+          returnTo: `${window.location.pathname}${window.location.search}`,
+        },
         authorizationParams: {
           redirect_uri: window.location.origin,
           audience: import.meta.env.VITE_AUTH0_AUDIENCE || undefined,
+          scope: "openid profile email",
         },
       });
     } catch (err) {
@@ -134,20 +141,20 @@ export default function Layout({ groupId }) {
           ))}
         </div>
         <div className="sidebar-tab-body">
-          {activeTab === "locations" ? (
+          <div className={activeTab === "locations" ? undefined : "is-hidden"}>
             <NeighborhoodStats
               neighborhoods={displayedGraph?.neighborhoods}
               nodes={displayedGraph?.nodes}
               selectedNodeId={selectedNode?.id}
               onSelectNode={setSelectedNode}
             />
-          ) : (
+          </div>
+          <div className={activeTab === "friends" ? undefined : "is-hidden"}>
             <FriendsPanel
               onViewMap={viewFriend}
               activeFriendId={activeFriend?.id}
-              members={displayedGraph?.members}
             />
-          )}
+          </div>
         </div>
         <button type="button" className="btn-sun" onClick={() => setShowTripLogger(true)}>
           Log trip

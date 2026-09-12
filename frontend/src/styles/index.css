@@ -133,10 +133,32 @@ h2,
   color: var(--ink);
 }
 
-.pill {
-  font-size: 0.75rem;
-  color: var(--sky-deep);
-  font-weight: 700;
+.is-hidden {
+  display: none;
+}
+
+.friend-qr {
+  margin-top: 0.75rem;
+  display: grid;
+  gap: 0.55rem;
+  justify-items: start;
+}
+
+.friend-qr-body {
+  width: 100%;
+  padding: 0.7rem;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--sand);
+  display: grid;
+  justify-items: center;
+  gap: 0.35rem;
+}
+
+.friend-qr-body img {
+  width: 148px;
+  height: 148px;
+  border-radius: 8px;
 }
 
 .overall-pct {

@@ -9,9 +9,14 @@ export const api = axios.create({
 });
 
 let tokenGetter = async () => null;
+let profileEmailGetter = async () => null;
 
 export function setAuthTokenGetter(fn) {
   tokenGetter = fn || (async () => null);
+}
+
+export function setAuthEmailGetter(fn) {
+  profileEmailGetter = fn || (async () => null);
 }
 
 api.interceptors.request.use(async (config) => {
@@ -19,12 +24,19 @@ api.interceptors.request.use(async (config) => {
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;
   }
+  const email = await profileEmailGetter();
+  if (email) {
+    config.headers["X-User-Email"] = email;
+  }
   return config;
 });
 
 function apiError(err, fallback) {
   const fromBody = err.response?.data?.error;
-  return new Error(fromBody || err.message || fallback);
+  const status = err.response?.status;
+  if (fromBody) return new Error(fromBody);
+  if (status) return new Error(`${fallback} (${status})`);
+  return new Error(err.message || fallback);
 }
 
 /** POST /api/trips — see shared/api-contract.md */
@@ -60,5 +72,62 @@ export async function fetchFriendGraph(userId, groupId) {
     return data;
   } catch (err) {
     throw apiError(err, "Failed to load friend graph");
+  }
+}
+
+function mapFriendship(item) {
+  return {
+    id: item?.user?.id || "",
+    display_name: item?.user?.display_name || "User",
+    email: item?.user?.email || "",
+    friendship_id: item?.friendship_id,
+    status: item?.status,
+    direction: item?.direction,
+  };
+}
+
+/** GET /api/friends */
+export async function fetchFriends() {
+  try {
+    const { data } = await api.get("/api/friends");
+    return {
+      success: data?.success !== false,
+      me: data?.me || null,
+      accepted: (data?.accepted || []).map(mapFriendship),
+      incoming: (data?.incoming || []).map(mapFriendship),
+      outgoing: (data?.outgoing || []).map(mapFriendship),
+    };
+  } catch (err) {
+    throw apiError(err, "Failed to load friends");
+  }
+}
+
+/** POST /api/friends  body { email } */
+export async function addFriendByEmail(email) {
+  try {
+    const { data } = await api.post("/api/friends", { email });
+    return data;
+  } catch (err) {
+    throw apiError(err, "Failed to send friend request");
+  }
+}
+
+/** POST /api/friends/:id/accept */
+export async function acceptFriendRequest(friendshipId) {
+  try {
+    const { data } = await api.post(`/api/friends/${friendshipId}/accept`);
+    return data;
+  } catch (err) {
+    throw apiError(err, "Failed to accept friend request");
+  }
+}
+
+/** POST /api/friends/:id/unsend */
+export async function unsendFriendRequest(friendshipId) {
+  try {
+    const { data } = await api.post(`/api/friends/${friendshipId}/unsend`);
+    return data;
+  } catch (err) {
+    throw apiError(err, "Failed to unsend friend request");
   }
 }

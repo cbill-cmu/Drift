@@ -1,7 +1,7 @@
 import Layout from "./components/Layout.jsx";
-import { setAuthTokenGetter } from "./api/client.js";
+import { setAuthEmailGetter, setAuthTokenGetter } from "./api/client.js";
 import { useAuthStatus } from "./hooks/useAuth0.js";
-import { useEffect } from "react";
+import { useLayoutEffect } from "react";
 
 const GROUP_ID =
   import.meta.env.VITE_DEMO_GROUP_ID || "6aa4d5b78c6341a27ed90e4b";
@@ -10,9 +10,9 @@ const GROUP_ID =
  * Root app (Person 2).
  */
 export default function App() {
-  const { getAccessTokenSilently, isConfigured } = useAuthStatus();
+  const { getAccessTokenSilently, isConfigured, user } = useAuthStatus();
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     setAuthTokenGetter(async () => {
       if (!isConfigured) return "dev-local";
       try {
@@ -21,8 +21,12 @@ export default function App() {
         return null;
       }
     });
-    return () => setAuthTokenGetter(async () => null);
-  }, [getAccessTokenSilently, isConfigured]);
+    setAuthEmailGetter(async () => user?.email || null);
+    return () => {
+      setAuthTokenGetter(async () => null);
+      setAuthEmailGetter(async () => null);
+    };
+  }, [getAccessTokenSilently, isConfigured, user?.email]);
 
   return <Layout groupId={GROUP_ID} />;
 }

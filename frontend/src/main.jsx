@@ -23,6 +23,7 @@ ReactDOM.createRoot(document.getElementById("root")).render(
         authorizationParams={{
           redirect_uri: window.location.origin,
           audience: audience || undefined,
+          scope: "openid profile email",
         }}
         cacheLocation="localstorage"
         onRedirectCallback={(appState) => {

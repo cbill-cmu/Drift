@@ -12,11 +12,18 @@ export function requireAuth(req, res, next) {
 
   const token = header.slice("Bearer ".length).trim();
   const claims = decodeJwtPayload(token);
+  const headerEmail = Array.isArray(req.headers["x-user-email"])
+    ? req.headers["x-user-email"][0]
+    : req.headers["x-user-email"];
+  const fromHeader =
+    typeof headerEmail === "string" && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(headerEmail.trim())
+      ? headerEmail.trim()
+      : null;
   req.auth = {
     token,
     sub: claims.sub || null,
     name: claims.name || claims.nickname || null,
-    email: claims.email || null,
+    email: claims.email || claims["https://api.drift.local/email"] || fromHeader || null,
   };
   next();
 }
