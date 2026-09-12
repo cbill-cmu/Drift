@@ -32,7 +32,7 @@ async function main() {
 
   // 1) Health stays public
   {
-    const r = await req("/");
+    const r = await req("/api/health");
     assert(r.status === 200 && r.json?.ok === true, `health expected 200, got ${r.status}`);
     results.push("PASS health public");
   }

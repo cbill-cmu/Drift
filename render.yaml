@@ -1,0 +1,33 @@
+services:
+  - type: web
+    name: drift
+    runtime: node
+    plan: free
+    buildCommand: npm run build
+    startCommand: npm start
+    healthCheckPath: /api/health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: MONGODB_URI
+        sync: false
+      - key: MONGODB_DB
+        value: drift
+      - key: AUTH0_DOMAIN
+        sync: false
+      - key: AUTH0_AUDIENCE
+        value: https://api.drift.local
+      - key: VITE_AUTH0_DOMAIN
+        sync: false
+      - key: VITE_AUTH0_CLIENT_ID
+        sync: false
+      - key: VITE_AUTH0_AUDIENCE
+        value: https://api.drift.local
+      - key: VITE_CARTO_API_KEY
+        sync: false
+      - key: VITE_CARTO_STYLE
+        value: positron
+      - key: VITE_API_BASE_URL
+        value: ""
+      - key: VITE_DEMO_GROUP_ID
+        value: ""

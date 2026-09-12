@@ -2,6 +2,8 @@
 
 Do this only after the critical path works locally (see `PERSON4_RUNBOOK.md`). Database stays on **MongoDB Atlas**.
 
+**Live demo without Vultr credits:** use [render-setup.md](render-setup.md) (free Web Service, same-origin API + SPA).
+
 ## Status
 
 - [ ] VPS provisioned

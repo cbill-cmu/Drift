@@ -9,7 +9,7 @@ Cap dashboard setup at **~45–60 minutes**. Never commit secrets.
 - [x] Frontend login works with `VITE_AUTH0_*` env
 - [~] API audience `https://api.drift.local` (confirm SPA authorized for API)
 - [~] Test users (Fabio + backups) — keep passwords out of git
-- [ ] Production callback / logout / web origins (when Person 4 deploys)
+- [ ] Production callback / logout / web origins — add the Render origin from [`deployment/render-setup.md`](deployment/render-setup.md) (keep localhost)
 
 ## Goal
 

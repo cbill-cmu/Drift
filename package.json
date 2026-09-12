@@ -1,0 +1,12 @@
+{
+  "name": "drift",
+  "private": true,
+  "description": "Drift — same-origin API + SPA for Render / Vultr",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "build": "npm ci --prefix frontend && npm run build --prefix frontend && npm ci --prefix backend",
+    "start": "npm start --prefix backend"
+  }
+}

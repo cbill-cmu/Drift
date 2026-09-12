@@ -119,6 +119,7 @@ Frontend needs a **reachable** `VITE_API_BASE_URL` (Person 1’s machine or shar
 | [GITHUB_WORKFLOW.md](GITHUB_WORKFLOW.md) | Branches, ownership, remaining work |
 | [DRIFT_PROJECT_GUIDE.md](DRIFT_PROJECT_GUIDE.md) | Product, demo script, architecture |
 | [shared/mongodb-seed/HANDOFF.md](shared/mongodb-seed/HANDOFF.md) | First-run after a pull |
+| [shared/deployment/render-setup.md](shared/deployment/render-setup.md) | Free live demo (Render) |
 | [shared/PERSON3_RUNBOOK.md](shared/PERSON3_RUNBOOK.md) | Auth/seed health |
 | [shared/PERSON4_RUNBOOK.md](shared/PERSON4_RUNBOOK.md) | E2E + deploy |
 | [shared/api-contract.md](shared/api-contract.md) | HTTP contract |

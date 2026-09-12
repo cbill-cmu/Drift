@@ -32,9 +32,11 @@ Checklist (facilitate with P1–P3 on a call):
 - [ ] Dry-run the demo script in [`DRIFT_PROJECT_GUIDE.md`](../DRIFT_PROJECT_GUIDE.md) (5–7 min)
 - [ ] Backup plan: if live trip fails, narrate from seeded graph + fixture discovery toast
 
-## Priority 3 — Deploy (Vultr)
+## Priority 3 — Deploy
 
-Follow [`deployment/vultr-setup.md`](deployment/vultr-setup.md) + `pm2-config.js`:
+**Free demo (no Vultr credits):** [`deployment/render-setup.md`](deployment/render-setup.md) — one Render URL for API + UI.
+
+**Vultr (if you have credits):** [`deployment/vultr-setup.md`](deployment/vultr-setup.md) + `pm2-config.js`:
 
 - [ ] VPS + Node + clone repo
 - [ ] Backend `.env` with Atlas URI + Auth0

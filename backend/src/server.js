@@ -1,6 +1,9 @@
 import "dotenv/config";
 import cors from "cors";
 import express from "express";
+import fs from "fs";
+import path from "path";
+import { fileURLToPath } from "url";
 
 import { requireAuth } from "./middleware/auth.js";
 import friendsRouter from "./routes/friends.js";
@@ -14,15 +17,28 @@ import usersRouter from "./routes/users.js";
 import { connectMongo } from "./services/mongoService.js";
 import { ensurePlacesCatalog } from "./services/placesCatalogService.js";
 
-const app = express();
-const port = process.env.PORT || 3000;
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+const frontendDist = process.env.FRONTEND_DIST
+  ? path.resolve(process.env.FRONTEND_DIST)
+  : path.resolve(__dirname, "../../frontend/dist");
+const isProd = process.env.NODE_ENV === "production";
 
+const app = express();
+const port = Number(process.env.PORT) || 3000;
+
+app.set("trust proxy", 1);
 app.use(cors());
 app.use(express.json());
 
-app.get("/", (_req, res) => {
+app.get("/api/health", (_req, res) => {
   res.json({ ok: true, service: "drift-backend" });
 });
+
+if (!isProd) {
+  app.get("/", (_req, res) => {
+    res.json({ ok: true, service: "drift-backend" });
+  });
+}
 
 app.use("/api/trips", requireAuth, tripsRouter);
 app.use("/api/location", requireAuth, locationRouter);
@@ -33,6 +49,15 @@ app.use("/api/groups", requireAuth, groupsRouter);
 app.use("/api/groups", graphRouter);
 app.use("/api/users", requireAuth, usersRouter);
 
+if (isProd && fs.existsSync(path.join(frontendDist, "index.html"))) {
+  app.use(express.static(frontendDist));
+  app.use((req, res, next) => {
+    if (req.method !== "GET" && req.method !== "HEAD") return next();
+    if (req.path.startsWith("/api")) return next();
+    res.sendFile(path.join(frontendDist, "index.html"));
+  });
+}
+
 async function start() {
   try {
     await connectMongo();
@@ -41,8 +66,9 @@ async function start() {
     console.warn("[mongo] Skipping connect on boot:", err.message);
   }
 
-  app.listen(port, () => {
-    console.log(`Drift API listening on http://localhost:${port}`);
+  app.listen(port, "0.0.0.0", () => {
+    console.log(`Drift API listening on http://0.0.0.0:${port}`);
+    if (isProd) console.log("[static] frontend dist:", frontendDist);
   });
 }
 
