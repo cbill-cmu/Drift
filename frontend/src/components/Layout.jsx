@@ -18,6 +18,7 @@ import { useGroupVisitedPlaces } from "../hooks/useGroupVisitedPlaces.js";
 import { useLocationTracking } from "../hooks/useLocationTracking.js";
 import { useVisitedCells } from "../hooks/useVisitedCells.js";
 import { cellIdSet, suggestionId } from "../utils/suggestions.js";
+import { colorForGroup } from "../utils/groupColor.js";
 
 const NAV = [
   { id: "places", label: "Places", icon: "places" },
@@ -99,8 +100,10 @@ export default function Layout({ defaultGroupId }) {
     reload: reloadGroups,
     create: createGroup,
     leave: leaveGroup,
+    select: selectGroup,
   } = useGroups(defaultGroupId, { enabled: isAuthenticated });
   const groupId = selectedId || "";
+  const groupColor = useMemo(() => colorForGroup(groupId), [groupId]);
   const {
     active: tracking,
     error: trackingError,
@@ -322,7 +325,14 @@ export default function Layout({ defaultGroupId }) {
           : "Places";
 
   return (
-    <div className="layout layout-map-first">
+    <div
+      className="layout layout-map-first"
+      style={{
+        "--group-fill": groupColor.fill,
+        "--group-soft": groupColor.soft,
+        "--group-stroke": groupColor.stroke,
+      }}
+    >
       <header className="map-chrome">
         <div className="map-island">
           <strong className="brand">Drift</strong>
@@ -337,13 +347,22 @@ export default function Layout({ defaultGroupId }) {
             </button>
             <button
               type="button"
-              className={fogMode === "group" ? "is-on" : ""}
+              className={fogMode === "group" ? "is-on fog-toggle-group" : "fog-toggle-group"}
               disabled={!groupId}
               onClick={() => setFogMode("group")}
             >
               Group
             </button>
           </div>
+          {groupId ? (
+            <>
+              <span className="map-island-split" aria-hidden="true" />
+              <span className="group-live-inline">
+                <span className="group-swatch" style={{ background: groupColor.fill }} aria-hidden="true" />
+                <span className="group-live-name">{groupName}</span>
+              </span>
+            </>
+          ) : null}
         </div>
         <div className="map-chrome-end">
           <button
@@ -382,6 +401,7 @@ export default function Layout({ defaultGroupId }) {
           suggestionsLoading={suggestionsLoading}
           origin={origin}
           selectedPlace={selectedPlace}
+          accent={groupColor}
         />
       </main>
 
@@ -461,15 +481,22 @@ export default function Layout({ defaultGroupId }) {
                 </div>
                 <p className="profile-name">{displayName}</p>
                 <p className="hint">{user?.email}</p>
-                <p className="profile-group">{groupName}</p>
+                <p className="profile-group">
+                  {groupId ? (
+                    <span className="group-swatch" style={{ background: groupColor.fill }} aria-hidden="true" />
+                  ) : null}
+                  {groupName}
+                </p>
                 {activeFriend ? (
                   <p className="hint">Viewing {activeFriend.display_name}</p>
                 ) : null}
                 <GroupsPanel
                   groups={groups}
+                  selectedId={groupId}
                   loading={groupsLoading}
                   error={groupsError}
                   onCreate={createGroup}
+                  onSelect={selectGroup}
                   onLeave={leaveGroup}
                 />
                 <button

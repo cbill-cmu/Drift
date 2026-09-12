@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { deleteCurrentUser, updateCurrentUser } from "../api/client.js";
+import { colorForGroup } from "../utils/groupColor.js";
 
 const DELETE_PROMPT =
   "Are you sure you want to delete your account? Doing so will delete all of the data you have associated with your account";
@@ -136,9 +137,11 @@ export default function ProfileModal({
                   </p>
                   {groups.map((group) => {
                     const on = sharesWithGroup(user, group.id);
+                    const color = colorForGroup(group.id);
                     return (
                       <label key={group.id} className="share-row">
-                        <span>
+                        <span className="share-row-label">
+                          <span className="group-swatch" style={{ background: color.fill }} aria-hidden="true" />
                           Share my exploration with {group.name}
                         </span>
                         <input

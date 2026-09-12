@@ -16,6 +16,7 @@ import { cellIdSet, suggestionId } from "../utils/suggestions.js";
 import FogOverlayLayer from "./FogOverlayLayer.jsx";
 import MapZoomControl from "./MapZoomControl.jsx";
 import SuggestionPins from "./SuggestionPins.jsx";
+import { GROUP_PALETTE } from "../utils/groupColor.js";
 
 const PITTSBURGH = [40.4406, -79.9959];
 const BASEMAP = getBasemap();
@@ -96,7 +97,9 @@ export default function GraphMap({
   selectedSuggestion = null,
   onSelectSuggestion,
   viewKey = "default",
+  accent = GROUP_PALETTE[0],
 }) {
+  const color = accent?.fill ? accent : GROUP_PALETTE[0];
   const nodes = useMemo(
     () =>
       (graph?.nodes || []).filter(
@@ -193,6 +196,7 @@ export default function GraphMap({
           cells={visitedCells}
           everyone={everyoneCells}
           some={someCells}
+          accent={color}
         />
         <FitGraphBounds points={fitPoints} resetKey={viewKey} />
         <MapSizeSync width={width} height={height} />
@@ -209,9 +213,9 @@ export default function GraphMap({
             key={e.id}
             positions={e.positions}
             pathOptions={{
-              color: "#9ccfc0",
+              color: color.fill,
               weight: Math.min(3.2, 1.1 + Math.log2(e.count + 1) * 0.65),
-              opacity: 0.42,
+              opacity: 0.48,
               lineCap: "round",
               lineJoin: "round",
             }}
@@ -228,7 +232,7 @@ export default function GraphMap({
               pathOptions={{
                 color: "#ffffff",
                 weight: 2.5,
-                fillColor: selected ? "#f0b0bc" : "#c5e8dc",
+                fillColor: selected ? "#f0b0bc" : color.soft,
                 fillOpacity: 0.95,
               }}
               eventHandlers={{

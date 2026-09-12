@@ -102,6 +102,7 @@ export default function FogOverlayLayer({
   cells = [],
   everyone = [],
   some = [],
+  accent = null,
 }) {
   const map = useMap();
   const [view, setView] = useState(() => snapshotView(map));
@@ -164,7 +165,33 @@ export default function FogOverlayLayer({
     [mode, visibleHoles, view.zoom]
   );
 
-  const fogKey = `${mode}|${view.ring.map((p) => p.map((n) => n.toFixed(4)).join(",")).join("|")}|${visibleHoles.length}`;
+  const everyoneStyle = useMemo(
+    () => ({
+      ...EVERYONE_STYLE,
+      color: accent?.stroke || EVERYONE_STYLE.color,
+      fillColor: accent?.fill || EVERYONE_STYLE.fillColor,
+    }),
+    [accent]
+  );
+
+  const someStyle = useMemo(
+    () => ({
+      ...SOME_STYLE,
+      color: accent?.fill || SOME_STYLE.color,
+      fillColor: accent?.soft || SOME_STYLE.fillColor,
+    }),
+    [accent]
+  );
+
+  const revealStyle = useMemo(
+    () => ({
+      ...REVEAL_STYLE,
+      color: accent?.fill || REVEAL_STYLE.color,
+    }),
+    [accent]
+  );
+
+  const fogKey = `${mode}|${accent?.fill || ""}|${view.ring.map((p) => p.map((n) => n.toFixed(4)).join(",")).join("|")}|${visibleHoles.length}`;
 
   return (
     <>
@@ -183,7 +210,7 @@ export default function FogOverlayLayer({
           key={`some-${fogKey}`}
           data={someGeo}
           interactive={false}
-          style={SOME_STYLE}
+          style={someStyle}
         />
       ) : null}
       {mode === "group" && everyoneGeo.features.length ? (
@@ -191,7 +218,7 @@ export default function FogOverlayLayer({
           key={`everyone-${fogKey}`}
           data={everyoneGeo}
           interactive={false}
-          style={EVERYONE_STYLE}
+          style={everyoneStyle}
         />
       ) : null}
       {revealed.features.length ? (
@@ -200,7 +227,7 @@ export default function FogOverlayLayer({
           data={revealed}
           pane="fog"
           interactive={false}
-          style={REVEAL_STYLE}
+          style={revealStyle}
           renderer={renderer}
         />
       ) : null}

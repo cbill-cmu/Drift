@@ -27,6 +27,7 @@ export default function GroupMapView({
   suggestionsLoading = false,
   origin = null,
   selectedPlace = null,
+  accent = null,
 }) {
   const { data, loading, error, reload, usingFixture } = useMapGraph({
     groupId,
@@ -91,6 +92,7 @@ export default function GroupMapView({
           origin={friendId ? null : origin}
           selectedSuggestion={friendId ? null : selectedPlace}
           onSelectSuggestion={onSelectPlace}
+          accent={accent}
         />
       ) : null}
 

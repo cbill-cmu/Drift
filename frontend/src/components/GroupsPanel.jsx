@@ -1,10 +1,14 @@
 import { useState } from "react";
 
+import { colorForGroup } from "../utils/groupColor.js";
+
 export default function GroupsPanel({
   groups,
+  selectedId,
   loading,
   error,
   onCreate,
+  onSelect,
   onLeave,
 }) {
   const [name, setName] = useState("");
@@ -53,27 +57,40 @@ export default function GroupsPanel({
   return (
     <section className="profile-groups">
       <h3>Your groups</h3>
-      <p className="hint">Create a group, then invite friends from the Friends tab.</p>
+      <p className="hint">Each group has its own color. Tap one to open it on the map, then invite friends from the Friends tab.</p>
       {notice ? <p className={noticeKind}>{notice}</p> : null}
       {error ? <p className="error">{error}</p> : null}
       {loading ? <p className="hint">Loading groups…</p> : null}
 
       <ul>
-        {groups.map((group) => (
-          <li key={group.id} className="friend-row">
-            <div>
-              <strong>{group.name}</strong>
-            </div>
-            <button
-              type="button"
-              className="btn-danger"
-              disabled={leavingId === group.id}
-              onClick={() => handleDelete(group)}
-            >
-              {leavingId === group.id ? "…" : "Delete"}
-            </button>
-          </li>
-        ))}
+        {groups.map((group) => {
+          const color = colorForGroup(group.id);
+          const active = group.id === selectedId;
+          return (
+            <li key={group.id} className={active ? "friend-row group-row is-on" : "friend-row group-row"}>
+              <button
+                type="button"
+                className="group-pick"
+                aria-pressed={active}
+                onClick={() => onSelect?.(group.id)}
+              >
+                <span className="group-swatch" style={{ background: color.fill }} aria-hidden="true" />
+                <span className="group-pick-copy">
+                  <strong>{group.name}</strong>
+                  {active ? <span className="hint">On the map</span> : null}
+                </span>
+              </button>
+              <button
+                type="button"
+                className="btn-danger"
+                disabled={leavingId === group.id}
+                onClick={() => handleDelete(group)}
+              >
+                {leavingId === group.id ? "…" : "Leave"}
+              </button>
+            </li>
+          );
+        })}
         {!loading && groups.length === 0 ? (
           <li className="hint">No groups yet. Create one below.</li>
         ) : null}

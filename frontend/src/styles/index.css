@@ -45,6 +45,9 @@ body {
 }
 
 .layout-map-first {
+  --group-fill: #6db3a8;
+  --group-soft: #c5e8dc;
+  --group-stroke: #3f8f86;
   position: relative;
   height: 100vh;
   overflow: hidden;
@@ -120,6 +123,42 @@ body {
   letter-spacing: 0.06em;
   text-transform: uppercase;
   color: var(--muted);
+}
+
+.group-swatch {
+  width: 0.72rem;
+  height: 0.72rem;
+  border-radius: 50%;
+  flex-shrink: 0;
+  box-shadow: inset 0 0 0 1px rgba(23, 36, 36, 0.14);
+}
+
+.group-live {
+  gap: 0.45rem;
+  padding-right: 0.95rem;
+  max-width: min(11.5rem, 34vw);
+}
+
+.group-live-inline {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  min-width: 0;
+  max-width: 8.5rem;
+  padding-right: 0.55rem;
+}
+
+.group-live-name {
+  font-size: 0.78rem;
+  font-weight: 700;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.fog-mode-toggle button.fog-toggle-group.is-on {
+  background: var(--group-soft);
+  color: var(--group-stroke);
 }
 
 .tracking-toggle {
@@ -397,6 +436,9 @@ body {
 
 .profile-group {
   margin: 0.35rem 0 0.75rem;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
   font-size: 0.85rem;
   font-weight: 700;
   color: var(--muted);
@@ -654,14 +696,14 @@ body {
 }
 
 .fog-swatch-everyone {
-  background: var(--mint-deep);
+  background: var(--group-fill);
 }
 
 .fog-swatch-some {
   background: repeating-linear-gradient(
     38deg,
-    var(--mint) 0 3px,
-    var(--mint-deep) 3px 6px
+    var(--group-soft) 0 3px,
+    var(--group-fill) 3px 6px
   );
 }
 
@@ -1310,6 +1352,47 @@ body {
   scroll-margin-bottom: 1.25rem;
 }
 
+.group-row {
+  padding: 0.28rem 0.35rem;
+  margin: 0 -0.35rem;
+  border-radius: 0.7rem;
+}
+
+.group-row.is-on {
+  background: color-mix(in srgb, var(--group-soft) 78%, white);
+}
+
+.group-pick {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex: 1;
+  min-width: 0;
+  border: 0;
+  background: transparent;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+  padding: 0.15rem 0;
+}
+
+.group-pick strong {
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.group-pick-copy {
+  display: grid;
+  min-width: 0;
+}
+
+.group-pick .hint {
+  margin: 0;
+  font-size: 0.7rem;
+}
+
 .friend-row-actions {
   display: flex;
   flex-shrink: 0;
@@ -1586,6 +1669,16 @@ button:focus-visible,
   padding: 0.55rem 0 0.15rem;
   font-size: 0.92rem;
   font-weight: 600;
+}
+
+.share-row-label {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.45rem;
+}
+
+.share-row-label .group-swatch {
+  margin-top: 0.28rem;
 }
 
 .share-row input[type="checkbox"] {
