@@ -3,9 +3,11 @@ import { readAddFriendParam } from "../utils/friendInvite.js";
 import DiscoveryReveal from "./DiscoveryReveal.jsx";
 import FriendsPanel from "./FriendsPanel.jsx";
 import GroupMapView from "./GroupMapView.jsx";
+import GroupsPanel from "./GroupsPanel.jsx";
 import NeighborhoodStats from "./NeighborhoodStats.jsx";
 import TripLoggerModal from "./TripLoggerModal.jsx";
 import { useAuthStatus } from "../hooks/useAuth0.js";
+import { useGroups } from "../hooks/useGroups.js";
 
 const NAV = [
   { id: "places", label: "Places", icon: "places" },
@@ -47,7 +49,7 @@ function NavIcon({ name }) {
 /**
  * Soft product standard shell: full-bleed map + circular bottom nav.
  */
-export default function Layout({ groupId }) {
+export default function Layout({ defaultGroupId }) {
   const {
     isAuthenticated,
     isLoading,
@@ -56,6 +58,17 @@ export default function Layout({ groupId }) {
     user,
     error,
   } = useAuthStatus();
+  const {
+    groups,
+    selected,
+    selectedId,
+    loading: groupsLoading,
+    error: groupsError,
+    reload: reloadGroups,
+    select: selectGroup,
+    create: createGroup,
+  } = useGroups(defaultGroupId, { enabled: isAuthenticated });
+  const groupId = selectedId || defaultGroupId;
   const [showTripLogger, setShowTripLogger] = useState(false);
   const [discoveryData, setDiscoveryData] = useState(null);
   const [sheet, setSheet] = useState(() =>
@@ -75,7 +88,18 @@ export default function Layout({ groupId }) {
     setSelectedNode(null);
   }, [activeFriend?.id]);
 
+  useEffect(() => {
+    setActiveFriend(null);
+    setSelectedNode(null);
+    setDisplayedGraph(null);
+  }, [groupId]);
+
+  useEffect(() => {
+    if (sheet === "profile" && isAuthenticated) reloadGroups();
+  }, [sheet, isAuthenticated, reloadGroups]);
+
   const groupName =
+    selected?.name ||
     displayedGraph?.group_name ||
     import.meta.env.VITE_DEMO_GROUP_NAME ||
     "CMU CREW";
@@ -146,6 +170,7 @@ export default function Layout({ groupId }) {
     <div className="layout layout-map-first">
       <header className="map-topbar">
         <strong className="brand">Drift</strong>
+        <span className="group-chip">{groupName}</span>
       </header>
 
       <main className="layout-main">
@@ -197,6 +222,14 @@ export default function Layout({ groupId }) {
                 <p className="profile-name">{user?.name || "You"}</p>
                 <p className="hint">{user?.email}</p>
                 <p className="profile-group">{groupName}</p>
+                <GroupsPanel
+                  groups={groups}
+                  selectedId={groupId}
+                  loading={groupsLoading}
+                  error={groupsError}
+                  onSelect={selectGroup}
+                  onCreate={createGroup}
+                />
                 <button
                   type="button"
                   className="btn-paper profile-logout"

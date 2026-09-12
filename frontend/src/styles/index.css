@@ -315,7 +315,31 @@ body {
 
 .profile-logout {
   width: 100%;
-  margin-top: 0.5rem;
+  margin-top: 1rem;
+}
+
+.profile-groups {
+  width: 100%;
+  text-align: left;
+  margin-top: 0.85rem;
+  padding-top: 0.75rem;
+  border-top: 1px solid var(--line);
+}
+
+.profile-groups h3 {
+  margin: 0 0 0.5rem;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--muted);
+}
+
+.profile-groups ul {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 0.85rem;
+  display: grid;
+  gap: 0.75rem;
 }
 
 .btn-paper {

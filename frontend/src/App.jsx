@@ -28,5 +28,5 @@ export default function App() {
     };
   }, [getAccessTokenSilently, isConfigured, user?.email]);
 
-  return <Layout groupId={GROUP_ID} />;
+  return <Layout defaultGroupId={GROUP_ID} />;
 }
