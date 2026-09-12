@@ -246,6 +246,51 @@ export async function getCoverageGapSuggestions(db, group, { limit = SUGGESTION_
     .slice(0, Math.max(1, Number(limit) || SUGGESTION_LIMIT));
 }
 
+const VISITED_PLACES_LIMIT = 40;
+
+/**
+ * Catalog places whose H3 cells the group HAS visited (everyone or some
+ * tier) — the mirror image of getCoverageGapSuggestions. Feeds the Places
+ * tab so a place inside a revealed (unshaded) hex counts as somewhere
+ * the group has actually been, rather than only ever showing up as an
+ * "unexplored" suggestion.
+ */
+export async function getVisitedCatalogPlaces(db, group, { limit = VISITED_PLACES_LIMIT } = {}) {
+  const coverage = await getGroupCoverage(db, group);
+  const everyoneSet = new Set(coverage.everyone || []);
+  const someSet = new Set(coverage.some || []);
+  if (!everyoneSet.size && !someSet.size) return [];
+
+  const places = await db
+    .collection(PLACES_CATALOG)
+    .find({ lat: { $type: "number" }, lng: { $type: "number" } })
+    .toArray();
+
+  const byCell = new Map();
+  for (const place of places) {
+    if (!Number.isFinite(place.lat) || !Number.isFinite(place.lng)) continue;
+    const cell = latLngToCell(place.lat, place.lng, VISITED_CELL_RESOLUTION);
+    const tier = everyoneSet.has(cell) ? "everyone" : someSet.has(cell) ? "some" : null;
+    if (!tier || byCell.has(cell)) continue;
+    const pub = publicPlace(place);
+    if (!pub?.name) continue;
+    byCell.set(cell, {
+      h3_cell: cell,
+      place_id: pub.id,
+      name: pub.name,
+      neighborhood: pub.neighborhood || "",
+      place_type: pub.place_type || pub.category || "",
+      lat: pub.lat,
+      lng: pub.lng,
+      coverage_tier: tier,
+    });
+  }
+
+  return [...byCell.values()]
+    .sort((a, b) => a.name.localeCompare(b.name))
+    .slice(0, Math.max(1, Number(limit) || VISITED_PLACES_LIMIT));
+}
+
 async function ensureIndexes(db) {
   if (indexesReady) return;
   try {

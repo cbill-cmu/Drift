@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
-import { createGroup, fetchMyGroups } from "../api/client.js";
+import { createGroup, fetchMyGroups, leaveGroup } from "../api/client.js";
 
 const STORAGE_KEY = "drift.selectedGroupId";
 const POLL_INTERVAL_MS = 15000;
@@ -15,6 +15,7 @@ function readStoredGroupId() {
 function writeStoredGroupId(id) {
   try {
     if (id) localStorage.setItem(STORAGE_KEY, id);
+    else localStorage.removeItem(STORAGE_KEY);
   } catch {
     /* ignore quota / private mode */
   }
@@ -82,6 +83,19 @@ export function useGroups(defaultGroupId, { enabled = true } = {}) {
     [reload, select]
   );
 
+  const leave = useCallback(
+    async (groupId) => {
+      const result = await leaveGroup(groupId);
+      if (groupId === selectedId) {
+        setSelectedId("");
+        writeStoredGroupId("");
+      }
+      await reload();
+      return result;
+    },
+    [reload, selectedId]
+  );
+
   const selected = groups.find((group) => group.id === selectedId) || null;
 
   return {
@@ -93,5 +107,6 @@ export function useGroups(defaultGroupId, { enabled = true } = {}) {
     reload,
     select,
     create,
+    leave,
   };
 }

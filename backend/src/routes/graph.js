@@ -3,7 +3,11 @@ import { requireAuth } from "../middleware/auth.js";
 import { requireGroupMember } from "../middleware/groupMember.js";
 import { COLLECTIONS } from "../models/index.js";
 import { asString, idVariants, matchGroupId } from "../services/ids.js";
-import { getCoverageGapSuggestions, getGroupCoverage } from "../services/locationService.js";
+import {
+  getCoverageGapSuggestions,
+  getGroupCoverage,
+  getVisitedCatalogPlaces,
+} from "../services/locationService.js";
 import { getDb } from "../services/mongoService.js";
 import { buildNeighborhoods } from "../services/neighborhoods.js";
 
@@ -169,6 +173,38 @@ router.get("/:groupId/suggestions", requireAuth, requireWellFormedParams, requir
     });
   }
 });
+
+/**
+ * GET /api/groups/:groupId/visited-places
+ * Catalog places sitting inside cells the group HAS visited (unshaded,
+ * revealed hexes) — feeds the Places tab so these count as places
+ * visited, distinct from /suggestions (unvisited, feeds Recs).
+ */
+router.get(
+  "/:groupId/visited-places",
+  requireAuth,
+  requireWellFormedParams,
+  requireGroupMember,
+  async (req, res) => {
+    try {
+      const group = req.groupDoc;
+      const rawLimit = Number(req.query.limit);
+      const limit = Number.isFinite(rawLimit) ? Math.min(60, Math.max(1, Math.floor(rawLimit))) : 40;
+      const places = await getVisitedCatalogPlaces(getDb(), group, { limit });
+      return res.json({
+        success: true,
+        group_id: asString(group._id),
+        places,
+      });
+    } catch (err) {
+      console.error("[visited-places]", err);
+      return res.status(500).json({
+        success: false,
+        error: err.message || "Failed to load visited places",
+      });
+    }
+  }
+);
 
 /**
  * GET /api/groups/:groupId/members/:userId/graph

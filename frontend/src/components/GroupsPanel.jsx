@@ -2,16 +2,16 @@ import { useState } from "react";
 
 export default function GroupsPanel({
   groups,
-  selectedId,
   loading,
   error,
-  onSelect,
   onCreate,
+  onLeave,
 }) {
   const [name, setName] = useState("");
   const [notice, setNotice] = useState("");
   const [noticeKind, setNoticeKind] = useState("hint");
   const [busy, setBusy] = useState(false);
+  const [leavingId, setLeavingId] = useState(null);
 
   async function handleCreate(event) {
     event.preventDefault();
@@ -22,13 +22,31 @@ export default function GroupsPanel({
     try {
       const result = await onCreate(value);
       setNoticeKind("hint");
-      setNotice(`Created ${result?.group?.name || value}. Opening its map.`);
+      setNotice(`Created ${result?.group?.name || value}.`);
       setName("");
     } catch (err) {
       setNoticeKind("error");
       setNotice(err.message || "Could not create group");
     } finally {
       setBusy(false);
+    }
+  }
+
+  async function handleDelete(group) {
+    if (leavingId) return;
+    const confirmed = window.confirm(`Leave "${group.name}"? This can't be undone.`);
+    if (!confirmed) return;
+    setLeavingId(group.id);
+    setNotice("");
+    try {
+      await onLeave(group.id);
+      setNoticeKind("hint");
+      setNotice(`Left ${group.name}.`);
+    } catch (err) {
+      setNoticeKind("error");
+      setNotice(err.message || "Could not leave group");
+    } finally {
+      setLeavingId(null);
     }
   }
 
@@ -41,25 +59,21 @@ export default function GroupsPanel({
       {loading ? <p className="hint">Loading groups…</p> : null}
 
       <ul>
-        {groups.map((group) => {
-          const viewing = group.id === selectedId;
-          return (
-            <li key={group.id} className="friend-row">
-              <div>
-                <strong>{group.name}</strong>
-                <span className="hint">{viewing ? "on the map" : "member"}</span>
-              </div>
-              <button
-                type="button"
-                className="btn-sun"
-                disabled={viewing}
-                onClick={() => onSelect(group.id)}
-              >
-                {viewing ? "Viewing" : "View map"}
-              </button>
-            </li>
-          );
-        })}
+        {groups.map((group) => (
+          <li key={group.id} className="friend-row">
+            <div>
+              <strong>{group.name}</strong>
+            </div>
+            <button
+              type="button"
+              className="btn-danger"
+              disabled={leavingId === group.id}
+              onClick={() => handleDelete(group)}
+            >
+              {leavingId === group.id ? "…" : "Delete"}
+            </button>
+          </li>
+        ))}
         {!loading && groups.length === 0 ? (
           <li className="hint">No groups yet. Create one below.</li>
         ) : null}

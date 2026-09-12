@@ -525,3 +525,41 @@ export async function unsendGroupInvite(inviteId, auth = {}) {
     invite: serializeInvite(row, me, other, group),
   };
 }
+
+/**
+ * DELETE /api/groups/:groupId
+ * Caller leaves the group. If they were the last member, the group is
+ * deleted entirely; if they were the creator and others remain,
+ * creator_id transfers to another remaining member.
+ */
+export async function leaveGroup(groupId, auth = {}) {
+  const db = getDb();
+  await ensureIndexes(db);
+
+  const me = await requireCurrentUser(db, auth);
+  const group = await findGroup(db, groupId);
+  if (!group) throw new HttpError(404, "Unknown group");
+  if (!isGroupMember(group, me)) {
+    throw new HttpError(403, "Not a group member");
+  }
+
+  const remainingIds = (group.member_ids || []).filter((id) => !sameId(id, me._id));
+  const deleted = remainingIds.length === 0;
+
+  if (deleted) {
+    await db.collection(COLLECTIONS.GROUPS).deleteOne({ _id: group._id });
+  } else {
+    const updates = { member_ids: remainingIds };
+    if (sameId(group.creator_id, me._id)) {
+      updates.creator_id = remainingIds[0];
+    }
+    await db.collection(COLLECTIONS.GROUPS).updateOne({ _id: group._id }, { $set: updates });
+  }
+
+  await db.collection(COLLECTIONS.USERS).updateOne(
+    { _id: me._id },
+    { $pull: { groups: group._id, contributes_to: group._id } }
+  );
+
+  return { success: true, group_id: asString(group._id), deleted };
+}

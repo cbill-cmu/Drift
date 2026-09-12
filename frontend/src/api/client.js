@@ -136,6 +136,18 @@ export async function fetchGroupCoverage(groupId) {
   }
 }
 
+/** GET /api/groups/:groupId/visited-places — catalog places inside visited (unshaded) cells */
+export async function fetchGroupVisitedPlaces(groupId, { limit = 40 } = {}) {
+  try {
+    const { data } = await api.get(`/api/groups/${groupId}/visited-places`, {
+      params: { limit },
+    });
+    return data;
+  } catch (err) {
+    throw apiError(err, "Failed to load visited places");
+  }
+}
+
 /** GET /api/users/me/visited-cells — personal fog-of-war hexes */
 export async function fetchMyVisitedCells() {
   try {
@@ -261,6 +273,16 @@ export async function createGroup(name) {
     return data;
   } catch (err) {
     throw apiError(err, "Failed to create group");
+  }
+}
+
+/** DELETE /api/groups/:groupId — caller leaves; group is deleted if they were the last member */
+export async function leaveGroup(groupId) {
+  try {
+    const { data } = await api.delete(`/api/groups/${groupId}`);
+    return data;
+  } catch (err) {
+    throw apiError(err, "Failed to leave group");
   }
 }
 

@@ -7,11 +7,13 @@ import GroupMapView from "./GroupMapView.jsx";
 import GroupsPanel from "./GroupsPanel.jsx";
 import RecommendationsPanel from "./RecommendationsPanel.jsx";
 import SuggestionCards from "./SuggestionCards.jsx";
+import VisitedPlacesList from "./VisitedPlacesList.jsx";
 import NeighborhoodStats from "./NeighborhoodStats.jsx";
 import ProfileModal from "./ProfileModal.jsx";
 import { useAuthStatus } from "../hooks/useAuth0.js";
 import { useGroups } from "../hooks/useGroups.js";
 import { useGroupSuggestions } from "../hooks/useGroupSuggestions.js";
+import { useGroupVisitedPlaces } from "../hooks/useGroupVisitedPlaces.js";
 import { useLocationTracking } from "../hooks/useLocationTracking.js";
 import { suggestionId } from "../utils/suggestions.js";
 
@@ -82,8 +84,8 @@ export default function Layout({ defaultGroupId }) {
     loading: groupsLoading,
     error: groupsError,
     reload: reloadGroups,
-    select: selectGroup,
     create: createGroup,
+    leave: leaveGroup,
   } = useGroups(defaultGroupId, { enabled: isAuthenticated });
   const groupId = selectedId || defaultGroupId;
   const {
@@ -109,6 +111,16 @@ export default function Layout({ defaultGroupId }) {
     groupId,
     enabled: Boolean(isAuthenticated && groupId),
     limit: 24,
+    origin,
+    refreshKey: fogRefreshKey,
+  });
+  const {
+    items: visitedPlaces,
+    loading: visitedPlacesLoading,
+  } = useGroupVisitedPlaces({
+    groupId,
+    enabled: Boolean(isAuthenticated && groupId),
+    limit: 40,
     origin,
     refreshKey: fogRefreshKey,
   });
@@ -348,12 +360,20 @@ export default function Layout({ defaultGroupId }) {
               />
             ) : null}
             {sheet === "places" ? (
-              <NeighborhoodStats
-                neighborhoods={displayedGraph?.neighborhoods}
-                nodes={displayedGraph?.nodes}
-                selectedNodeId={selectedNode?.id}
-                onSelectNode={setSelectedNode}
-              />
+              <>
+                <VisitedPlacesList
+                  items={visitedPlaces}
+                  loading={visitedPlacesLoading}
+                  selectedId={suggestionId(selectedPlace)}
+                  onSelectPlace={handleSelectPlace}
+                />
+                <NeighborhoodStats
+                  neighborhoods={displayedGraph?.neighborhoods}
+                  nodes={displayedGraph?.nodes}
+                  selectedNodeId={selectedNode?.id}
+                  onSelectNode={setSelectedNode}
+                />
+              </>
             ) : null}
             {sheet === "recs" ? (
               <>
@@ -384,11 +404,10 @@ export default function Layout({ defaultGroupId }) {
                 ) : null}
                 <GroupsPanel
                   groups={groups}
-                  selectedId={groupId}
                   loading={groupsLoading}
                   error={groupsError}
-                  onSelect={selectGroup}
                   onCreate={createGroup}
+                  onLeave={leaveGroup}
                 />
                 <button
                   type="button"

@@ -4,6 +4,7 @@ import {
   createGroup,
   declineGroupInvite,
   inviteFriendToGroup,
+  leaveGroup,
   listInviteableFriends,
   listMyGroupInvites,
   listMyGroups,
@@ -38,6 +39,9 @@ import { HttpError } from "../services/friendsService.js";
  *
  * POST /api/groups/invites/:id/unsend
  *   200 { success, unsent, invite }
+ *
+ * DELETE /api/groups/:groupId          caller leaves the group
+ *   200 { success, group_id, deleted } (deleted = true if last member left)
  *
  * invite = {
  *   invite_id, status, direction ("incoming"|"outgoing"), created_at,
@@ -128,6 +132,14 @@ router.post("/:groupId/invites", requireWellFormedGroupId, async (req, res) => {
     return res.status(200).json(
       await inviteFriendToGroup(req.params.groupId, req.body, req.auth || {})
     );
+  } catch (err) {
+    sendError(res, err);
+  }
+});
+
+router.delete("/:groupId", requireWellFormedGroupId, async (req, res) => {
+  try {
+    return res.status(200).json(await leaveGroup(req.params.groupId, req.auth || {}));
   } catch (err) {
     sendError(res, err);
   }
