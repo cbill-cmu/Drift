@@ -2,6 +2,8 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { fetchGroupSuggestions } from "../api/client.js";
 import { withDistance } from "../utils/distance.js";
 
+const POLL_MS = 15000;
+
 /**
  * Uncovered catalog places for the group, nearest-first when origin is known.
  */
@@ -36,6 +38,22 @@ export function useGroupSuggestions({
   useEffect(() => {
     reload();
   }, [reload, refreshKey]);
+
+  // Poll like useVisitedCells/useGroupCoverage so newly-visited cells drop
+  // their catalog places out of "unexplored" while a walk is still in
+  // progress, not just ~1.2s after tracking stops (refreshKey's trigger).
+  useEffect(() => {
+    if (!enabled || !groupId) return undefined;
+    const id = setInterval(reload, POLL_MS);
+    function onVisible() {
+      if (!document.hidden) reload();
+    }
+    document.addEventListener("visibilitychange", onVisible);
+    return () => {
+      clearInterval(id);
+      document.removeEventListener("visibilitychange", onVisible);
+    };
+  }, [enabled, groupId, reload]);
 
   const originLat = origin?.lat;
   const originLng = origin?.lng;

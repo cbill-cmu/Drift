@@ -2,6 +2,8 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { fetchGroupVisitedPlaces } from "../api/client.js";
 import { withDistance } from "../utils/distance.js";
 
+const POLL_MS = 15000;
+
 /**
  * Catalog places inside cells the group HAS visited (unshaded/revealed
  * hexes) — the mirror of useGroupSuggestions, feeding the Places tab.
@@ -37,6 +39,22 @@ export function useGroupVisitedPlaces({
   useEffect(() => {
     reload();
   }, [reload, refreshKey]);
+
+  // Poll like useVisitedCells/useGroupCoverage so the Places tab picks up
+  // newly-visited cells while a walk is still in progress, not just
+  // ~1.2s after tracking stops (refreshKey's trigger).
+  useEffect(() => {
+    if (!enabled || !groupId) return undefined;
+    const id = setInterval(reload, POLL_MS);
+    function onVisible() {
+      if (!document.hidden) reload();
+    }
+    document.addEventListener("visibilitychange", onVisible);
+    return () => {
+      clearInterval(id);
+      document.removeEventListener("visibilitychange", onVisible);
+    };
+  }, [enabled, groupId, reload]);
 
   const originLat = origin?.lat;
   const originLng = origin?.lng;
