@@ -8,7 +8,6 @@ import GroupsPanel from "./GroupsPanel.jsx";
 import RecommendationsPanel from "./RecommendationsPanel.jsx";
 import NeighborhoodStats from "./NeighborhoodStats.jsx";
 import ProfileModal from "./ProfileModal.jsx";
-import TripLoggerModal from "./TripLoggerModal.jsx";
 import { useAuthStatus } from "../hooks/useAuth0.js";
 import { useGroups } from "../hooks/useGroups.js";
 
@@ -83,7 +82,9 @@ export default function Layout({ defaultGroupId }) {
     create: createGroup,
   } = useGroups(defaultGroupId, { enabled: isAuthenticated });
   const groupId = selectedId || defaultGroupId;
-  const [showTripLogger, setShowTripLogger] = useState(false);
+  // discoveryData/DiscoveryReveal is kept — it's a generic "show a reveal
+  // toast" mechanism, not specific to manual trip logging. It'll be wired
+  // to the GPS/fog-of-war pipeline (see TASKS.md) instead of a trip form.
   const [discoveryData, setDiscoveryData] = useState(null);
   const [sheet, setSheet] = useState(() =>
     readAddFriendParam() ? "friends" : null
@@ -91,21 +92,19 @@ export default function Layout({ defaultGroupId }) {
   const [activeFriend, setActiveFriend] = useState(null);
   const [displayedGraph, setDisplayedGraph] = useState(null);
   const [selectedNode, setSelectedNode] = useState(null);
-  const [refreshKey, setRefreshKey] = useState(0);
   const [loginError, setLoginError] = useState(null);
   const [account, setAccount] = useState(null);
   const [showSettings, setShowSettings] = useState(false);
-  const [needsOnboarding, setNeedsOnboarding] = useState(false);
 
+  // Profile is auto-provisioned from the Auth0 identity on login (see
+  // upsertCurrentUser on the backend) — no onboarding step to gate on here.
   useEffect(() => {
     if (!isAuthenticated) return;
     let cancelled = false;
     ensureCurrentUser()
       .then((data) => {
         if (cancelled) return;
-        const profile = data?.user || null;
-        setAccount(profile);
-        setNeedsOnboarding(Boolean(data?.created) || profile?.profile_complete === false);
+        setAccount(data?.user || null);
       })
       .catch((err) => {
         console.error("[auth] ensureCurrentUser failed:", err);
@@ -224,7 +223,6 @@ export default function Layout({ defaultGroupId }) {
           selectedNodeId={selectedNode?.id}
           onSelectNode={setSelectedNode}
           onBackToGroup={() => setActiveFriend(null)}
-          refreshKey={refreshKey}
         />
       </main>
 
@@ -251,6 +249,7 @@ export default function Layout({ defaultGroupId }) {
                 groupName={groupName}
                 onViewMap={viewFriend}
                 activeFriendId={activeFriend?.id}
+                onGroupsChanged={reloadGroups}
               />
             ) : null}
             {sheet === "places" ? (
@@ -338,46 +337,19 @@ export default function Layout({ defaultGroupId }) {
               </button>
             );
           })}
-          <button
-            type="button"
-            className="dock-circle dock-circle-cta"
-            aria-label="Log trip"
-            onClick={() => setShowTripLogger(true)}
-          >
-            <span className="dock-glyph dock-glyph-cta">
-              <span className="dock-cta-icon" aria-hidden="true">
-                +
-              </span>
-            </span>
-            <span className="dock-label">Log trip</span>
-          </button>
         </div>
       </nav>
 
-      <TripLoggerModal
-        isOpen={showTripLogger}
-        groupId={groupId}
-        nodes={displayedGraph?.nodes || []}
-        onClose={() => setShowTripLogger(false)}
-        onSubmitSuccess={(data) => {
-          setShowTripLogger(false);
-          setDiscoveryData(data);
-          setRefreshKey((n) => n + 1);
-        }}
-      />
       <DiscoveryReveal
         discoveryData={discoveryData}
         onDismiss={() => setDiscoveryData(null)}
       />
       <ProfileModal
-        isOpen={needsOnboarding || showSettings}
+        isOpen={showSettings}
         user={account}
-        authUser={user}
-        required={needsOnboarding}
         onClose={() => setShowSettings(false)}
         onSaved={(profile) => {
           setAccount(profile);
-          setNeedsOnboarding(false);
           setShowSettings(false);
         }}
         onDeleted={() => {

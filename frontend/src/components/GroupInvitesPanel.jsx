@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useGroupInvites } from "../hooks/useGroupInvites.js";
 
-export default function GroupInvitesPanel({ groupId, groupName: fallbackName }) {
+export default function GroupInvitesPanel({ groupId, groupName: fallbackName, onGroupsChanged }) {
   const {
     group,
     inviteable,
@@ -14,7 +14,7 @@ export default function GroupInvitesPanel({ groupId, groupName: fallbackName }) 
     accept,
     decline,
     unsend,
-  } = useGroupInvites(groupId);
+  } = useGroupInvites(groupId, { onGroupsChanged });
   const [notice, setNotice] = useState("");
   const [noticeKind, setNoticeKind] = useState("hint");
   const [busy, setBusy] = useState(false);

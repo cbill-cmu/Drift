@@ -8,7 +8,9 @@ import {
   unsendGroupInvite,
 } from "../api/client.js";
 
-export function useGroupInvites(groupId) {
+const POLL_INTERVAL_MS = 10000;
+
+export function useGroupInvites(groupId, { onGroupsChanged } = {}) {
   const [inviteable, setInviteable] = useState([]);
   const [incoming, setIncoming] = useState([]);
   const [outgoing, setOutgoing] = useState([]);
@@ -66,6 +68,17 @@ export function useGroupInvites(groupId) {
     reload();
   }, [reload]);
 
+  // No push channel (WebSocket/SSE) yet — poll while this panel is mounted
+  // so an invite the other person sends/accepts shows up without the user
+  // having to close and reopen the sheet. See PERSON_B_TASKS.md-style note:
+  // this is the pragmatic fix for staleness; a real-time push channel is
+  // the correct long-term upgrade if instant (<1s) updates become a
+  // requirement rather than "within ~10s."
+  useEffect(() => {
+    const id = setInterval(reload, POLL_INTERVAL_MS);
+    return () => clearInterval(id);
+  }, [reload]);
+
   const invite = useCallback(
     async (userId) => {
       const result = await inviteFriendToGroup(groupId, userId);
@@ -79,9 +92,13 @@ export function useGroupInvites(groupId) {
     async (inviteId) => {
       const result = await acceptGroupInvite(inviteId);
       await reload();
+      // Accepting changes *this user's* group membership, which lives in a
+      // separate hook instance (useGroups) with no shared state — nudge it
+      // directly instead of waiting on its own poll interval.
+      onGroupsChanged?.();
       return result;
     },
-    [reload]
+    [reload, onGroupsChanged]
   );
 
   const decline = useCallback(

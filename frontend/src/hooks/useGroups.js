@@ -2,6 +2,7 @@ import { useCallback, useEffect, useState } from "react";
 import { createGroup, fetchMyGroups } from "../api/client.js";
 
 const STORAGE_KEY = "drift.selectedGroupId";
+const POLL_INTERVAL_MS = 15000;
 
 function readStoredGroupId() {
   try {
@@ -60,6 +61,15 @@ export function useGroups(defaultGroupId, { enabled = true } = {}) {
   useEffect(() => {
     reload();
   }, [reload]);
+
+  // No push channel yet — poll so a group someone else added you to shows
+  // up without a manual refresh, independent of the more immediate nudge
+  // useGroupInvites.accept() fires via its onGroupsChanged callback.
+  useEffect(() => {
+    if (!enabled) return undefined;
+    const id = setInterval(reload, POLL_INTERVAL_MS);
+    return () => clearInterval(id);
+  }, [enabled, reload]);
 
   const create = useCallback(
     async (name) => {

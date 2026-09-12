@@ -4,7 +4,7 @@ import { useAuthStatus } from "../hooks/useAuth0.js";
 import FriendQrCard from "./FriendQrCard.jsx";
 import GroupInvitesPanel from "./GroupInvitesPanel.jsx";
 
-export default function FriendsPanel({ groupId, groupName, onViewMap, activeFriendId }) {
+export default function FriendsPanel({ groupId, groupName, onViewMap, activeFriendId, onGroupsChanged }) {
   const { user } = useAuthStatus();
   const {
     me,
@@ -171,7 +171,7 @@ export default function FriendsPanel({ groupId, groupName, onViewMap, activeFrie
         ) : null}
       </ul>
 
-      <GroupInvitesPanel groupId={groupId} groupName={groupName} />
+      <GroupInvitesPanel groupId={groupId} groupName={groupName} onGroupsChanged={onGroupsChanged} />
     </section>
   );
 }
