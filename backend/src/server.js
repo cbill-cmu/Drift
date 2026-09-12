@@ -6,6 +6,7 @@ import { requireAuth } from "./middleware/auth.js";
 import friendsRouter from "./routes/friends.js";
 import graphRouter from "./routes/graph.js";
 import tripsRouter from "./routes/trips.js";
+import usersRouter from "./routes/users.js";
 import { connectMongo } from "./services/mongoService.js";
 
 const app = express();
@@ -22,6 +23,7 @@ app.get("/", (_req, res) => {
 app.use("/api/trips", requireAuth, tripsRouter);
 app.use("/api/friends", requireAuth, friendsRouter);
 app.use("/api/groups", graphRouter);
+app.use("/api/users", requireAuth, usersRouter);
 
 async function start() {
   try {
