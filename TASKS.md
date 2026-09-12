@@ -115,12 +115,14 @@ Status legend: `[ ]` not started · `[~]` in progress · `[x]` done
 
 ## Phase 6 — Coverage-gap suggestions
 
-- [ ] New route: `GET /api/groups/:groupId/suggestions`
-- [ ] Logic: take the "no one" cells (city bounding box minus everyone+some from Phase 4), intersect against the existing Pittsburgh places catalog (`backend/src/services/placesCatalogService.js` — already built by Person D, reuse it) by mapping each catalogued place's lat/lng to its H3 cell and checking membership
-- [ ] Return top N uncovered-but-populated cells with their place info
-- [ ] New component: `frontend/src/components/SuggestionCards.jsx` — simple card list, similar structure to the existing `RecommendationsPanel.jsx`
+- [x] New route: `GET /api/groups/:groupId/suggestions`
+- [x] Logic: take the "no one" cells (city bounding box minus everyone+some from Phase 4), intersect against the existing Pittsburgh places catalog (`backend/src/services/placesCatalogService.js` — already built by Person D, reuse it) by mapping each catalogued place's lat/lng to its H3 cell and checking membership
+- [x] Return top N uncovered-but-populated cells with their place info
+- [x] New component: `frontend/src/components/SuggestionCards.jsx` — simple card list, similar structure to the existing `RecommendationsPanel.jsx`
 
 **Done when:** suggestions returned are real, named places from the catalog that are genuinely outside the group's visited cells — spot-check a few by hand.
+
+**Verified:** Atlas catalog intersection returns named Pittsburgh places (Acrisure Stadium, Aldi East Liberty, Allegheny Cemetery, …). Covering Kennywood's H3 cell excluded it from suggestions while other uncovered places remained. Unauthenticated route returns 401 after restart.
 
 ---
 

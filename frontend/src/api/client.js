@@ -114,6 +114,18 @@ export async function fetchUserProfile(userId) {
   return data;
 }
 
+/** GET /api/groups/:groupId/suggestions — uncovered catalog places */
+export async function fetchGroupSuggestions(groupId, { limit = 24 } = {}) {
+  try {
+    const { data } = await api.get(`/api/groups/${groupId}/suggestions`, {
+      params: { limit },
+    });
+    return data;
+  } catch (err) {
+    throw apiError(err, "Failed to load suggestions");
+  }
+}
+
 /** GET /api/groups/:groupId/coverage — everyone / some visited cells */
 export async function fetchGroupCoverage(groupId) {
   try {

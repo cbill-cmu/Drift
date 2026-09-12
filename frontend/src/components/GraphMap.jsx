@@ -14,6 +14,8 @@ import { cellToLatLng } from "h3-js";
 import { boundsFromNodes } from "../utils/projection.js";
 import { getBasemap } from "../utils/basemap.js";
 import FogOverlayLayer from "./FogOverlayLayer.jsx";
+import SuggestionPins from "./SuggestionPins.jsx";
+import { suggestionId } from "../utils/suggestions.js";
 
 const PITTSBURGH = [40.4406, -79.9959];
 const BASEMAP = getBasemap();
@@ -40,6 +42,16 @@ function MapSizeSync({ width, height }) {
   return null;
 }
 
+function FlyToPlace({ place }) {
+  const map = useMap();
+  useEffect(() => {
+    if (!place || !Number.isFinite(place.lat) || !Number.isFinite(place.lng)) return;
+    const nextZoom = Math.max(map.getZoom(), 15);
+    map.flyTo([place.lat, place.lng], nextZoom, { duration: 0.55 });
+  }, [map, place?.lat, place?.lng, place?.place_id, place?.h3_cell]);
+  return null;
+}
+
 /**
  * Full-bleed soft city map + Drift graph overlay.
  */
@@ -53,6 +65,10 @@ export default function GraphMap({
   fogMode = "personal",
   everyoneCells = [],
   someCells = [],
+  suggestions = [],
+  origin = null,
+  selectedSuggestion = null,
+  onSelectSuggestion,
 }) {
   const nodes = useMemo(
     () =>
@@ -159,6 +175,13 @@ export default function GraphMap({
         />
         <FitGraphBounds points={fitPoints} />
         <MapSizeSync width={width} height={height} />
+        <FlyToPlace place={selectedSuggestion} />
+        <SuggestionPins
+          items={suggestions}
+          origin={origin}
+          selectedId={suggestionId(selectedSuggestion)}
+          onSelectPlace={onSelectSuggestion}
+        />
 
         {edges.map((e) => (
           <Polyline

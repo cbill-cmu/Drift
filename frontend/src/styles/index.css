@@ -10,6 +10,8 @@
   --shadow: 0 10px 28px rgba(17, 22, 22, 0.1);
   --radius-pill: 999px;
   --radius-soft: 24px;
+  --blush: #e38a98;
+  --blush-deep: #c45d6c;
 
   /* Bottom-nav geometry, single-sourced so anything anchored above the nav
      (the sheets) derives its clearance from these instead of guessing a
@@ -603,8 +605,98 @@ body {
   background: rgba(23, 36, 36, 0.55);
 }
 
-.leaflet-overlay-pane .fog-tier-some {
-  fill: url(#drift-some-hatch) !important;
+.suggestion-dock {
+  position: absolute;
+  left: 1.1rem;
+  bottom: calc(var(--sheet-bottom-clearance) + 0.5rem);
+  z-index: 3;
+  width: min(20.5rem, calc(100% - 5.5rem));
+  pointer-events: auto;
+}
+
+.suggestion-cards {
+  display: grid;
+  gap: 0.55rem;
+}
+
+.suggestion-cards h2,
+.suggestion-cards-compact > strong {
+  margin: 0;
+  font-size: 0.82rem;
+  font-weight: 800;
+}
+
+.suggestion-cards ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 0.4rem;
+}
+
+.suggestion-cards-compact {
+  padding: 0.65rem 0.7rem;
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.94);
+  box-shadow: var(--shadow);
+}
+
+.suggestion-cards-compact ul {
+  margin-top: 0.4rem;
+  max-height: 13.5rem;
+  overflow-y: auto;
+  padding-right: 0.2rem;
+  scrollbar-width: thin;
+  scrollbar-color: var(--mint-deep) transparent;
+}
+
+.suggestion-cards-compact ul::-webkit-scrollbar {
+  width: 6px;
+}
+
+.suggestion-cards-compact ul::-webkit-scrollbar-thumb {
+  background: var(--mint-deep);
+  border-radius: 999px;
+}
+
+.suggestion-status {
+  margin: 0.35rem 0 0;
+}
+
+.drift-leaflet .suggestion-pin,
+.drift-leaflet .you-pin {
+  background: transparent;
+  border: 0;
+}
+
+.suggestion-pin-mark {
+  display: block;
+  width: 16px;
+  height: 16px;
+  margin: 4px 0 0 3px;
+  border-radius: 50% 50% 50% 0;
+  transform: rotate(-45deg);
+  background: var(--blush);
+  border: 2px solid #fff;
+  box-shadow: 0 6px 14px rgba(17, 22, 22, 0.22);
+}
+
+.suggestion-pin-selected .suggestion-pin-mark {
+  width: 20px;
+  height: 20px;
+  margin: 2px 0 0 1px;
+  background: var(--blush-deep);
+}
+
+.you-pin-dot {
+  display: block;
+  width: 14px;
+  height: 14px;
+  margin: 2px;
+  border-radius: 50%;
+  background: var(--mint);
+  border: 2.5px solid #fff;
+  box-shadow: 0 4px 10px rgba(17, 22, 22, 0.22);
 }
 
 .map-loading,
@@ -1303,6 +1395,18 @@ button:focus-visible,
   border-radius: 14px;
   background: var(--bg);
   font: inherit;
+  cursor: pointer;
+}
+
+.rec-place:hover {
+  border-color: rgba(109, 179, 168, 0.55);
+  background: #fff;
+}
+
+.rec-place-selected {
+  border-color: var(--blush);
+  background: #fff;
+  box-shadow: 0 8px 18px rgba(196, 93, 108, 0.16);
 }
 
 .rec-type {
@@ -1311,6 +1415,7 @@ button:focus-visible,
   letter-spacing: 0.04em;
   text-transform: uppercase;
   color: var(--mint-deep);
+  font-variant-numeric: tabular-nums;
 }
 
 .rec-location-name {

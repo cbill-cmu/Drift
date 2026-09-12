@@ -8,6 +8,7 @@ import {
 import { decodePolyline } from "../utils/polyline.js";
 import { asString, idVariants } from "./ids.js";
 import { HttpError } from "./userService.js";
+import { PLACES_CATALOG, publicPlace } from "./placesCatalogService.js";
 
 const MAX_POLYLINE_CHARS = 100_000;
 const MAX_DISTANCE_M = 10_000_000;
@@ -186,6 +187,43 @@ export async function getGroupCoverage(db, group) {
     .toArray();
 
   return classifyCoverage(rows, memberIds.length);
+}
+
+const SUGGESTION_LIMIT = 24;
+
+/**
+ * Catalog places whose H3 cells the group has not visited (implicit "no one").
+ * One suggestion per cell so we don't stack two cafes in the same hex.
+ */
+export async function getCoverageGapSuggestions(db, group, { limit = SUGGESTION_LIMIT } = {}) {
+  const coverage = await getGroupCoverage(db, group);
+  const covered = new Set([...(coverage.everyone || []), ...(coverage.some || [])]);
+  const places = await db
+    .collection(PLACES_CATALOG)
+    .find({ lat: { $type: "number" }, lng: { $type: "number" } })
+    .toArray();
+
+  const byCell = new Map();
+  for (const place of places) {
+    if (!Number.isFinite(place.lat) || !Number.isFinite(place.lng)) continue;
+    const cell = latLngToCell(place.lat, place.lng, VISITED_CELL_RESOLUTION);
+    if (covered.has(cell) || byCell.has(cell)) continue;
+    const pub = publicPlace(place);
+    if (!pub?.name) continue;
+    byCell.set(cell, {
+      h3_cell: cell,
+      place_id: pub.id,
+      name: pub.name,
+      neighborhood: pub.neighborhood || "",
+      place_type: pub.place_type || pub.category || "",
+      lat: pub.lat,
+      lng: pub.lng,
+    });
+  }
+
+  return [...byCell.values()]
+    .sort((a, b) => a.name.localeCompare(b.name))
+    .slice(0, Math.max(1, Number(limit) || SUGGESTION_LIMIT));
 }
 
 async function ensureIndexes(db) {

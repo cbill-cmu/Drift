@@ -3,7 +3,7 @@ import { requireAuth } from "../middleware/auth.js";
 import { requireGroupMember } from "../middleware/groupMember.js";
 import { COLLECTIONS } from "../models/index.js";
 import { asString, idVariants, matchGroupId } from "../services/ids.js";
-import { getGroupCoverage } from "../services/locationService.js";
+import { getCoverageGapSuggestions, getGroupCoverage } from "../services/locationService.js";
 import { getDb } from "../services/mongoService.js";
 import { buildNeighborhoods } from "../services/neighborhoods.js";
 
@@ -142,6 +142,30 @@ router.get("/:groupId/coverage", requireAuth, requireWellFormedParams, requireGr
     return res.status(500).json({
       success: false,
       error: err.message || "Failed to load group coverage",
+    });
+  }
+});
+
+/**
+ * GET /api/groups/:groupId/suggestions
+ * Catalog places in cells nobody in the group has visited.
+ */
+router.get("/:groupId/suggestions", requireAuth, requireWellFormedParams, requireGroupMember, async (req, res) => {
+  try {
+    const group = req.groupDoc;
+    const rawLimit = Number(req.query.limit);
+    const limit = Number.isFinite(rawLimit) ? Math.min(40, Math.max(1, Math.floor(rawLimit))) : 24;
+    const suggestions = await getCoverageGapSuggestions(getDb(), group, { limit });
+    return res.json({
+      success: true,
+      group_id: asString(group._id),
+      suggestions,
+    });
+  } catch (err) {
+    console.error("[suggestions]", err);
+    return res.status(500).json({
+      success: false,
+      error: err.message || "Failed to load suggestions",
     });
   }
 });

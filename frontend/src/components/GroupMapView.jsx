@@ -3,6 +3,8 @@ import { useMapGraph } from "../hooks/useGroupGraph.js";
 import { useGroupCoverage } from "../hooks/useGroupCoverage.js";
 import { useVisitedCells } from "../hooks/useVisitedCells.js";
 import GraphMap from "./GraphMap.jsx";
+import SuggestionCards from "./SuggestionCards.jsx";
+import { suggestionId } from "../utils/suggestions.js";
 
 /**
  * Main map + graph overlay.
@@ -18,6 +20,11 @@ export default function GroupMapView({
   refreshKey = 0,
   fogRefreshKey = 0,
   fogMode = "personal",
+  onSelectPlace,
+  suggestions = [],
+  suggestionsLoading = false,
+  origin = null,
+  selectedPlace = null,
 }) {
   const { data, loading, error, reload, usingFixture } = useMapGraph({
     groupId,
@@ -72,6 +79,10 @@ export default function GroupMapView({
           fogMode={fogMode}
           everyoneCells={everyone}
           someCells={some}
+          suggestions={friendId ? [] : suggestions}
+          origin={friendId ? null : origin}
+          selectedSuggestion={friendId ? null : selectedPlace}
+          onSelectSuggestion={onSelectPlace}
         />
       ) : null}
 
@@ -95,6 +106,19 @@ export default function GroupMapView({
             <i className="fog-swatch fog-swatch-none" aria-hidden="true" />
             No one
           </span>
+        </div>
+      ) : null}
+      {groupId && !friendId ? (
+        <div className="suggestion-dock">
+          <SuggestionCards
+            items={suggestions}
+            limit={8}
+            compact
+            origin={origin}
+            selectedId={suggestionId(selectedPlace)}
+            loading={suggestionsLoading}
+            onSelectPlace={onSelectPlace}
+          />
         </div>
       ) : null}
 

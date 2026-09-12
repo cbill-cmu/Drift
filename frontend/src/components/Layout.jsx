@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { ensureCurrentUser } from "../api/client.js";
 import { readAddFriendParam } from "../utils/friendInvite.js";
 import DiscoveryReveal from "./DiscoveryReveal.jsx";
@@ -6,11 +6,14 @@ import FriendsPanel from "./FriendsPanel.jsx";
 import GroupMapView from "./GroupMapView.jsx";
 import GroupsPanel from "./GroupsPanel.jsx";
 import RecommendationsPanel from "./RecommendationsPanel.jsx";
+import SuggestionCards from "./SuggestionCards.jsx";
 import NeighborhoodStats from "./NeighborhoodStats.jsx";
 import ProfileModal from "./ProfileModal.jsx";
 import { useAuthStatus } from "../hooks/useAuth0.js";
 import { useGroups } from "../hooks/useGroups.js";
+import { useGroupSuggestions } from "../hooks/useGroupSuggestions.js";
 import { useLocationTracking } from "../hooks/useLocationTracking.js";
+import { suggestionId } from "../utils/suggestions.js";
 
 const NAV = [
   { id: "places", label: "Places", icon: "places" },
@@ -86,10 +89,26 @@ export default function Layout({ defaultGroupId }) {
   const {
     active: tracking,
     error: trackingError,
+    lastFix,
     bufferedCount: trackingBufferedCount,
     start: startTracking,
     stop: stopTracking,
   } = useLocationTracking();
+  const origin = useMemo(() => {
+    if (!lastFix || !Number.isFinite(lastFix.lat) || !Number.isFinite(lastFix.lng)) {
+      return null;
+    }
+    return { lat: lastFix.lat, lng: lastFix.lng };
+  }, [lastFix]);
+  const {
+    items: suggestions,
+    loading: suggestionsLoading,
+  } = useGroupSuggestions({
+    groupId,
+    enabled: Boolean(isAuthenticated && groupId),
+    limit: 24,
+    origin,
+  });
   const [fogRefreshKey, setFogRefreshKey] = useState(0);
   const [fogMode, setFogMode] = useState("personal");
   // discoveryData/DiscoveryReveal is kept — it's a generic "show a reveal
@@ -102,6 +121,7 @@ export default function Layout({ defaultGroupId }) {
   const [activeFriend, setActiveFriend] = useState(null);
   const [displayedGraph, setDisplayedGraph] = useState(null);
   const [selectedNode, setSelectedNode] = useState(null);
+  const [selectedPlace, setSelectedPlace] = useState(null);
   const [loginError, setLoginError] = useState(null);
   const [account, setAccount] = useState(null);
   const [showSettings, setShowSettings] = useState(false);
@@ -136,13 +156,27 @@ export default function Layout({ defaultGroupId }) {
     setDisplayedGraph(graph);
   }, []);
 
+  const handleSelectPlace = useCallback(
+    (place) => {
+      setSelectedPlace(place || null);
+      const match = (displayedGraph?.nodes || []).find(
+        (node) => node.name?.toLowerCase() === place?.location_name?.toLowerCase()
+      );
+      setSelectedNode(match || null);
+      setSheet(null);
+    },
+    [displayedGraph]
+  );
+
   useEffect(() => {
     setSelectedNode(null);
+    setSelectedPlace(null);
   }, [activeFriend?.id]);
 
   useEffect(() => {
     setActiveFriend(null);
     setSelectedNode(null);
+    setSelectedPlace(null);
     setDisplayedGraph(null);
   }, [groupId]);
 
@@ -278,6 +312,11 @@ export default function Layout({ defaultGroupId }) {
           onBackToGroup={() => setActiveFriend(null)}
           fogRefreshKey={fogRefreshKey}
           fogMode={fogMode}
+          onSelectPlace={handleSelectPlace}
+          suggestions={suggestions}
+          suggestionsLoading={suggestionsLoading}
+          origin={origin}
+          selectedPlace={selectedPlace}
         />
       </main>
 
@@ -316,18 +355,20 @@ export default function Layout({ defaultGroupId }) {
               />
             ) : null}
             {sheet === "recs" ? (
-              <RecommendationsPanel
+              <>
+                <SuggestionCards
+                  items={suggestions}
+                  limit={20}
+                  origin={origin}
+                  selectedId={suggestionId(selectedPlace)}
+                  loading={suggestionsLoading}
+                  onSelectPlace={handleSelectPlace}
+                />
+                <RecommendationsPanel
                 groupId={groupId}
-                onSelectPlace={(place) => {
-                  const match = (displayedGraph?.nodes || []).find(
-                    (node) => node.name?.toLowerCase() === place.location_name?.toLowerCase()
-                  );
-                  if (match) {
-                    setSelectedNode(match);
-                    setSheet(null);
-                  }
-                }}
+                onSelectPlace={handleSelectPlace}
               />
+              </>
             ) : null}
             {sheet === "profile" ? (
               <section className="profile-sheet">
