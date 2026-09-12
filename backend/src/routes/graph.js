@@ -1,4 +1,6 @@
 import { Router } from "express";
+import { requireAuth } from "../middleware/auth.js";
+import { requireGroupMember } from "../middleware/groupMember.js";
 import { COLLECTIONS } from "../models/index.js";
 import { asString, idVariants, matchGroupId } from "../services/ids.js";
 import { getDb } from "../services/mongoService.js";
@@ -82,8 +84,9 @@ async function loadGroupGraph(groupId) {
 /**
  * GET /api/groups/:groupId/graph
  * Contract: shared/api-contract.md
+ * Person A: Auth0 JWT + group membership required.
  */
-router.get("/:groupId/graph", async (req, res) => {
+router.get("/:groupId/graph", requireAuth, requireGroupMember, async (req, res) => {
   try {
     const graph = await loadGroupGraph(req.params.groupId);
     if (!graph) {
@@ -102,72 +105,78 @@ router.get("/:groupId/graph", async (req, res) => {
 /**
  * GET /api/groups/:groupId/members/:userId/graph
  * Personal graph for a group member (friend map). Same shape as group graph.
+ * Person A: Auth0 JWT + group membership required.
  */
-router.get("/:groupId/members/:userId/graph", async (req, res) => {
-  try {
-    const db = getDb();
-    const { groupId, userId } = req.params;
-    const groupGraph = await loadGroupGraph(groupId);
-    if (!groupGraph) {
-      return res.status(404).json({ success: false, error: "Unknown group" });
+router.get(
+  "/:groupId/members/:userId/graph",
+  requireAuth,
+  requireGroupMember,
+  async (req, res) => {
+    try {
+      const db = getDb();
+      const { groupId, userId } = req.params;
+      const groupGraph = await loadGroupGraph(groupId);
+      if (!groupGraph) {
+        return res.status(404).json({ success: false, error: "Unknown group" });
+      }
+
+      const userVariants = idVariants(userId);
+      const trips = await db
+        .collection(COLLECTIONS.TRIPS)
+        .find({
+          $and: [matchGroupId("group_id", groupId), { $or: userVariants.map((v) => ({ user_id: v })) }],
+        })
+        .toArray();
+
+      const heatDocs = await db
+        .collection(COLLECTIONS.USER_HEATPOINTS)
+        .find({
+          $and: [matchGroupId("group_id", groupId), { $or: userVariants.map((v) => ({ user_id: v })) }],
+        })
+        .toArray();
+
+      const usedNodeIds = new Set();
+      for (const trip of trips) {
+        usedNodeIds.add(asString(trip.from_node_id));
+        usedNodeIds.add(asString(trip.to_node_id));
+      }
+
+      const nodes =
+        usedNodeIds.size > 0
+          ? groupGraph.nodes.filter((n) => usedNodeIds.has(n.id))
+          : groupGraph.nodes;
+      const nodeSet = new Set(nodes.map((n) => n.id));
+      const edges = groupGraph.edges.filter((e) => nodeSet.has(e.from) && nodeSet.has(e.to));
+
+      const member = groupGraph.members.find((m) => m.id === asString(userId));
+      const heatpoints =
+        heatDocs.length > 0
+          ? heatDocs.map((h) => ({
+              lat: Number(h.lat),
+              lng: Number(h.lng),
+              weight: Number(h.weight) || 1,
+            }))
+          : nodes.map((n) => ({ lat: n.lat, lng: n.lng, weight: Math.max(0.4, (n.visits || 1) / 10) }));
+
+      return res.json({
+        success: true,
+        user_id: asString(userId),
+        display_name: member?.display_name || "Friend",
+        group_id: groupGraph.group_id,
+        group_name: `${member?.display_name || "Friend"}'s map`,
+        nodes,
+        edges,
+        heatpoints,
+        neighborhoods: buildNeighborhoods(nodes),
+      });
+    } catch (err) {
+      console.error("[member-graph]", err);
+      return res.status(500).json({
+        success: false,
+        error: err.message || "Failed to load friend graph",
+      });
     }
-
-    const userVariants = idVariants(userId);
-    const trips = await db
-      .collection(COLLECTIONS.TRIPS)
-      .find({
-        $and: [matchGroupId("group_id", groupId), { $or: userVariants.map((v) => ({ user_id: v })) }],
-      })
-      .toArray();
-
-    const heatDocs = await db
-      .collection(COLLECTIONS.USER_HEATPOINTS)
-      .find({
-        $and: [matchGroupId("group_id", groupId), { $or: userVariants.map((v) => ({ user_id: v })) }],
-      })
-      .toArray();
-
-    const usedNodeIds = new Set();
-    for (const trip of trips) {
-      usedNodeIds.add(asString(trip.from_node_id));
-      usedNodeIds.add(asString(trip.to_node_id));
-    }
-
-    const nodes =
-      usedNodeIds.size > 0
-        ? groupGraph.nodes.filter((n) => usedNodeIds.has(n.id))
-        : groupGraph.nodes;
-    const nodeSet = new Set(nodes.map((n) => n.id));
-    const edges = groupGraph.edges.filter((e) => nodeSet.has(e.from) && nodeSet.has(e.to));
-
-    const member = groupGraph.members.find((m) => m.id === asString(userId));
-    const heatpoints =
-      heatDocs.length > 0
-        ? heatDocs.map((h) => ({
-            lat: Number(h.lat),
-            lng: Number(h.lng),
-            weight: Number(h.weight) || 1,
-          }))
-        : nodes.map((n) => ({ lat: n.lat, lng: n.lng, weight: Math.max(0.4, (n.visits || 1) / 10) }));
-
-    return res.json({
-      success: true,
-      user_id: asString(userId),
-      display_name: member?.display_name || "Friend",
-      group_id: groupGraph.group_id,
-      group_name: `${member?.display_name || "Friend"}'s map`,
-      nodes,
-      edges,
-      heatpoints,
-      neighborhoods: buildNeighborhoods(nodes),
-    });
-  } catch (err) {
-    console.error("[member-graph]", err);
-    return res.status(500).json({
-      success: false,
-      error: err.message || "Failed to load friend graph",
-    });
   }
-});
+);
 
 export default router;
