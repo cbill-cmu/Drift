@@ -2,22 +2,23 @@ import { useCallback, useEffect, useState } from "react";
 import { fetchFriendGraph, fetchGroupGraph } from "../api/client.js";
 import { normalizeGraph } from "../api/normalizeGraph.js";
 import { getFixtureFriendGraph } from "../fixtures/friendGraphs.js";
-import groupGraphFixture from "../fixtures/groupGraph.json";
+
+const EMPTY_GRAPH = { nodes: [], edges: [], heatpoints: [] };
 
 /**
  * Load the graph currently on the map from the API.
- * Falls back to seeded fixture when the API is down or rejects (local demo).
+ * With no group yet, the map stays empty (full fog) — never a demo fixture.
  */
 export function useMapGraph({ groupId, friendId, refreshKey = 0 }) {
-  const [data, setData] = useState(null);
+  const [data, setData] = useState(EMPTY_GRAPH);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [usingFixture, setUsingFixture] = useState(false);
 
   const reload = useCallback(async () => {
     if (!friendId && !groupId) {
-      setData(normalizeGraph(groupGraphFixture));
-      setUsingFixture(true);
+      setData(EMPTY_GRAPH);
+      setUsingFixture(false);
       setError(null);
       setLoading(false);
       return;
@@ -43,13 +44,8 @@ export function useMapGraph({ groupId, friendId, refreshKey = 0 }) {
           setError(message);
           return;
         }
-      } else if (groupGraphFixture) {
-        setData(normalizeGraph(groupGraphFixture));
-        setUsingFixture(true);
-        setError(message);
-        return;
       }
-      setData(null);
+      setData(EMPTY_GRAPH);
       setUsingFixture(false);
       setError(message);
     } finally {

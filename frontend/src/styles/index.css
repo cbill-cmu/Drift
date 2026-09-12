@@ -19,7 +19,12 @@
   --nav-bottom-offset: 1.15rem; /* matches .bottom-dock's own `bottom` */
   --nav-height: 6rem; /* .dock-row alone, measured — nav is nav-only again */
   --sheet-nav-gap: 1rem; /* reserved clearance between sheet and nav */
-  --sheet-top-gap: 4.5rem; /* reserved clearance below the top bar */
+  --sheet-top-gap: 4.75rem; /* reserved clearance below the top chrome */
+  --chrome-top: max(0.85rem, env(safe-area-inset-top));
+  --chrome-island-h: 2.75rem;
+  --chrome-gap: 0.7rem;
+  --map-overlay-inset: 1rem;
+  --map-overlay-top: calc(var(--chrome-top) + var(--chrome-island-h) + var(--chrome-gap));
   --sheet-bottom-clearance: calc(
     var(--nav-bottom-offset) + var(--nav-height) + var(--sheet-nav-gap)
   );
@@ -53,27 +58,59 @@ body {
   z-index: 1;
 }
 
-.map-topbar {
+.map-chrome {
   position: absolute;
   top: 0;
   left: 0;
   right: 0;
   z-index: 20;
   display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  padding: 1rem 1.25rem;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 0.7rem;
+  padding: var(--chrome-top) var(--map-overlay-inset) 0;
   pointer-events: none;
 }
 
-.map-topbar > * {
+.map-chrome > * {
   pointer-events: auto;
 }
 
+.map-chrome-end {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.35rem;
+  max-width: min(16rem, 48vw);
+}
+
+.map-island {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  min-height: var(--chrome-island-h);
+  padding: 0.22rem 0.28rem 0.22rem 0.9rem;
+  background: rgba(255, 255, 255, 0.94);
+  border-radius: var(--radius-pill);
+  box-shadow: var(--shadow);
+}
+
+.map-island-action {
+  padding: 0.22rem 0.9rem 0.22rem 0.7rem;
+}
+
+.map-island-split {
+  width: 1px;
+  height: 1.15rem;
+  background: var(--line);
+  flex-shrink: 0;
+}
+
 .brand {
-  font-size: 1.55rem;
+  font-size: 1.05rem;
   font-weight: 800;
   letter-spacing: -0.03em;
+  line-height: 1;
 }
 
 .group-chip {
@@ -85,22 +122,29 @@ body {
   color: var(--muted);
 }
 
-/* Phase 1 placeholder control — functional, not yet polished (see
-   TASKS.md: UI pass is a deliberate follow-up, not an oversight). */
 .tracking-toggle {
   display: inline-flex;
   align-items: center;
   gap: 0.4rem;
+  border: 0;
+  font: inherit;
+  font-weight: 700;
+  font-size: 0.82rem;
+  color: var(--ink);
+  cursor: pointer;
+}
+
+.tracking-toggle:hover {
+  color: var(--mint-ink);
 }
 
 .fog-mode-toggle {
   display: inline-flex;
   align-items: center;
-  padding: 0.12rem;
+  padding: 0.1rem;
   gap: 0;
   border-radius: var(--radius-pill);
-  background: rgba(255, 255, 255, 0.92);
-  box-shadow: var(--shadow);
+  background: transparent;
 }
 
 .fog-mode-toggle button {
@@ -110,7 +154,7 @@ body {
   font: inherit;
   font-size: 0.78rem;
   font-weight: 700;
-  padding: 0.28rem 0.72rem;
+  padding: 0.38rem 0.78rem;
   border-radius: var(--radius-pill);
   cursor: pointer;
 }
@@ -123,6 +167,13 @@ body {
 .fog-mode-toggle button:disabled {
   opacity: 0.4;
   cursor: not-allowed;
+}
+
+.map-island button:focus-visible,
+.map-zoom button:focus-visible,
+.tracking-toggle:focus-visible {
+  outline: 2px solid var(--mint-deep);
+  outline-offset: 2px;
 }
 
 .tracking-error {
@@ -511,27 +562,39 @@ body {
   border-right-color: rgba(255, 255, 255, 0.95);
 }
 
-.drift-leaflet .leaflet-bottom.leaflet-right {
-  bottom: calc(var(--nav-bottom-offset) + var(--nav-height) + 0.65rem);
-  right: 0.7rem;
+.drift-leaflet .leaflet-control-zoom {
+  display: none;
 }
 
-.drift-leaflet .leaflet-control-zoom {
-  border: 0;
-  border-radius: 12px;
+.map-zoom {
+  position: absolute;
+  top: var(--map-overlay-top);
+  right: var(--map-overlay-inset);
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
   overflow: hidden;
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.94);
   box-shadow: var(--shadow);
 }
 
-.drift-leaflet .leaflet-control-zoom a {
-  width: 2.1rem;
-  height: 2.1rem;
-  line-height: 2.1rem;
+.map-zoom button {
+  width: 2.75rem;
+  height: 2.75rem;
+  border: 0;
+  background: transparent;
   color: var(--mint-ink);
-  background: rgba(255, 255, 255, 0.94);
+  display: grid;
+  place-items: center;
+  cursor: pointer;
 }
 
-.drift-leaflet .leaflet-control-zoom a:hover {
+.map-zoom button + button {
+  border-top: 1px solid var(--line);
+}
+
+.map-zoom button:hover {
   background: var(--mint);
 }
 
@@ -560,15 +623,16 @@ body {
 
 .fog-legend {
   position: absolute;
-  left: 1.1rem;
-  top: 4.65rem;
+  right: var(--map-overlay-inset);
+  top: calc(var(--map-overlay-top) + 6.1rem);
+  left: auto;
   z-index: 3;
   display: flex;
   flex-direction: column;
   gap: 0.32rem;
   padding: 0.55rem 0.75rem;
-  border-radius: 14px;
-  background: rgba(255, 255, 255, 0.92);
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.94);
   box-shadow: var(--shadow);
   font-size: 0.72rem;
   font-weight: 700;
@@ -607,10 +671,11 @@ body {
 
 .suggestion-dock {
   position: absolute;
-  left: 1.1rem;
-  bottom: calc(var(--sheet-bottom-clearance) + 0.5rem);
+  left: var(--map-overlay-inset);
+  top: var(--map-overlay-top);
+  bottom: auto;
   z-index: 3;
-  width: min(20.5rem, calc(100% - 5.5rem));
+  width: min(17.25rem, calc(100% - 5.75rem));
   pointer-events: auto;
 }
 
@@ -635,19 +700,49 @@ body {
 }
 
 .suggestion-cards-compact {
-  padding: 0.65rem 0.7rem;
-  border-radius: 16px;
+  padding: 0.8rem 0.85rem 0.7rem;
+  border-radius: 20px;
   background: rgba(255, 255, 255, 0.94);
   box-shadow: var(--shadow);
 }
 
+.suggestion-cards-compact > strong {
+  display: block;
+  margin: 0 0.1rem 0.35rem;
+  font-size: 0.92rem;
+  letter-spacing: -0.02em;
+}
+
 .suggestion-cards-compact ul {
-  margin-top: 0.4rem;
-  max-height: 13.5rem;
+  margin-top: 0;
+  max-height: 14.5rem;
   overflow-y: auto;
-  padding-right: 0.2rem;
+  padding-right: 0;
   scrollbar-width: thin;
   scrollbar-color: var(--mint-deep) transparent;
+  gap: 0;
+}
+
+.suggestion-cards-compact .rec-place {
+  border: 0;
+  border-radius: 12px;
+  background: transparent;
+  padding: 0.5rem 0.4rem;
+  box-shadow: none;
+}
+
+.suggestion-cards-compact .rec-place:hover {
+  background: rgba(173, 229, 206, 0.35);
+}
+
+.suggestion-cards-compact .rec-place-selected {
+  background: rgba(173, 229, 206, 0.55);
+  border-color: transparent;
+  box-shadow: none;
+}
+
+.suggestion-cards-compact .rec-location-name {
+  font-size: 0.9rem;
 }
 
 .suggestion-cards-compact ul::-webkit-scrollbar {
@@ -781,7 +876,7 @@ body {
 /* Apple-style floating island — top center, compact pill */
 .status-island {
   position: absolute;
-  top: 3.55rem;
+  top: var(--map-overlay-top);
   left: 50%;
   transform: translateX(-50%);
   z-index: 15;
@@ -890,11 +985,19 @@ body {
 
 @media (max-width: 720px) {
   .status-island {
-    top: 3.35rem;
+    top: var(--map-overlay-top);
   }
 
   .status-island-copy p {
     max-width: 8.5rem;
+  }
+
+  .map-chrome {
+    gap: 0.5rem;
+  }
+
+  .suggestion-dock {
+    width: min(16.5rem, calc(100% - 5.25rem));
   }
 }
 

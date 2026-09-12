@@ -123,7 +123,7 @@ export default function GroupMapView({
         <div className="suggestion-dock">
           <SuggestionCards
             items={suggestions}
-            limit={12}
+            limit={4}
             compact
             origin={origin}
             selectedId={suggestionId(selectedPlace)}

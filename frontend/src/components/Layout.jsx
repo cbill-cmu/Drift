@@ -312,44 +312,46 @@ export default function Layout({ defaultGroupId }) {
 
   return (
     <div className="layout layout-map-first">
-      <header className="map-topbar">
-        <strong className="brand">Drift</strong>
-        {/* Minimal control for now (Phase 1) — proper placement/styling is a
-            follow-up polish pass, see TASKS.md. */}
-        <button
-          type="button"
-          className="text-btn tracking-toggle"
-          onClick={tracking ? stopTracking : startTracking}
-        >
-          <span
-            className={
-              tracking
-                ? "status-island-dot status-island-dot-pulse"
-                : "status-island-dot status-island-dot-warn"
-            }
-            aria-hidden="true"
-          />
-          {tracking ? `Tracking… (${trackingBufferedCount} buffered)` : "Start exploring"}
-        </button>
-        {trackingError ? <span className="error tracking-error">{trackingError}</span> : null}
-        <div className="fog-mode-toggle" role="group" aria-label="Fog view">
-          <button
-            type="button"
-            className={fogMode === "personal" ? "is-on" : ""}
-            onClick={() => setFogMode("personal")}
-          >
-            You
-          </button>
-          <button
-            type="button"
-            className={fogMode === "group" ? "is-on" : ""}
-            disabled={!groupId}
-            onClick={() => setFogMode("group")}
-          >
-            Group
-          </button>
+      <header className="map-chrome">
+        <div className="map-island">
+          <strong className="brand">Drift</strong>
+          <span className="map-island-split" aria-hidden="true" />
+          <div className="fog-mode-toggle" role="group" aria-label="Fog view">
+            <button
+              type="button"
+              className={fogMode === "personal" ? "is-on" : ""}
+              onClick={() => setFogMode("personal")}
+            >
+              You
+            </button>
+            <button
+              type="button"
+              className={fogMode === "group" ? "is-on" : ""}
+              disabled={!groupId}
+              onClick={() => setFogMode("group")}
+            >
+              Group
+            </button>
+          </div>
         </div>
-        <span className="group-chip">{groupName}</span>
+        <div className="map-chrome-end">
+          <button
+            type="button"
+            className="map-island map-island-action tracking-toggle"
+            onClick={tracking ? stopTracking : startTracking}
+          >
+            <span
+              className={
+                tracking
+                  ? "status-island-dot status-island-dot-pulse"
+                  : "status-island-dot status-island-dot-warn"
+              }
+              aria-hidden="true"
+            />
+            {tracking ? `Tracking… (${trackingBufferedCount} buffered)` : "Start exploring"}
+          </button>
+          {trackingError ? <span className="error tracking-error">{trackingError}</span> : null}
+        </div>
       </header>
 
       <main className="layout-main">

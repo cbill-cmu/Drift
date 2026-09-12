@@ -5,7 +5,6 @@ import {
   Polyline,
   TileLayer,
   Tooltip,
-  ZoomControl,
   useMap,
 } from "react-leaflet";
 import L from "leaflet";
@@ -15,6 +14,7 @@ import { getBasemap } from "../utils/basemap.js";
 import { FOG_STORED_RESOLUTION } from "../utils/fogGeoJSON.js";
 import { cellIdSet, suggestionId } from "../utils/suggestions.js";
 import FogOverlayLayer from "./FogOverlayLayer.jsx";
+import MapZoomControl from "./MapZoomControl.jsx";
 import SuggestionPins from "./SuggestionPins.jsx";
 
 const PITTSBURGH = [40.4406, -79.9959];
@@ -187,7 +187,7 @@ export default function GraphMap({
           maxNativeZoom={BASEMAP.maxNativeZoom}
           {...(BASEMAP.subdomains ? { subdomains: BASEMAP.subdomains } : {})}
         />
-        <ZoomControl position="bottomright" />
+        <MapZoomControl />
         <FogOverlayLayer
           mode={fogMode}
           cells={visitedCells}
