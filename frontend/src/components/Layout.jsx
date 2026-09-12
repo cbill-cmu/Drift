@@ -19,6 +19,7 @@ export default function Layout({ groupId }) {
     isAuthenticated,
     isLoading,
     loginWithRedirect,
+    logout,
     user,
     error,
   } = useAuthStatus();
@@ -88,6 +89,17 @@ export default function Layout({ groupId }) {
 
   return (
     <div className="layout">
+      <button
+        type="button"
+        className="logout-btn"
+        onClick={() =>
+          logout({
+            logoutParams: { returnTo: window.location.origin },
+          })
+        }
+      >
+        Back to login
+      </button>
       <main className="layout-main">
         <GroupMapView
           groupId={groupId}
