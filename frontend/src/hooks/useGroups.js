@@ -44,11 +44,16 @@ export function useGroups(defaultGroupId, { enabled = true } = {}) {
       const list = data?.groups || [];
       setGroups(list);
       setSelectedId((current) => {
-        if (current && (list.some((group) => group.id === current) || current === fallbackId)) {
+        // Only keep `current` if it's a group we're actually in. Matching
+        // it against `fallbackId` alone isn't enough — that env-var default
+        // is only a hint for brand-new users with zero groups, and treating
+        // it as always-valid got people stuck pointed at a deleted/seed-only
+        // group forever (real membership never overrides it once selected).
+        if (current && list.some((group) => group.id === current)) {
           return current;
         }
         const next = list[0]?.id || fallbackId;
-        if (next) writeStoredGroupId(next);
+        writeStoredGroupId(next);
         return next;
       });
     } catch (err) {
