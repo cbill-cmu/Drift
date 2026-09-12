@@ -1,56 +1,58 @@
 # Drift
 
-Hackathon build: shared group knowledge graph of Pittsburgh trips (nodes + edges) on a heat map, with Auth0 login and a discovery reveal moment.
+Hackathon build, pivoting from manual trip logging to **continuous location tracking + a fog-of-war exploration overlay** for Pittsburgh groups, with Auth0 login.
 
-**One sentence:** Movement → Nodes/Edges → Shared group graph → "someone unlocked something" → taste-based recommendations.
+**One sentence:** Continuous movement → private fog-of-war explored map → group overlay of who's-been-where → **surfaced suggestions for where the group hasn't gone yet**.
 
-**Team size:** 4 people. See roles below. This README reflects **current `main`** (code is source of truth).
+**Team size:** 4 people. See roles below. This README reflects **current `main`** (code is source of truth) plus the location-tracking pivot described in [`requirements.md`](requirements.md) and [`DRIFT_PROJECT_GUIDE.md`](DRIFT_PROJECT_GUIDE.md).
 
 ---
 
 ## Current status (as of latest `main`)
 
-### Done
+### Done — pre-pivot foundation (all shipped, unaffected by the pivot)
 
 | Area | What shipped |
 |------|----------------|
-| **Repo scaffold** | `backend/`, `frontend/`, `shared/` on GitHub |
-| **MongoDB Atlas** | Free M0 cluster; DB name `drift` |
-| **Seed data** | CMU CREW group, ~95 Pittsburgh nodes, trips/edges/heat; Lawrenceville kept sparse for demo |
-| **Auth0** | Tenant + SPA login on frontend; env-based Domain / Client ID / Audience |
-| **Backend API** | Express on `:3000`; `POST /api/trips`; `GET /api/groups/:groupId/graph`; member graph route; Mongo reads/writes |
-| **Google Places** | Backend Nearby/Geocode when API key set; otherwise `place_type: unknown` |
-| **Frontend** | Auth0 login/logout; canvas heatmap + graph map; trip logger; neighborhood stats; basic discovery toast; friends panel (partial) |
-| **Contracts** | `shared/api-contract.md`, `shared/mongodb-schema.js` |
+| **Auth0** | Tenant + SPA login; backend JWT **JWKS-verified** (not decode-only) |
+| **Groups** | Create, switch, friend-only invites (`GroupsPanel`, `GroupInvitesPanel`) |
+| **Friends** | Full add/accept/unsend API + UI |
+| **Recommendations** | Taste-based cards (`RecommendationsPanel`) from `user_place_type_profiles` |
+| **Places catalog** | Curated Pittsburgh places (`shared/pittsburgh-places/`), backend service |
+| **Map** | Leaflet + Esri tiles (not canvas anymore), nodes/edges/heat overlay |
+| **Manual trip logging** | `POST /api/trips`, `TripLoggerModal` — **kept as a fallback**, no longer the primary loop |
+| **Profile** | `ProfileModal` — account + group management |
+| **Discovery reveal** | Real auto-dismiss + entrance/exit animation (not a static stub) |
+
+### Not yet built — the pivot (priority order)
+
+1. **Location tracking pipeline** — GPS permission flow, `watchPosition` + accept filter, buffered flush to `POST /api/location/traces` (see `requirements.md` §5)
+2. **H3 cell derivation** — backend decodes traces, upserts `user_visited_cells` (§5-6)
+3. **Group coverage aggregation** — `GET /api/groups/:groupId/coverage`, three-tier classification (§6)
+4. **Fog-of-war rendering** — Leaflet overlay layer, H3 cell → GeoJSON, zoom-dependent resolution (§6)
+5. **Coverage-gap suggestions** — uncovered cells ∩ places catalog → suggestion cards (§6)
+6. **Privacy controls** — per-group opt-out of contributing cell data (§8)
+7. **Deploy** — Vultr + PM2 + production Auth0 callbacks (still open, unrelated to the pivot)
 
 ### Demo group (seed)
 
-- **group_id:** `6aa507373e4c8b8fc47e6428` (also `VITE_DEMO_GROUP_ID`)
+- **group_id:** `6aa507373e4c8b8fc47e6428` (also `VITE_DEMO_GROUP_ID`) — re-check via `npm run verify` after any seed reload, IDs drift
 - **group_name:** `CMU CREW`
 - Details: [`shared/mongodb-seed/HANDOFF.md`](shared/mongodb-seed/HANDOFF.md)
 
-### Still to do (priority order)
-
-1. **E2E critical path** — login → live map from API → log CMU→Lawrenceville → discovery toast → data persists (Person 4 drives; all help)
-2. **Auth0 JWT verify** — replace decode-only middleware with JWKS validation (Person 1)
-3. **Discovery animation polish** — hero toast / edge draw (Person 2)
-4. **Protect graph routes** + align Bearer tokens end-to-end (Person 1 + 2)
-5. **Friends API** — add-by-email still local stub (Person 1 + 2)
-6. **User profile / recommendations** — `GET /api/users/:id/profile` + taste cards (Person 1; lower priority)
-7. **Deploy** — Vultr + PM2 + production Auth0 callbacks (Person 4; Person 3 updates Auth0 URLs)
-8. **Google Maps JS tiles** — optional; current map is canvas (Person 2; can stay cut)
-
 ---
 
-## Tech stack (locked)
+## Tech stack
 
 | Layer | Choice | Notes |
 |-------|--------|--------|
-| Frontend | React + Vite | Canvas graph/heatmap (not Google Maps JS yet) |
-| Backend API | Node.js + Express | Live trips + graph against Atlas |
-| Database | **MongoDB Atlas** (M0 free) | Not self-hosted on Vultr |
-| Auth | Auth0 + JWT | Login works; server-side verify still weak |
-| Places | Google Places (backend) | Optional key; degrades gracefully |
+| Frontend | React + Vite + Leaflet | Esri tiles, not canvas |
+| Location tracking | Browser `Geolocation` API | Foreground only — no OS background tracking without a native wrapper (honest limitation, see `requirements.md` §5) |
+| Spatial indexing | **H3** (`h3-js`) | New dependency for the pivot — not yet added to either `package.json` |
+| Backend API | Node.js + Express | Trips + graph + groups + friends + recs against Atlas; new location/coverage endpoints pending |
+| Database | **MongoDB Atlas** (M0 free) | New collections pending: `location_traces`, `user_visited_cells` |
+| Auth | Auth0 + JWT | JWKS-verified |
+| Places | Google Places (optional) + curated catalog | Catalog doubles as the suggestion source |
 | Hosting | Vultr for API/UI later | DB stays on Atlas |
 
 ---

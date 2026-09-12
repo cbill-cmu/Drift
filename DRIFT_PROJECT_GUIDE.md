@@ -2,10 +2,10 @@
 
 **Hackathon build. Pittsburgh / CMU scoped.**
 
-> **Status sync (4-person team, current `main`):**  
-> Shipped: Atlas seed, Auth0 login, Express trips + graph APIs, canvas map, trip logger, basic discovery toast.  
-> Next: Person 4 drives E2E; Person 2 polishes discovery; Person 1 hardens JWT; then Vultr deploy.  
-> Live checklist: root [`README.md`](README.md) + [`requirements.md`](requirements.md). This guide keeps product/demo/architecture detail.
+> **Status sync (pivoted to continuous location tracking + fog-of-war):**  
+> Shipped: Atlas seed, Auth0 (JWKS verified), groups/friends/invites, recommendations, places catalog, Leaflet map, manual trip logger (kept as fallback), discovery toast with real animation.  
+> Next: build the location-tracking pipeline and fog-of-war overlay described in this guide — this is a scope pivot, not an addition; manual trip logging is no longer the primary path.  
+> Live checklist: root [`README.md`](README.md) + [`requirements.md`](requirements.md), which now has the full technical spec (permission flow, sampling, storage, H3 cell merge, privacy, rendering). This guide keeps product/demo/architecture detail in sync with it.
 
 ---
 
@@ -29,19 +29,22 @@
 
 ## Core Product Definition
 
-**One sentence:** Movement → Nodes/Edges → Shared group graph → "someone unlocked something" moment → **recommendations based on your taste**.
+**One sentence:** Continuous movement → private fog-of-war "explored" map → group overlay of who's-been-where → **surfaced suggestions for where the group hasn't gone yet**.
 
 **The core loop:**
-1. User logs a trip (from point A to point B)
-2. Backend resolves coordinates to nearest nodes + calls Google Places API to categorize them
-3. System detects new nodes/edges and fires a discovery event
-4. Frontend animates the reveal: "Fabio expanded your Drift. Lawrenceville 13% → 18%. New connection: CMU → Lawrenceville, 31 min"
-5. User's personal heat map + taste profile get updated silently in the background
+1. App tracks the user's location continuously in the foreground (GPS permission granted once, `watchPosition` running while the tab is open)
+2. Each accepted GPS fix gets mapped to an H3 hex cell; the user's personal "explored" set of cells grows as they move through the city
+3. Within a group, members' explored-cell sets are merged server-side into one overlay: cells everyone's visited, cells some have visited, cells no one has
+4. The map renders this as fog-of-war — visited areas revealed, unexplored areas covered — with the three tiers visually distinct
+5. Unexplored cells that contain a real catalogued place are surfaced as explicit "go here next" suggestions — the uncovered regions are the point, not just a visual effect
 
-**What makes it Drift (not just Strava):**
-- **Knowledge graph of connections**, not just heatmap
-- **Taste-based recommendations** (learn what types of places each user likes, recommend similar ones)
-- **Shared multiplayer world** (group graph is collective; personal heat maps private to friends)
+Manual trip logging (the original core loop) still exists as a fallback entry point for the same underlying `user_visited_cells` data — useful when live GPS isn't available (e.g. demoing indoors) — but it's no longer how the product primarily works.
+
+**What makes it Drift (not just Strava or Life360):**
+- **Fog-of-war framing**, not a raw heatmap — exploration is revealed, not just intensity-shaded
+- **Group overlay with three-tier coverage**, not a single shared blob — "everyone," "some," and "no one" are each meaningful states that drive different suggestions
+- **Suggestions tied to real places**, not empty hexes — an uncovered cell only becomes a card if it contains something in the places catalog
+- **Coarse-cell privacy by construction** — only H3 cell membership crosses into group scope; raw coordinates and timestamps never leave a user's own account (see Privacy below)
 - **Passive content generation** (behavior = data, no manual reviews)
 
 ---
@@ -50,32 +53,35 @@
 
 ### Core Concept Constraints (Do Not Violate)
 
-- The product is a **knowledge graph** (nodes + edges) rendered on top of a cumulative activity heat map.
-- **Nodes** = areas/stops the group actually spent time in. Each has an inferred place type (urban, park, food, shopping, transit, residential, entertainment, unknown).
-- **Edges** = journeys between nodes that someone in the group actually made.
-- **Graph is shared per-group** ("multiplayer"). Individual contributions merge into one collective world.
-- **Graph is also per-user** ("multiplayer privacy"):
-  - **Group view**: everyone's contributions. Heat map public to group. Graph connections public to group.
-  - **Individual view**: only your trips. Heat map (density) private to friends + self only. But which neighborhoods you visited is group-visible.
+- The product is a **fog-of-war exploration map** built from each user's continuously-tracked location, not a manually-logged graph.
+- **H3 hex cells** are the unit of "explored" — a cell is visited once any accepted GPS fix falls inside it. Resolution 9 (~0.1 km², city-block scale) is the base unit; resolution 7 (~5 km²) is used for zoomed-out group views.
+- **Group overlay merges per-user explored-cell sets** server-side into three tiers: everyone-visited, some-visited, no-one-visited. Computed on read from `user_visited_cells`, not manually maintained.
+- **Privacy is coarse-cell, not per-trip:**
+  - **Group view**: which cells the group collectively covers, and at what tier. Never raw paths or timestamps.
+  - **Individual view**: your own full-resolution fog-of-war map, private by default; you choose which groups your cell data contributes to.
 - Behavior generates content automatically — no manual reviews, posts, or itineraries.
-- **Recommendation engine** (heuristic): infer user's place-type preferences from history; when they visit a new neighborhood, surface unvisited nodes matching their taste.
+- **Suggestion engine**: uncovered ("no one") cells that intersect a catalogued place are surfaced as "go here next" cards. This runs alongside (not instead of) the existing taste-based place-type recommendation engine.
+- The original node/edge knowledge-graph model (`nodes`, `edges`, `trips` collections) is kept intact for the manual-logging fallback and for travel-time/edge data that cell visitation alone doesn't capture — it is not deleted, just no longer the primary loop.
 
-### Explicit Scope Cuts (Locked — Do Not Relitigate)
+### Explicit Scope Cuts (Revised for the Pivot)
 
-**Not building:**
-- Real passive background location tracking
+**No longer cut:**
+- ~~Real passive background location tracking~~ → foreground continuous tracking is now core. True background tracking (app closed/backgrounded) is still out of reach on a plain web stack and remains a stretch item pending a native wrapper — see `requirements.md` §5 for the honest technical breakdown.
+
+**Still not building:**
+- OS-level background tracking without a native (Capacitor) wrapper
 - Place metadata / reviews / hours (that's Yelp)
 - Multi-city support beyond Pittsburgh
 - Real-time multiplayer cursors / live presence
-- Complex ML recommendation model
+- Complex ML recommendation model (heuristic taste + coverage-gap only)
 
 **Building instead:**
-- Manual trip logging (demo data for hackathon)
-- Auth0 integration (real user accounts)
-- Google Places API (auto-categorization of nodes)
-- Basic friends list (add via email or code)
-- Basic group creation / join via code
-- Heuristic recommendation (frequency-based place type matching)
+- Continuous foreground GPS tracking with a distance/time accept filter (§ below)
+- Compressed trace storage + server-side H3 cell derivation
+- Group-level cell-coverage aggregation and three-tier fog-of-war rendering
+- Coverage-gap suggestion cards (uncovered cell ∩ places catalog)
+- Manual trip logging, kept as a fallback path into the same cell data
+- Auth0 integration, groups, friends, places catalog, taste recommendations (all already shipped, unaffected by this pivot)
 
 ---
 
@@ -84,58 +90,58 @@
 ```
 ┌─────────────────────────────────────────────────────────────┐
 │                         USER                                │
-│                     (Auth0 login)                           │
+│              (Auth0 login + GPS permission)                 │
 └─────────────────────────────────────────────────────────────┘
                             ↓
 ┌─────────────────────────────────────────────────────────────┐
 │                      FRONTEND                               │
-│              React + Google Maps SDK                        │
+│              React + Leaflet + h3-js                        │
 │  ┌──────────────────┬────────────────┬────────────────┐    │
-│  │   Group map      │   Trip logger  │  Discovery     │    │
-│  │ Heat + graph     │  From/to       │  animation     │    │
-│  │ overlay          │  picker        │  (PRIORITY)    │    │
+│  │  Fog-of-war map  │  Live tracking │  Discovery /   │    │
+│  │  personal + group│  watchPosition │  suggestion    │    │
+│  │  overlay layers  │  indicator     │  cards         │    │
 │  └──────────────────┴────────────────┴────────────────┘    │
 └─────────────────────────────────────────────────────────────┘
-            ↓ (1. Log trip)           ↑ (4. Return new nodes/edges)
+     ↓ (1. Flush buffered fixes ~60s)   ↑ (4. Return cell coverage)
 ┌─────────────────────────────────────────────────────────────┐
 │                    BACKEND API                              │
 │            Node/Express on Vultr VPS                        │
 │  1. Validate Auth0 JWT                                      │
-│  2. Resolve trip coords → nearest nodes                     │
-│  3. Call Google Places API → categorize (place_type)        │
-│  4. Compute UserPlaceTypeProfile (taste)                    │
-│  5. Save to MongoDB + cache heatpoints                      │
+│  2. Decode polyline → GPS fixes                             │
+│  3. Map each fix → H3 cell (resolution 9)                   │
+│  4. Upsert user_visited_cells (visit_count, last_visited_at)│
+│  5. On read: aggregate group members' cells → 3-tier overlay│
+│  6. Cross-reference "no one" cells against places catalog   │
+│     → suggestion cards                                      │
 └─────────────────────────────────────────────────────────────┘
-      ↓ (Save)           ↓ (Categorize)       ↓ (Retrieve)
+      ↓ (Save)              ↓ (Derive)          ↓ (Retrieve)
    ┌──────────┐       ┌──────────────┐    ┌────────────────┐
-   │ MongoDB  │       │ Google APIs  │    │  Auth0         │
-   │ (users,  │       │ (Places +    │    │  (JWT check)   │
-   │  groups, │       │   Maps)      │    └────────────────┘
-   │  nodes,  │       └──────────────┘
-   │  edges,  │
-   │  trips)  │
+   │ MongoDB  │       │ h3-js        │    │  Auth0         │
+   │ (users,  │       │ (cell        │    │  (JWT check)   │
+   │  groups, │       │  indexing)   │    └────────────────┘
+   │  location│       └──────────────┘
+   │  _traces,│
+   │  visited_│
+   │  cells)  │
    └──────────┘
 ```
+
+Manual trip logging still exists as a parallel input into the same `user_visited_cells` derivation — it's a fallback data source, not a separate architecture.
 
 ### Critical Path (The Demo Flow)
 
 This is what you're demoing in the final 30 seconds:
 
-1. **Open group map** — dense heat/graph core around CMU, Oakland, Shadyside. Sparse at edges (Lawrenceville, South Side).
-2. **User logs a trip** (Fabio traveled from CMU → Lawrenceville, 31 min).
-3. **Backend processes**:
-   - Resolves CMU & Lawrenceville to nodes
-   - Calls Google Places API (Lawrenceville = urban_core)
-   - Detects: new edge created (CMU → Lawrenceville)
-   - Returns to frontend: `{ new_edge: true, neighborhood: "Lawrenceville", prev_pct: 13, new_pct: 18 }`
-4. **Frontend animates**:
-   - Toast appears: "Fabio expanded your Drift."
-   - % bars update: Lawrenceville 13% → 18%
-   - New edge draws on graph with smooth animation
-   - Toast shows travel time + connection
-5. **Graph visibly more connected** than before. Demo ends.
+1. **Open the map** — group's fog-of-war overlay shows dense "everyone" coverage around CMU/Oakland, sparse "some"/uncovered "no one" fog further out (Lawrenceville, South Side).
+2. **User taps "Start exploring"** — grants GPS permission, live tracking indicator appears.
+3. **User walks/drives a short loop** (or simulates one for the demo):
+   - Each accepted fix (≥25m or ≥30s since the last) maps to an H3 cell
+   - That cell flips from fog to "you've been here" on the personal map in near-real-time
+4. **Switch to group view** — the same cell now shows as "some" (just this user) until a teammate's trace also covers it, at which point it flips to "everyone."
+5. **Suggestion card surfaces**: an uncovered cell containing a real catalogued place — "the group hasn't been to X yet."
+6. **Fallback**: if live GPS is unreliable in the room, log a trip manually instead — same `user_visited_cells` pipeline updates either way, so the demo degrades gracefully.
 
-If this loop works and animates well, **you win**. Everything else is secondary.
+If this loop works and the fog genuinely lifts as you move, **you win**. Everything else is secondary.
 
 ---
 
@@ -143,13 +149,14 @@ If this loop works and animates well, **you win**. Everything else is secondary.
 
 | Component | Decision | Why |
 |-----------|----------|-----|
-| **Frontend** | React + Vite or Next.js | Fast dev loop, component reusability |
+| **Frontend** | React + Vite | Already shipped, fast dev loop |
 | **Backend** | Node.js + Express | Fast to build, easy Google API integration |
-| **Database** | MongoDB (Atlas free tier or Vultr-hosted) | Flexible schema, easy to scale, good for graph-like data |
-| **Auth** | Auth0 | Production-ready, handles JWT, no auth plumbing |
-| **Maps** | Google Maps API (tiles + heatmap layer) | Native heatmap rendering, no custom tile work |
-| **Place categorization** | Google Places API (reverse geocoding + place details) | Automatic tagging (urban/park/food/shopping/transit/residential/entertainment) |
-| **Graph visualization** | d3-force or canvas overlay on Google Map | d3-force if you want force-directed layout; canvas if you want simplicity |
+| **Database** | MongoDB Atlas | Flexible schema; new `location_traces` / `user_visited_cells` collections alongside existing ones |
+| **Auth** | Auth0 | JWT, JWKS-verified |
+| **Location tracking** | Browser `Geolocation` API (`watchPosition`) | Foreground-only on web; see `requirements.md` §5 for the background-tracking honesty note |
+| **Spatial indexing** | **H3** (`h3-js`, client + server) | Uniform hex cells for fog-of-war storage, merge, and rendering — see `requirements.md` §6 |
+| **Maps** | Leaflet + Esri tiles | Already shipped |
+| **Place categorization** | Google Places API (optional key) + curated Pittsburgh catalog | Automatic tagging; catalog doubles as the suggestion source for uncovered cells |
 | **Hosting** | Vultr ($5–10/month VPS) | Backend + MongoDB both fit on one small instance |
 | **Version control** | GitHub | Easy to collaborate, free tier |
 | **Deployment** | GitHub → Vultr via SSH or PM2 | Simple, no container overhead needed for 24h |
@@ -286,27 +293,27 @@ If this loop works and animates well, **you win**. Everything else is secondary.
 
 ## What to Skip / Red Flags
 
+Auth0, friends, groups, recommendations, and the places catalog are already shipped — the remaining risk is entirely in the location-tracking/fog-of-war pivot. Skip list updated accordingly.
+
 ### Skip These (Core Loop First)
 
-- ❌ Recommendation engine (hardcode all nodes as place_type="unknown" if needed)
-- ❌ Individual views / personal heat maps (group view only)
-- ❌ Friends list (skip privacy filtering entirely)
-- ❌ Custom polylines / trip path visualization (just show nodes as points)
-- ❌ Live trip logging (use pre-seeded demo data)
-- ❌ Leaderboards, frontier view, travel-mode-specific styling
-- ❌ Eleven Labs audio or Solana blockchain
+- ❌ True OS background tracking (native wrapper) — foreground-only is the whole hackathon scope
+- ❌ The "some" middle coverage tier, if truly pressed for time — ship "everyone" vs. "no one" first, add "some" once that works
+- ❌ Zoom-dependent H3 resolution switching — ship one fixed resolution (9) first, add the res-7 zoomed-out view once cells render correctly at all
+- ❌ Coverage-gap suggestion cards — nice-to-have on top of a working overlay, not required for it to demo
+- ❌ Materializing `group_cell_coverage` as its own collection — compute on read; only optimize if it's actually slow live
 
 ### Red Flags (You've Gone Off Track)
 
-🚩 **Spending >3 hours on Auth0** — should be 30 min (create app, set redirects, add JWT middleware).
+🚩 **Trying to get real background tracking working on web** — it doesn't exist on iOS Safari without a native wrapper. Foreground `watchPosition` + Page Visibility pause/resume is the ceiling for this phase; don't burn hours fighting the platform.
 
-🚩 **Trying to build a custom map** — use Google Maps API, 1 hour done.
+🚩 **Skipping the client-side distance/time accept filter** — raw `watchPosition` callbacks are noisy; without a 25m/30s filter you'll drown in duplicate/jittery points and the fog will flicker instead of steadily revealing.
 
-🚩 **Debating graph library for >2 hours** — pick d3-force or canvas and move on.
+🚩 **Storing every GPS ping as its own document** — batch and compress into `location_traces` polylines; one doc per point will blow up write volume and Atlas costs for no benefit, since only the derived `user_visited_cells` matters long-term.
 
-🚩 **Building real passive location tracking** — that's 8+ hours. Use fake trips.
+🚩 **Building group merge before one user's personal fog-of-war works** — prove a single trace → single user's revealed map end-to-end before touching multi-user aggregation.
 
-🚩 **Implementing privacy / friends system before core loop works** — lock the core first.
+🚩 **Debating H3 vs. geohash vs. raw grid for >1 hour** — H3 is decided (see `requirements.md` §6). Move on.
 
 🚩 **Spending >6 hours on animation** — if it's not smooth by hour 20, it's not the bottleneck.
 
@@ -315,6 +322,10 @@ If this loop works and animates well, **you win**. Everything else is secondary.
 ---
 
 ## Data Model
+
+**New for the pivot** (full spec in `requirements.md` §3 and §5-6): `location_traces` (compressed GPS polylines, personal, 30-day retention) and `user_visited_cells` (durable per-user H3 resolution-9 cell visitation — the only thing group overlays ever read). Group-level coverage is computed on read via aggregation, not its own stored collection, for this phase.
+
+Everything below is the collection set that predates the pivot and stays as-is — `nodes`/`edges`/`trips` remain the backing for the manual-logging fallback path and for travel-time data cell visitation alone doesn't capture.
 
 ### Collections (MongoDB)
 
@@ -448,6 +459,14 @@ db.user_heatpoints.createIndex({ group_id: 1, user_id: 1 })
 
 ## Backend Endpoints (MVP Only)
 
+**New for the pivot:**
+
+- `POST /api/location/traces` — flush a buffered client-side polyline (see `requirements.md` §5). Backend decodes it, derives H3 cells, upserts `user_visited_cells`.
+- `GET /api/groups/:groupId/coverage` — the three-tier fog-of-war overlay for a group: aggregates `user_visited_cells` over `member_ids`, classifies each returned cell as everyone/some (never enumerates "no one" cells explicitly — see `requirements.md` §6).
+- `GET /api/groups/:groupId/suggestions` — coverage-gap suggestion cards: uncovered cells intersected with the places catalog.
+
+Existing endpoints (`POST /api/trips`, `GET /api/groups/:groupId/graph`, friends/groups/recommendations routes) are unchanged and stay live as the fallback/complementary paths.
+
 ### POST `/api/trips`
 
 **Request**:
@@ -556,6 +575,14 @@ Always return `{ success: false, error: "..." }` on failure.
 ---
 
 ## Frontend Components (MVP Only)
+
+**New for the pivot:**
+
+- **LocationTracker** (hook/provider) — requests permission, runs `watchPosition` with the accept filter, pauses/resumes on `visibilitychange`, buffers fixes, flushes to `POST /api/location/traces` every ~60s.
+- **FogOverlayLayer** — a Leaflet layer rendering H3 cells (`cellToBoundary` → GeoJSON) styled by tier; swaps resolution 9 ↔ 7 on zoom.
+- **SuggestionCards** — renders `GET /api/groups/:groupId/suggestions` results.
+
+Existing components (`GroupMapView`, `TripLoggerModal`, `DiscoveryReveal`, `NeighborhoodStats`, `FriendsPanel`, `GroupsPanel`, `RecommendationsPanel`, `ProfileModal`) are all already shipped and unaffected — `TripLoggerModal` stays as the manual fallback entry point into the same cell-derivation pipeline.
 
 ### 1. GroupMapView
 
@@ -768,15 +795,20 @@ If any of these slip, you've gone off track. Escalate immediately.
 
 | Term | Definition |
 |------|-----------|
-| **Node** | An area/neighborhood the group has visited (e.g., "Oakland", "Lawrenceville") |
-| **Edge** | A journey between two nodes (e.g., "CMU → Lawrenceville, 31 min") |
-| **Trip** | A raw user submission of traveling from point A to point B |
-| **Place type** | Category inferred from Google Places API (urban_core, park, food, shopping, transit, residential, entertainment) |
-| **Heat map** | Density visualization of where the group has spent time |
-| **Discovery** | Event fired when a new node or edge is created (triggers reveal animation) |
+| **H3 cell** | A hexagonal spatial index unit (Uber's H3 library); resolution 9 (~0.1 km²) is the base "visited" unit, resolution 7 (~5 km²) is used zoomed out |
+| **Fog-of-war** | The visual metaphor: unexplored cells stay covered, visited cells are revealed |
+| **Visited cell** | An H3 cell a user has physically entered at least once (`user_visited_cells`) |
+| **Coverage tier** | One of three group-overlay states for a cell: everyone-visited, some-visited, no-one-visited |
+| **Coverage-gap suggestion** | An unvisited ("no one") cell that contains a catalogued place, surfaced as a "go here next" card |
+| **Trace** | A compressed polyline of a user's accepted GPS fixes over a tracking session (`location_traces`) |
+| **Accept filter** | The client-side rule (≥25m moved or ≥30s elapsed) that decides whether a raw GPS fix is kept |
+| **Node** | An area/neighborhood the group has visited (e.g., "Oakland", "Lawrenceville") — kept for the manual-logging fallback path |
+| **Edge** | A journey between two nodes (e.g., "CMU → Lawrenceville, 31 min") — kept for the fallback path |
+| **Trip** | A raw user submission of traveling from point A to point B — now a fallback data source into `user_visited_cells`, not the primary loop |
+| **Place type** | Category inferred from Google Places API or the curated catalog (urban_core, park, food, shopping, transit, residential, entertainment) |
 | **Taste profile** | User's inferred preference (% trips by place_type) |
-| **Critical path** | The demo loop: log trip → backend processes → frontend animates |
-| **MVP** | Minimum viable product: group graph + heatmap + discovery animation + trip logging |
+| **Critical path** | The demo loop: track location → cells reveal → group overlay merges → suggestion surfaces |
+| **MVP** | Minimum viable product: one user's personal fog-of-war working end-to-end, then group merge on top |
 
 ---
 
