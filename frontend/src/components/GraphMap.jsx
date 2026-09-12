@@ -1,147 +1,170 @@
-import { useEffect, useMemo, useRef } from "react";
-import { boundsFromNodes, project } from "../utils/projection.js";
+import { useEffect, useMemo } from "react";
+import {
+  CircleMarker,
+  MapContainer,
+  Polyline,
+  TileLayer,
+  Tooltip,
+  useMap,
+} from "react-leaflet";
+import L from "leaflet";
+import "leaflet/dist/leaflet.css";
+import { boundsFromNodes } from "../utils/projection.js";
 
-function heatSources(graph) {
-  const sources = [];
-  for (const point of graph.heatpoints || []) {
-    if (Number.isFinite(point.lat) && Number.isFinite(point.lng)) {
-      sources.push({
-        lat: point.lat,
-        lng: point.lng,
-        weight: Math.max(0.4, Number(point.weight) || 1),
-      });
+/**
+ * Soft free raster basemap — no API key, no MapLibre worker.
+ * Esri World Light Gray (calm / soft product look).
+ */
+const SOFT_TILES =
+  "https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}";
+const SOFT_ATTR =
+  "Tiles &copy; Esri &mdash; Esri, DeLorme, NAVTEQ";
+
+const PITTSBURGH = [40.4406, -79.9959];
+
+function FitGraphBounds({ points }) {
+  const map = useMap();
+
+  useEffect(() => {
+    if (!points.length) return;
+    const b = L.latLngBounds(points.map((p) => [p.lat, p.lng]));
+    if (b.isValid()) {
+      map.fitBounds(b.pad(0.16), { animate: false, maxZoom: 14 });
     }
-  }
-  for (const node of graph.nodes || []) {
-    if (Number.isFinite(node.lat) && Number.isFinite(node.lng)) {
-      sources.push({
-        lat: node.lat,
-        lng: node.lng,
-        weight: Math.max(0.6, (node.visits || 1) / 3),
-      });
-    }
-  }
-  return sources;
+  }, [map, points]);
+
+  return null;
 }
 
-function colorizeHeat(image) {
-  const data = image.data;
-  for (let i = 0; i < data.length; i += 4) {
-    const intensity = data[i + 3] / 255;
-    if (intensity < 0.03) {
-      data[i + 3] = 0;
-      continue;
-    }
-    let r;
-    let g;
-    let b;
-    if (intensity < 0.33) {
-      const t = intensity / 0.33;
-      r = 232 + t * (168 - 232);
-      g = 240 + t * (201 - 240);
-      b = 216 + t * (122 - 216);
-    } else if (intensity < 0.66) {
-      const t = (intensity - 0.33) / 0.33;
-      r = 168 + t * (125 - 168);
-      g = 201 + t * (155 - 201);
-      b = 122 + t * (118 - 122);
-    } else {
-      const t = (intensity - 0.66) / 0.34;
-      r = 125 + t * (63 - 125);
-      g = 155 + t * (93 - 155);
-      b = 118 + t * (74 - 118);
-    }
-    data[i] = r;
-    data[i + 1] = g;
-    data[i + 2] = b;
-    data[i + 3] = Math.min(220, 70 + intensity * 150);
-  }
+function MapSizeSync({ width, height }) {
+  const map = useMap();
+  useEffect(() => {
+    map.invalidateSize();
+  }, [map, width, height]);
+  return null;
 }
 
-export default function GraphMap({ graph, width, height, selectedNodeId, onSelectNode }) {
-  const canvasRef = useRef(null);
-  const bounds = useMemo(
-    () => boundsFromNodes([...(graph?.nodes || []), ...(graph?.heatpoints || [])]),
+/**
+ * Full-bleed soft city map + Drift graph overlay.
+ */
+export default function GraphMap({
+  graph,
+  width,
+  height,
+  selectedNodeId,
+  onSelectNode,
+}) {
+  const nodes = useMemo(
+    () =>
+      (graph?.nodes || []).filter(
+        (n) => Number.isFinite(n.lat) && Number.isFinite(n.lng)
+      ),
     [graph]
   );
 
-  useEffect(() => {
-    const canvas = canvasRef.current;
-    if (!canvas || !graph || width < 8 || height < 8) return;
-    const ctx = canvas.getContext("2d");
-    const dpr = window.devicePixelRatio || 1;
-    canvas.width = width * dpr;
-    canvas.height = height * dpr;
-    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  const nodeById = useMemo(() => {
+    const m = new Map();
+    for (const n of nodes) m.set(n.id, n);
+    return m;
+  }, [nodes]);
 
-    const sky = ctx.createLinearGradient(0, 0, 0, height);
-    sky.addColorStop(0, "#c5d9e0");
-    sky.addColorStop(0.45, "#d5e4dc");
-    sky.addColorStop(1, "#e7efe2");
-    ctx.fillStyle = sky;
-    ctx.fillRect(0, 0, width, height);
-
-    const sources = heatSources(graph);
-    if (sources.length === 0) return;
-
-    const layer = document.createElement("canvas");
-    layer.width = Math.floor(width);
-    layer.height = Math.floor(height);
-    const heat = layer.getContext("2d");
-    heat.clearRect(0, 0, layer.width, layer.height);
-    heat.globalCompositeOperation = "lighter";
-
-    const maxWeight = Math.max(...sources.map((s) => s.weight), 1);
-    for (const source of sources) {
-      const { x, y } = project(source.lat, source.lng, width, height, bounds);
-      const t = source.weight / maxWeight;
-      const radius = 28 + t * 56;
-      const gradient = heat.createRadialGradient(x, y, 0, x, y, radius);
-      gradient.addColorStop(0, `rgba(255, 255, 255, ${0.12 + t * 0.72})`);
-      gradient.addColorStop(0.4, `rgba(255, 255, 255, ${0.05 + t * 0.28})`);
-      gradient.addColorStop(1, "rgba(255, 255, 255, 0)");
-      heat.fillStyle = gradient;
-      heat.beginPath();
-      heat.arc(x, y, radius, 0, Math.PI * 2);
-      heat.fill();
+  const edges = useMemo(() => {
+    const lines = [];
+    for (const e of graph?.edges || []) {
+      const a = nodeById.get(e.from);
+      const b = nodeById.get(e.to);
+      if (!a || !b) continue;
+      lines.push({
+        id: e.id,
+        count: e.count || 1,
+        positions: [
+          [a.lat, a.lng],
+          [b.lat, b.lng],
+        ],
+      });
     }
+    return lines.sort((a, b) => b.count - a.count).slice(0, 48);
+  }, [graph, nodeById]);
 
-    const image = heat.getImageData(0, 0, layer.width, layer.height);
-    colorizeHeat(image);
-    heat.putImageData(image, 0, 0);
-    ctx.drawImage(layer, 0, 0, width, height);
-  }, [graph, width, height, bounds]);
+  const labeled = useMemo(
+    () =>
+      [...nodes]
+        .sort((a, b) => (b.visits || 0) - (a.visits || 0))
+        .slice(0, 40),
+    [nodes]
+  );
 
-  if (!graph) return null;
+  const fitPoints = useMemo(() => {
+    const b = boundsFromNodes(nodes);
+    return [
+      { lat: b.south, lng: b.west },
+      { lat: b.north, lng: b.east },
+      ...nodes,
+    ];
+  }, [nodes]);
 
-  const labeled = [...(graph.nodes || [])]
-    .filter((n) => Number.isFinite(n.lat) && Number.isFinite(n.lng))
-    .sort((a, b) => (b.visits || 0) - (a.visits || 0))
-    .slice(0, 14);
+  if (!graph || width < 8 || height < 8) {
+    return (
+      <div
+        className="graph-map graph-map-empty"
+        style={{ width: width || "100%", height: height || "100%" }}
+      />
+    );
+  }
 
   return (
     <div className="graph-map" style={{ width, height }}>
-      <canvas ref={canvasRef} className="graph-heat" style={{ width, height }} />
-      <svg className="graph-svg" width={width} height={height}>
+      <MapContainer
+        key="drift-soft-map"
+        center={PITTSBURGH}
+        zoom={13}
+        className="drift-leaflet"
+        style={{ width: "100%", height: "100%" }}
+        zoomControl={false}
+        attributionControl
+      >
+        <TileLayer url={SOFT_TILES} attribution={SOFT_ATTR} maxZoom={16} />
+        <FitGraphBounds points={fitPoints} />
+        <MapSizeSync width={width} height={height} />
+
+        {edges.map((e) => (
+          <Polyline
+            key={e.id}
+            positions={e.positions}
+            pathOptions={{
+              color: "#9ccfc0",
+              weight: Math.min(3.2, 1.1 + Math.log2(e.count + 1) * 0.65),
+              opacity: 0.42,
+              lineCap: "round",
+              lineJoin: "round",
+            }}
+          />
+        ))}
+
         {labeled.map((node) => {
-          const { x, y } = project(node.lat, node.lng, width, height, bounds);
           const selected = node.id === selectedNodeId;
           return (
-            <g
+            <CircleMarker
               key={node.id}
-              className="graph-node-hit"
-              onClick={() => onSelectNode?.(node)}
+              center={[node.lat, node.lng]}
+              radius={selected ? 8 : 5.5}
+              pathOptions={{
+                color: "#ffffff",
+                weight: 2.5,
+                fillColor: selected ? "#f0b0bc" : "#c5e8dc",
+                fillOpacity: 0.95,
+              }}
+              eventHandlers={{
+                click: () => onSelectNode?.(node),
+              }}
             >
-              {selected ? (
-                <circle cx={x} cy={y} r={10} className="heat-selected-ring" />
-              ) : null}
-              <text x={x + 8} y={y + 4} className="graph-label">
+              <Tooltip direction="right" offset={[8, 0]} opacity={1}>
                 {node.name}
-              </text>
-            </g>
+              </Tooltip>
+            </CircleMarker>
           );
         })}
-      </svg>
+      </MapContainer>
     </div>
   );
 }

@@ -2,10 +2,11 @@ import { useCallback, useEffect, useState } from "react";
 import { fetchFriendGraph, fetchGroupGraph } from "../api/client.js";
 import { normalizeGraph } from "../api/normalizeGraph.js";
 import { getFixtureFriendGraph } from "../data/fixtureFriendGraphs.js";
+import groupGraphFixture from "../data/groupGraphFixture.json";
 
 /**
  * Load the graph currently on the map from the API.
- * Friend maps may still use a fixture if the member-graph route has no trips yet.
+ * Falls back to seeded fixture when the API is down or rejects (local demo).
  */
 export function useMapGraph({ groupId, friendId, refreshKey = 0 }) {
   const [data, setData] = useState(null);
@@ -36,6 +37,11 @@ export function useMapGraph({ groupId, friendId, refreshKey = 0 }) {
           setError(message);
           return;
         }
+      } else if (groupGraphFixture) {
+        setData(normalizeGraph(groupGraphFixture));
+        setUsingFixture(true);
+        setError(message);
+        return;
       }
       setData(null);
       setUsingFixture(false);

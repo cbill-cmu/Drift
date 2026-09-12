@@ -25,7 +25,7 @@ Hackathon build: shared group knowledge graph of Pittsburgh trips (nodes + edges
 
 ### Demo group (seed)
 
-- **group_id:** `6aa4d5b78c6341a27ed90e4b` (also `VITE_DEMO_GROUP_ID`)
+- **group_id:** `6aa507373e4c8b8fc47e6428` (also `VITE_DEMO_GROUP_ID`)
 - **group_name:** `CMU CREW`
 - Details: [`shared/mongodb-seed/HANDOFF.md`](shared/mongodb-seed/HANDOFF.md)
 

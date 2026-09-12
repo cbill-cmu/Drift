@@ -1,6 +1,5 @@
 /**
- * Discovery reveal hero stub (Person 2).
- * Highest-priority UI once the API returns new_edge / neighborhood %.
+ * Discovery reveal — soft top toast matching Soft product standard.
  */
 export default function DiscoveryReveal({ discoveryData, onDismiss }) {
   if (!discoveryData) return null;
@@ -11,22 +10,28 @@ export default function DiscoveryReveal({ discoveryData, onDismiss }) {
 
   return (
     <div className="discovery-toast" role="status">
-      <p>
-        <strong>{discoveryData.actor_name || "Someone"}</strong> expanded your Drift.
-      </p>
-      {before != null && after != null && (
+      <span className="discovery-check" aria-hidden="true">
+        ✓
+      </span>
+      <div className="discovery-copy">
         <p>
-          Neighborhood {before}% → {after}%
+          <strong>{discoveryData.actor_name || "Someone"}</strong> expanded your
+          Drift.
         </p>
-      )}
-      {edge && (
-        <p>
-          New connection: {edge.from} → {edge.to}
-          {edge.duration_min != null ? `, ${edge.duration_min} min` : ""}
-        </p>
-      )}
-      <button type="button" className="btn-paper" onClick={onDismiss}>
-        Dismiss
+        {before != null && after != null ? (
+          <p className="hint">
+            Neighborhood {before}% → {after}%
+          </p>
+        ) : null}
+        {edge ? (
+          <p className="hint">
+            New connection: {edge.from} → {edge.to}
+            {edge.duration_min != null ? `, ${edge.duration_min} min` : ""}
+          </p>
+        ) : null}
+      </div>
+      <button type="button" className="icon-dismiss" onClick={onDismiss} aria-label="Dismiss">
+        ×
       </button>
     </div>
   );

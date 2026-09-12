@@ -1,0 +1,38 @@
+{
+  "title": "Approve Soft product standard layout",
+  "question": "World is locked: Soft product standard. Which composition should we build for the group map?",
+  "options": [
+    {
+      "id": "comp-a",
+      "label": "Classic map + soft sidebar",
+      "kicker": "COMPOSITION A",
+      "thesis": "Map dominates left; quiet sidebar for stats/friends; Log trip obvious — familiar and clear.",
+      "palette": ["#ffffff", "#111827", "#6db3a8", "#f3f4f6"],
+      "viewport": "Top bar · map 70% · soft right panel · Log trip · soft toast",
+      "comp": ".impeccable/mocks/soft-standard-a.png"
+    },
+    {
+      "id": "comp-b",
+      "label": "Full map + bottom bar",
+      "kicker": "COMPOSITION B",
+      "thesis": "Maximum map; controls float in a soft bottom bar — more immersive, still minimal.",
+      "palette": ["#ffffff", "#111827", "#6db3a8", "#f3f4f6"],
+      "viewport": "Full-bleed map · thin top · floating bottom bar with Log trip",
+      "comp": ".impeccable/mocks/soft-standard-b.png"
+    },
+    {
+      "id": "comp-c",
+      "label": "Map + slim left rail",
+      "kicker": "COMPOSITION C",
+      "thesis": "List/rail on the left for places & friends; map stays open — good for scanning names.",
+      "palette": ["#ffffff", "#111827", "#6db3a8", "#f3f4f6"],
+      "viewport": "Slim left rail · map · Log trip in rail · slim discovery banner",
+      "comp": ".impeccable/mocks/soft-standard-c.png"
+    }
+  ],
+  "buildPath": {
+    "value": "comp",
+    "toggle": false
+  },
+  "steer": false
+}

@@ -4,7 +4,7 @@ import { useAuthStatus } from "./hooks/useAuth0.js";
 import { useLayoutEffect } from "react";
 
 const GROUP_ID =
-  import.meta.env.VITE_DEMO_GROUP_ID || "6aa4d5b78c6341a27ed90e4b";
+  import.meta.env.VITE_DEMO_GROUP_ID || "6aa507373e4c8b8fc47e6428";
 
 /**
  * Root app (Person 2).

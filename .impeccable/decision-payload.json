@@ -1,0 +1,80 @@
+{
+  "title": "Soft Bubble Town (dialed back)",
+  "question": "Pastel Bubble Town, but less childish/cute — more minimal, simple, still round and soft. Which balance?",
+  "options": [
+    {
+      "id": "assigned",
+      "label": "Quiet Bubbles",
+      "kicker": "YOUR STEER",
+      "lineage": "Pastel Bubble Town → minimal soft geometry",
+      "thesis": "Places are quiet pastel circles on a warm cream field; thin soft curves for routes; almost no decoration — soft and round without chibi faces.",
+      "palette": ["#faf7f4", "#2a2a2a", "#7eb8a8", "#e8a0a8", "#d4cfc8"],
+      "materials": ["flat matte fills", "soft circular nodes", "hairline curved edges", "no faces / no stickers / no sparkles"],
+      "viewport": "Desktop: warm cream canvas. Large soft circles (places) in muted mint/rose/sand — labels in small quiet sans inside or beside. Thin curved mint/rose lines connect a few pairs. Top: Drift wordmark in simple rounded sans + CMU CREW. One soft pill Log trip (muted coral). Discovery: a new circle gently appears + short soft toast. Chrome minimal; map reads in under a second.",
+      "risk": "Can feel empty if circles lack just enough label hierarchy.",
+      "raised": [
+        {
+          "from": "pastel-bubble-town",
+          "raise": "Keep the bubble-town topology (round places, soft town feel) but strip characters, stickers, and candy chrome."
+        }
+      ],
+      "comp": ".impeccable/mocks/decision/assigned.png"
+    },
+    {
+      "id": "model-pick",
+      "label": "Two-Tone Soft Map",
+      "kicker": "IMPECCABLE’S PICK",
+      "lineage": "even more minimal — one accent only",
+      "thesis": "Cream ground, charcoal type, one soft mint accent for live routes and the primary button — bubbles in warm gray.",
+      "palette": ["#f7f5f2", "#1f1f1f", "#6db3a8", "#cfc8c0"],
+      "materials": ["flat circles", "single accent", "generous whitespace"],
+      "viewport": "Very quiet: gray soft bubbles, mint only on active edges + Log trip pill; Drift wordmark small; almost no sidebar clutter.",
+      "risk": "Most restrained — personality is subtle.",
+      "comp": ".impeccable/mocks/decision/model-pick.png"
+    },
+    {
+      "id": "challenger-softgrid",
+      "label": "Rounded Soft Grid",
+      "verdict": "competitive",
+      "lineage": "bubble town as a soft rounded-card layout",
+      "thesis": "Same softness, slightly more structure: rounded panels and circle nodes aligned on a loose soft grid for easier scanning.",
+      "palette": ["#f9f6f2", "#222222", "#8fbfb5", "#d9a5a8"],
+      "materials": ["large radius panels", "circle nodes", "soft dividers"],
+      "viewport": "Map area with soft bubble nodes; slim rounded legend; Log trip pill; discovery as a soft rounded banner — still no cute characters.",
+      "case": "Easier to use / clearer hierarchy; a bit less “town illustration.”",
+      "risk": "Can read closer to normal product UI.",
+      "comp": ".impeccable/mocks/decision/challenger-softgrid.png"
+    },
+    {
+      "id": "challenger-orb",
+      "label": "Orb Cluster",
+      "verdict": "competitive",
+      "lineage": "bubble town with fewer, larger orbs",
+      "thesis": "Only a handful of large soft orbs (neighborhoods) with tiny dots inside for places — ultra simple silhouette.",
+      "palette": ["#fff9f5", "#2c2c2c", "#9bc4bc", "#e6b0b5"],
+      "materials": ["large translucent soft orbs", "tiny place dots", "one curved connector style"],
+      "viewport": "3–5 big soft neighborhood orbs; sparse labels; mint connectors between orbs; Log trip pill; unlock soft-fills one orb slightly stronger.",
+      "case": "Simplest read at a glance; less detail for dense graphs.",
+      "risk": "May under-serve many nodes later.",
+      "comp": ".impeccable/mocks/decision/challenger-orb.png"
+    }
+  ],
+  "reroll": {
+    "registers": ["safer", "bolder"]
+  },
+  "buildPath": {
+    "value": "comp",
+    "toggle": true
+  },
+  "canon": true,
+  "canonCard": {
+    "label": "Soft product standard",
+    "thesis": "Standard soft map UI with slightly rounder nodes — usable default if bubbles feel too abstract.",
+    "palette": ["#ffffff", "#111827", "#6db3a8", "#f3f4f6"],
+    "materials": ["soft radius", "simple dots"],
+    "viewport": "Clean map + minimal sidebar + Log trip.",
+    "risk": "Least unique.",
+    "comp": ".impeccable/mocks/decision/canon.png"
+  },
+  "steer": true
+}

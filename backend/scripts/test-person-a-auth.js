@@ -3,7 +3,7 @@
  * Run against a live server: node scripts/test-person-a-auth.js
  */
 const BASE = process.env.API_BASE || "http://localhost:3000";
-const GROUP = process.env.DEMO_GROUP_ID || "6aa4d5b78c6341a27ed90e4b";
+const GROUP = process.env.DEMO_GROUP_ID || "6aa507373e4c8b8fc47e6428";
 
 function fakeJwt(payload) {
   const header = Buffer.from(JSON.stringify({ alg: "RS256", typ: "JWT" })).toString("base64url");

@@ -1,6 +1,5 @@
 /**
  * Demo users aligned with Auth0 test accounts (see shared/auth0-setup.md).
- * Stub returns 10 users; expand display names / auth0_ids after Auth0 creation.
  */
 export function generateUsers() {
   const names = [
