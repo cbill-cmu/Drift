@@ -29,7 +29,8 @@ export async function requireGroupMember(req, res, next) {
 
     if (!user && req.auth?.email) {
       user = await users.findOne({ email: req.auth.email });
-      if (user && !user.auth0_id) {
+      if (user) {
+        // Seed rows use placeholder auth0_ids — always bind the live Auth0 sub
         await users.updateOne({ _id: user._id }, { $set: { auth0_id: sub } });
         user.auth0_id = sub;
       }

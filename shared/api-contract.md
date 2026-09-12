@@ -7,7 +7,7 @@ Base URL (local): `http://localhost:3000`
 Auth: `Authorization: Bearer <Auth0 access token>` (trips currently require Bearer; graph may be open depending on backend config)  
 Errors: `{ "success": false, "error": "string" }` with 400 / 401 / 500 as appropriate
 
-**Demo group_id (seed):** `6aa4d5b78c6341a27ed90e4b` — confirm with `npm run verify` after any reload.
+**Demo group_id (seed):** `6aa507373e4c8b8fc47e6428` — confirm with `npm run verify` after any reload.
 
 ---
 
