@@ -48,17 +48,19 @@ Status legend: `[ ]` not started · `[~]` in progress · `[x]` done
 
 ---
 
-## Phase 2 — Backend ingestion + cell derivation
+## Phase 2 — Backend ingestion + cell derivation ✅ done
 
-- [ ] New route: `POST /api/location/traces` (`backend/src/routes/location.js`, mounted in `server.js` behind `requireAuth`)
+- [x] New route: `POST /api/location/traces` (`backend/src/routes/location.js`, mounted in `server.js` behind `requireAuth`)
   - Body: `{ polyline: string, started_at, ended_at, point_count, distance_m }`
   - Decode the polyline server-side (same algorithm, decode direction)
-- [ ] New service: `backend/src/services/locationService.js`
+- [x] New service: `backend/src/services/locationService.js`
   - `recordTrace(db, userId, body)` — inserts one `location_traces` doc (raw, for the 30-day-retention window)
   - `deriveVisitedCells(db, userId, points)` — for each decoded point, `h3.latLngToCell(lat, lng, 9)`, then bulk-upsert into `user_visited_cells`: `$inc: { visit_count: 1 }`, `$max: { last_visited_at }`, `$setOnInsert: { first_visited_at }`
-- [ ] Call `deriveVisitedCells` from the route handler after `recordTrace` succeeds — same non-blocking-try/catch pattern already used elsewhere (see `tripService.js`'s `recomputeUserPlaceTypeProfile` call for the exact pattern to copy)
+- [x] Call `deriveVisitedCells` from the route handler after `recordTrace` succeeds — same non-blocking-try/catch pattern already used elsewhere (see `tripService.js`'s `recomputeUserPlaceTypeProfile` call for the exact pattern to copy)
 
 **Done when:** POSTing a real encoded polyline (curl/Postman, or from Phase 1's flush) produces real `user_visited_cells` documents in Atlas — verify directly in Atlas or via a small script, same way Person B's Task 2 was verified against real data.
+
+**Verified:** frontend/backend polyline decode match on CMU coords `s|yuFz}|fNcBcB` → `[[40.4425,-79.9435],[40.443,-79.943]]`. Service write against Atlas: one `location_traces` doc, one `user_visited_cells` row for cell `892a847317bffff` with `visit_count: 2` (both points share the res-9 hex), second upsert increments to 4 with no duplicate row. Unauthenticated `POST /api/location/traces` returns 401 (route exists, Auth0 required). Test docs cleaned up after.
 
 ---
 

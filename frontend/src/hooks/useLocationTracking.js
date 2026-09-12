@@ -27,9 +27,8 @@ const FLUSH_INTERVAL_MS = 60000;
  * - Accepted fixes buffer in memory and flush (encode -> POST) every 60s
  *   and immediately whenever the tab is hidden, so nothing is lost.
  *
- * The backend route (POST /api/location/traces) doesn't exist until
- * Phase 2 — flush failures are caught and logged, not surfaced as
- * errors, so this hook is fully usable/testable on its own first.
+ * Flush failures are caught and logged, not surfaced as user-facing
+ * errors — losing a batch is an acceptable tradeoff vs unbounded retry.
  */
 export function useLocationTracking() {
   const [active, setActive] = useState(false);
@@ -76,13 +75,7 @@ export function useLocationTracking() {
         console.log("[location] flushed trace:", payload);
       })
       .catch((err) => {
-        // Expected to 404 until Phase 2 lands the route — log instead of
-        // surfacing as a user-facing error.
-        console.log(
-          "[location] flush failed (expected until Phase 2 backend route exists):",
-          err.message,
-          payload
-        );
+        console.log("[location] flush failed:", err.message, payload);
       });
   }, []);
 

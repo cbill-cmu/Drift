@@ -88,8 +88,6 @@ export async function postTrip(body) {
 /**
  * POST /api/location/traces — flush a buffered, encoded polyline of
  * accepted GPS fixes (see requirements.md §5, TASKS.md Phase 1-2).
- * The backend route doesn't exist until Phase 2; callers should catch
- * and log rather than surface this as a user-facing error until then.
  */
 export async function postLocationTrace(body) {
   try {

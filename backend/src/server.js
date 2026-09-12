@@ -6,6 +6,7 @@ import { requireAuth } from "./middleware/auth.js";
 import friendsRouter from "./routes/friends.js";
 import graphRouter from "./routes/graph.js";
 import groupsRouter from "./routes/groups.js";
+import locationRouter from "./routes/location.js";
 import placesRouter from "./routes/places.js";
 import recommendationsRouter from "./routes/recommendations.js";
 import tripsRouter from "./routes/trips.js";
@@ -24,6 +25,7 @@ app.get("/", (_req, res) => {
 });
 
 app.use("/api/trips", requireAuth, tripsRouter);
+app.use("/api/location", requireAuth, locationRouter);
 app.use("/api/places", requireAuth, placesRouter);
 app.use("/api/recommendations", requireAuth, recommendationsRouter);
 app.use("/api/friends", requireAuth, friendsRouter);
