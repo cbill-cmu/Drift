@@ -25,8 +25,24 @@ export function publicUser(user) {
     display_name: user.display_name || "",
     email: user.email || "",
     groups: Array.isArray(user.groups) ? user.groups.map(asString) : [],
+    // null = implicit allow-all (field never written). Explicit [] means
+    // share with no groups.
+    contributes_to: Array.isArray(user.contributes_to)
+      ? user.contributes_to.map(asString)
+      : null,
     created_at: user.created_at || null,
   };
+}
+
+/**
+ * Allowlist with implicit-all default: missing `contributes_to` means
+ * the user shares exploration with every group they belong to.
+ */
+export function userSharesExploration(user, groupId) {
+  if (!Array.isArray(user?.contributes_to)) return true;
+  const wanted = asString(groupId);
+  if (!wanted) return false;
+  return user.contributes_to.some((id) => asString(id) === wanted);
 }
 
 /**
@@ -98,27 +114,103 @@ export async function upsertCurrentUser(auth = {}) {
 }
 
 /**
- * PATCH /api/users/me — edit the Drift profile. An optional nickname,
- * nothing else; the profile itself already exists from login (see
- * upsertCurrentUser). Empty is allowed — callers elsewhere already fall
- * back to email when display_name is blank.
+ * PATCH /api/users/me — nickname and/or per-group exploration sharing.
+ * Fields are optional and independent so a privacy toggle does not wipe
+ * display_name.
  */
 export async function updateCurrentUser(auth = {}, body = {}) {
   const { user } = await upsertCurrentUser(auth);
   const db = getDb();
-
-  const display_name = String(body.display_name || "").trim();
-  if (display_name.length > 80) {
-    throw new HttpError(400, "display_name must be 80 characters or less");
+  const hasName = Object.prototype.hasOwnProperty.call(body, "display_name");
+  const share = body.share_exploration;
+  if (!hasName && (share == null || typeof share !== "object")) {
+    throw new HttpError(400, "display_name or share_exploration is required");
   }
 
-  const updates = {
-    display_name,
-    updated_at: new Date(),
-  };
+  const users = db.collection(COLLECTIONS.USERS);
+  const setDoc = { updated_at: new Date() };
+  let next = { ...user };
 
-  await db.collection(COLLECTIONS.USERS).updateOne({ _id: user._id }, { $set: updates });
-  return { user: { ...user, ...updates } };
+  if (hasName) {
+    const display_name = String(body.display_name || "").trim();
+    if (display_name.length > 80) {
+      throw new HttpError(400, "display_name must be 80 characters or less");
+    }
+    setDoc.display_name = display_name;
+    next.display_name = display_name;
+    await users.updateOne({ _id: user._id }, { $set: setDoc });
+    next = { ...next, ...setDoc };
+  }
+
+  if (share != null && typeof share === "object") {
+    const groupId = String(share.group_id || "").trim();
+    if (!groupId) throw new HttpError(400, "share_exploration.group_id is required");
+    if (typeof share.enabled !== "boolean") {
+      throw new HttpError(400, "share_exploration.enabled must be a boolean");
+    }
+    next = await setExplorationShare(db, next, groupId, share.enabled);
+  } else if (!hasName) {
+    throw new HttpError(400, "display_name or share_exploration is required");
+  }
+
+  return { user: next };
+}
+
+/**
+ * Write `contributes_to` for one group. First opt-out materializes the
+ * allowlist from current memberships minus this group, so other groups
+ * keep sharing. Cells are not deleted.
+ */
+async function setExplorationShare(db, user, groupId, enabled) {
+  const group = await db.collection(COLLECTIONS.GROUPS).findOne({
+    $or: [
+      ...idVariants(groupId).map((value) => ({ _id: value })),
+    ],
+  });
+  if (!group) throw new HttpError(404, "Unknown group");
+
+  const member = (group.member_ids || []).some((id) => asString(id) === asString(user._id));
+  if (!member) throw new HttpError(403, "Not a member of this group");
+
+  const users = db.collection(COLLECTIONS.USERS);
+  const groupKey = group._id;
+
+  if (!Array.isArray(user.contributes_to)) {
+    if (enabled) {
+      return user;
+    }
+    const memberships = await db
+      .collection(COLLECTIONS.GROUPS)
+      .find({ member_ids: { $in: idVariants(user._id) } })
+      .project({ _id: 1 })
+      .toArray();
+    const materialized = memberships
+      .map((row) => row._id)
+      .filter((id) => asString(id) !== asString(groupKey));
+    await users.updateOne(
+      { _id: user._id },
+      { $set: { contributes_to: materialized, updated_at: new Date() } }
+    );
+    return { ...user, contributes_to: materialized };
+  }
+
+  if (enabled) {
+    await users.updateOne(
+      { _id: user._id },
+      { $addToSet: { contributes_to: groupKey }, $set: { updated_at: new Date() } }
+    );
+  } else {
+    await users.updateOne(
+      { _id: user._id },
+      {
+        $pull: { contributes_to: { $in: idVariants(groupKey) } },
+        $set: { updated_at: new Date() },
+      }
+    );
+  }
+
+  const fresh = await users.findOne({ _id: user._id });
+  return fresh || user;
 }
 
 /**

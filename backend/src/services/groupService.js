@@ -174,6 +174,10 @@ export async function createGroup(rawBody, auth = {}) {
     { _id: me._id },
     { $addToSet: { groups: insertedId } }
   );
+  await db.collection(COLLECTIONS.USERS).updateOne(
+    { _id: me._id, contributes_to: { $type: "array" } },
+    { $addToSet: { contributes_to: insertedId } }
+  );
 
   return { success: true, group: serializeGroup(doc) };
 }
@@ -442,6 +446,10 @@ export async function acceptGroupInvite(inviteId, auth = {}) {
     await db.collection(COLLECTIONS.USERS).updateOne(
       { _id: me._id },
       { $addToSet: { groups: group._id } }
+    );
+    await db.collection(COLLECTIONS.USERS).updateOne(
+      { _id: me._id, contributes_to: { $type: "array" } },
+      { $addToSet: { contributes_to: group._id } }
     );
   }
 

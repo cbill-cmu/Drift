@@ -7,7 +7,7 @@ import {
 } from "../models/index.js";
 import { decodePolyline } from "../utils/polyline.js";
 import { asString, idVariants } from "./ids.js";
-import { HttpError } from "./userService.js";
+import { HttpError, userSharesExploration } from "./userService.js";
 import { PLACES_CATALOG, publicPlace } from "./placesCatalogService.js";
 
 const MAX_POLYLINE_CHARS = 100_000;
@@ -162,14 +162,34 @@ export function classifyCoverage(rows, memberCount) {
   return { everyone, some };
 }
 
+export async function contributingMemberIds(db, group) {
+  const memberIds = Array.isArray(group?.member_ids) ? group.member_ids : [];
+  if (!memberIds.length) return [];
+
+  const users = await db
+    .collection(COLLECTIONS.USERS)
+    .find({
+      $or: memberIds.flatMap((id) => idVariants(id).map((value) => ({ _id: value }))),
+    })
+    .project({ _id: 1, contributes_to: 1 })
+    .toArray();
+
+  const byId = new Map(users.map((user) => [asString(user._id), user]));
+  const groupId = group._id;
+  return memberIds.filter((id) => {
+    const user = byId.get(asString(id));
+    return !user || userSharesExploration(user, groupId);
+  });
+}
+
 export async function getGroupCoverage(db, group) {
   await ensureIndexes(db);
-  const memberIds = Array.isArray(group?.member_ids) ? group.member_ids : [];
-  if (!memberIds.length) {
+  const contributorIds = await contributingMemberIds(db, group);
+  if (!contributorIds.length) {
     return { everyone: [], some: [] };
   }
 
-  const userIds = memberIds.flatMap((id) => idVariants(id));
+  const userIds = contributorIds.flatMap((id) => idVariants(id));
   const rows = await db
     .collection(COLLECTIONS.USER_VISITED_CELLS)
     .aggregate([
@@ -186,7 +206,7 @@ export async function getGroupCoverage(db, group) {
     ])
     .toArray();
 
-  return classifyCoverage(rows, memberIds.length);
+  return classifyCoverage(rows, contributorIds.length);
 }
 
 const SUGGESTION_LIMIT = 24;

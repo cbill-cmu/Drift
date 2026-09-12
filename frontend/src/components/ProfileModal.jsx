@@ -4,13 +4,24 @@ import { deleteCurrentUser, updateCurrentUser } from "../api/client.js";
 const DELETE_PROMPT =
   "Are you sure you want to delete your account? Doing so will delete all of the data you have associated with your account";
 
+function sharesWithGroup(user, groupId) {
+  if (!Array.isArray(user?.contributes_to)) return true;
+  return user.contributes_to.includes(String(groupId));
+}
+
 /**
- * Account settings — an optional nickname, nothing else. The profile
- * itself is auto-provisioned from the Auth0 identity on login; there is
- * no separate profile-creation step, so this modal is never forced open
- * and the nickname is never required.
+ * Account settings — nickname plus per-group exploration sharing.
+ * The profile itself is auto-provisioned from the Auth0 identity on login.
  */
-export default function ProfileModal({ isOpen, user, onClose, onSaved, onDeleted }) {
+export default function ProfileModal({
+  isOpen,
+  user,
+  groups = [],
+  onClose,
+  onSaved,
+  onShareChange,
+  onDeleted,
+}) {
   const [displayName, setDisplayName] = useState("");
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
@@ -36,6 +47,21 @@ export default function ProfileModal({ isOpen, user, onClose, onSaved, onDeleted
       onClose?.();
     } catch (err) {
       setError(err.message || "Could not save profile");
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  async function handleShareToggle(groupId, enabled) {
+    setBusy(true);
+    setError("");
+    try {
+      const result = await updateCurrentUser({
+        share_exploration: { group_id: groupId, enabled },
+      });
+      onShareChange?.(result.user);
+    } catch (err) {
+      setError(err.message || "Could not update sharing");
     } finally {
       setBusy(false);
     }
@@ -101,6 +127,33 @@ export default function ProfileModal({ isOpen, user, onClose, onSaved, onDeleted
                 />
               </label>
               {user?.email ? <p className="hint">Signed in as {user.email}</p> : null}
+              {groups.length ? (
+                <fieldset className="share-fieldset">
+                  <legend>Exploration sharing</legend>
+                  <p className="hint">
+                    When this is off, that group map no longer includes where you have been.
+                    Your personal fog stays yours, and nothing is deleted.
+                  </p>
+                  {groups.map((group) => {
+                    const on = sharesWithGroup(user, group.id);
+                    return (
+                      <label key={group.id} className="share-row">
+                        <span>
+                          Share my exploration with {group.name}
+                        </span>
+                        <input
+                          type="checkbox"
+                          checked={on}
+                          disabled={busy}
+                          onChange={(event) =>
+                            handleShareToggle(group.id, event.target.checked)
+                          }
+                        />
+                      </label>
+                    );
+                  })}
+                </fieldset>
+              ) : null}
               {error ? <p className="error">{error}</p> : null}
               <div className="modal-actions">
                 <button type="button" className="btn-paper" onClick={onClose} disabled={busy}>

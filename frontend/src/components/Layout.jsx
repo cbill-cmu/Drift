@@ -100,6 +100,8 @@ export default function Layout({ defaultGroupId }) {
     }
     return { lat: lastFix.lat, lng: lastFix.lng };
   }, [lastFix]);
+  const [fogRefreshKey, setFogRefreshKey] = useState(0);
+  const [fogMode, setFogMode] = useState("personal");
   const {
     items: suggestions,
     loading: suggestionsLoading,
@@ -108,9 +110,8 @@ export default function Layout({ defaultGroupId }) {
     enabled: Boolean(isAuthenticated && groupId),
     limit: 24,
     origin,
+    refreshKey: fogRefreshKey,
   });
-  const [fogRefreshKey, setFogRefreshKey] = useState(0);
-  const [fogMode, setFogMode] = useState("personal");
   // discoveryData/DiscoveryReveal is kept — it's a generic "show a reveal
   // toast" mechanism, not specific to manual trip logging. It'll be wired
   // to the GPS/fog-of-war pipeline (see TASKS.md) instead of a trip form.
@@ -443,10 +444,15 @@ export default function Layout({ defaultGroupId }) {
       <ProfileModal
         isOpen={showSettings}
         user={account}
+        groups={groups}
         onClose={() => setShowSettings(false)}
         onSaved={(profile) => {
           setAccount(profile);
           setShowSettings(false);
+        }}
+        onShareChange={(profile) => {
+          setAccount(profile);
+          setFogRefreshKey((key) => key + 1);
         }}
         onDeleted={() => {
           logout({

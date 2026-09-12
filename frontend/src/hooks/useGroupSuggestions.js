@@ -10,6 +10,7 @@ export function useGroupSuggestions({
   enabled = true,
   limit = 24,
   origin = null,
+  refreshKey = 0,
 } = {}) {
   const [raw, setRaw] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -34,7 +35,7 @@ export function useGroupSuggestions({
 
   useEffect(() => {
     reload();
-  }, [reload]);
+  }, [reload, refreshKey]);
 
   const originLat = origin?.lat;
   const originLng = origin?.lng;

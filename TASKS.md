@@ -128,11 +128,15 @@ Status legend: `[ ]` not started · `[~]` in progress · `[x]` done
 
 ## Phase 7 — Privacy controls
 
-- [ ] Add `contributes_to: [group_id]` (or an exclusion list — pick one, document the choice) to the `users` collection
-- [ ] Toggle in `ProfileModal.jsx`: "Share my exploration with [group name]"
-- [ ] Phase 4's aggregation query filters `user_id` by both `group.member_ids` **and** the contribution allowlist/denylist
+- [x] Add `contributes_to: [group_id]` (or an exclusion list — pick one, document the choice) to the `users` collection
+- [x] Toggle in `ProfileModal.jsx`: "Share my exploration with [group name]"
+- [x] Phase 4's aggregation query filters `user_id` by both `group.member_ids` **and** the contribution allowlist/denylist
+
+**Choice:** allowlist `users.contributes_to: [group_id]`. Missing/null means share with every current membership (so existing accounts keep sharing). An explicit array is the source of truth. First opt-out materializes the list from current memberships minus that group; joining a group after that `$addToSet`s the new id so new memberships still share until opted out. Cells are never deleted.
 
 **Done when:** toggling the setting off for a test user makes their cells disappear from that group's `/coverage` response on the next call, with no data deleted (personal fog-of-war map is unaffected).
+
+**Verified:** `userSharesExploration` unit cases (missing field shares, empty allowlist hides). Atlas group Sleep: opting a member with one visited cell out dropped them from contributing ids, coverage `some` 1→0, `listVisitedCells` count unchanged, restoring the field returned the original coverage. Unauthenticated routes remain Auth0-gated.
 
 ---
 

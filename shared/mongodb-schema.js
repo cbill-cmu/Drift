@@ -47,7 +47,15 @@ export const GROUP_INVITE_STATUSES = ["pending", "accepted", "declined"];
  * Document shapes (reference only — Mongo is schemaless).
  *
  * users: {
- *   auth0_id, email, display_name, created_at, groups: [ObjectId]
+ *   auth0_id, email, display_name, created_at, groups: [ObjectId],
+ *   contributes_to: [ObjectId]  // optional allowlist of groups that may
+ *                               // include this user's visited cells in
+ *                               // GET /coverage. Omitted/null = share
+ *                               // with every current membership (legacy
+ *                               // default). An explicit array is the
+ *                               // source of truth — opt-out removes a
+ *                               // group_id; opt-in adds it back. Cells
+ *                               // are never deleted.
  * }
  * groups: {
  *   name, creator_id, member_ids: [ObjectId], created_at,
