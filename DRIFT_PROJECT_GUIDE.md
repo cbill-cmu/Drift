@@ -140,7 +140,7 @@ This is what you're demoing in the final 30 seconds:
    - That cell flips from fog to "you've been here" on the personal map in near-real-time
 4. **Switch to group view** — the same cell now shows as "some" (just this user) until a teammate's trace also covers it, at which point it flips to "everyone."
 5. **Suggestion card surfaces**: an uncovered cell containing a real catalogued place — "the group hasn't been to X yet."
-6. **Fallback**: if live GPS is unreliable in the room, log a trip manually instead — same `user_visited_cells` pipeline updates either way, so the demo degrades gracefully.
+6. **Fallback**: if live GPS is unreliable in the room, pre-seed `location_traces` / `user_visited_cells` for the demo accounts (`cd shared/mongodb-seed && npm run seed:coverage`). There is no manual trip-logging UI anymore.
 
 If this loop works and the fog genuinely lifts as you move, **you win**. Everything else is secondary.
 

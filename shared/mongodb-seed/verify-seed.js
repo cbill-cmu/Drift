@@ -9,7 +9,8 @@ import fs from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
 import { MongoClient, ObjectId } from "mongodb";
-import { COLLECTIONS, DB_NAME } from "../mongodb-schema.js";
+import { latLngToCell } from "h3-js";
+import { COLLECTIONS, DB_NAME, VISITED_CELL_RESOLUTION } from "../mongodb-schema.js";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const fixturesDir = path.join(__dirname, "..", "fixtures");
@@ -37,12 +38,14 @@ async function main() {
   }
 
   const groupId = group._id;
-  const [nodes, edges, heatpoints, users, trips] = await Promise.all([
+  const [nodes, edges, heatpoints, users, trips, traces, visited] = await Promise.all([
     db.collection(COLLECTIONS.NODES).find({ group_id: groupId }).toArray(),
     db.collection(COLLECTIONS.EDGES).find({ group_id: groupId }).toArray(),
     db.collection(COLLECTIONS.HEATPOINTS).find({ group_id: groupId }).toArray(),
     db.collection(COLLECTIONS.USERS).find({}).toArray(),
     db.collection(COLLECTIONS.TRIPS).countDocuments({ group_id: groupId }),
+    db.collection(COLLECTIONS.LOCATION_TRACES).countDocuments({}),
+    db.collection(COLLECTIONS.USER_VISITED_CELLS).find({}).toArray(),
   ]);
 
   const totals = group.neighborhood_totals || {};
@@ -124,7 +127,18 @@ async function main() {
     edges: edges.length,
     heatpoints: heatpoints.length,
     trips,
+    location_traces: traces,
+    visited_cells: visited.length,
     lawrenceville: neighborhoods.Lawrenceville,
+  });
+  const lawrencevilleCell = latLngToCell(40.4645, -79.9628, VISITED_CELL_RESOLUTION);
+  const southSideCell = latLngToCell(40.428, -79.975, VISITED_CELL_RESOLUTION);
+  const campusCell = latLngToCell(40.4425, -79.9435, VISITED_CELL_RESOLUTION);
+  const visitedSet = new Set(visited.map((row) => row.h3_cell));
+  console.log("[verify] fog coverage", {
+    campus_seeded: visitedSet.has(campusCell),
+    lawrenceville_fogged: !visitedSet.has(lawrencevilleCell),
+    south_side_fogged: !visitedSet.has(southSideCell),
   });
   console.log("[verify] Wrote", graphPath);
   console.log("[verify] Wrote", discoveryPath);

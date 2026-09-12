@@ -58,6 +58,8 @@ async function main() {
   const heatIn = read("heatpoints.json");
   const userHeatIn = read("user_heatpoints.json");
   const profilesIn = read("profiles.json");
+  const tracesIn = read("location_traces.json");
+  const cellsIn = read("user_visited_cells.json");
 
   const userIds = new Map();
   for (const u of usersIn) userIds.set(u._localId, oid());
@@ -149,6 +151,26 @@ async function main() {
     last_updated: new Date(p.last_updated),
   }));
 
+  const location_traces = tracesIn.map((t) => {
+    const { _localId, ...rest } = t;
+    return {
+      ...rest,
+      _id: oid(),
+      user_id: userIds.get(rest.user_id),
+      started_at: new Date(rest.started_at),
+      ended_at: new Date(rest.ended_at),
+      created_at: new Date(),
+    };
+  });
+
+  const user_visited_cells = cellsIn.map((c) => ({
+    ...c,
+    _id: oid(),
+    user_id: userIds.get(c.user_id),
+    first_visited_at: new Date(c.first_visited_at),
+    last_visited_at: new Date(c.last_visited_at),
+  }));
+
   // Simple accepted friendships: Fabio friends with everyone else
   const fabioId = userIds.get("user_0");
   const friends = usersIn.slice(1).map((u) => ({
@@ -166,7 +188,9 @@ async function main() {
   console.log("[load] Wiping seed collections…");
 
   const names = Object.values(COLLECTIONS);
+  const KEEP = new Set(["places_catalog"]);
   for (const name of names) {
+    if (KEEP.has(name)) continue;
     await db.collection(name).deleteMany({});
   }
 
@@ -185,6 +209,12 @@ async function main() {
   if (friends.length) {
     await db.collection(COLLECTIONS.FRIENDS).insertMany(friends);
   }
+  if (location_traces.length) {
+    await db.collection(COLLECTIONS.LOCATION_TRACES).insertMany(location_traces);
+  }
+  if (user_visited_cells.length) {
+    await db.collection(COLLECTIONS.USER_VISITED_CELLS).insertMany(user_visited_cells);
+  }
 
   await ensureIndexes(db);
 
@@ -198,6 +228,8 @@ async function main() {
     user_heatpoints: user_heatpoints.length,
     profiles: profiles.length,
     friends: friends.length,
+    location_traces: location_traces.length,
+    user_visited_cells: user_visited_cells.length,
   });
   console.log("[load] group_id:", groupId.toHexString());
   console.log("[load] fabio_user_id:", fabioId.toHexString());

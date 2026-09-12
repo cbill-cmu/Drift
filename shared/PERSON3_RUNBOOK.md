@@ -15,10 +15,12 @@ You own Auth0 health, Atlas seed data, and shared fixtures. You do **not** own V
 ```powershell
 cd shared\mongodb-seed
 npm run verify
+npm run seed:coverage
 ```
 
-**Pass:** prints `group_id`, counts, refreshes fixtures.  
-**If you re-`load`:** IDs change — immediately Slack Person 2 the new `VITE_DEMO_GROUP_ID`.
+**Pass:** prints `group_id`, counts, fog flags (`campus_seeded`, `lawrenceville_fogged`), refreshes fixtures.  
+**If you re-`load`:** IDs change — immediately Slack Person 2 the new `VITE_DEMO_GROUP_ID`.  
+**Demo fog without wiping accounts:** `npm run seed:coverage -- --group "CMU CREW"` (or your live group name).
 
 ## Help teammates
 
@@ -30,7 +32,7 @@ npm run verify
 
 ## Still TODO (Person 3)
 
-- [ ] Keep seed healthy through the rest of the hackathon
+- [x] Keep seed healthy through the rest of the hackathon (fog coverage generator + `seed:coverage`)
 - [ ] Align Auth0 `auth0_id`s on users with real Auth0 user ids if login→Mongo user linking is needed
 - [ ] When Person 4 has a public URL: update Auth0 Allowed Callback / Logout / Web Origins
 - [ ] Optional: bump Lawrenceville baseline toward ~13% if demo script needs exact numbers

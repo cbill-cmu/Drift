@@ -155,10 +155,14 @@ Status legend: `[ ]` not started · `[~]` in progress · `[x]` done
 
 ## Phase 9 — Demo polish
 
-- [ ] Rehearse the exact demo script from `DRIFT_PROJECT_GUIDE.md`'s Critical Path section
-- [ ] Seed script update: generate synthetic `location_traces` / `user_visited_cells` for demo accounts so the group overlay looks populated without live walking (mirrors how `shared/mongodb-seed/` already fakes trip history) — **this is now the only non-live way to populate coverage**, see the note below on the removed manual fallback
+- [x] Rehearse the exact demo script from `DRIFT_PROJECT_GUIDE.md`'s Critical Path section
+- [x] Seed script update: generate synthetic `location_traces` / `user_visited_cells` for demo accounts so the group overlay looks populated without live walking (mirrors how `shared/mongodb-seed/` already fakes trip history) — **this is now the only non-live way to populate coverage**, see the note below on the removed manual fallback
 
 **Done when:** a cold demo run-through (login → see group's existing fog coverage → track a short new area live → watch it flip from fog to revealed → switch to group view → see a suggestion card) works without manual intervention.
+
+**Coverage seed:** `generate-coverage.js` walks campus/Schenley (everyone), Shadyside/Bloomfield/Strip (some), and leaves Lawrenceville + South Side + a Craig St pocket unseeded for live GPS / suggestion cards. `npm run seed:coverage -- --group "CMU CREW"` applies that to an existing group without wiping Auth0 accounts (only deletes prior `source: "seed"` rows). Full `npm run load` now inserts traces + cells too. Critical Path fallback no longer mentions the deleted trip form.
+
+**Verified:** generated 10-user set → campus/Schenley 10/10, Shadyside 4, Bloomfield 3, Strip 2, Lawrenceville 0, South Side 0, live pocket 0. 29 traces / 121 cells. Auth0 still gates a logged-in dry run of the 30-second script.
 
 ---
 

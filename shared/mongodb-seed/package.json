@@ -9,11 +9,15 @@
     "generate:users": "node generate-users.js",
     "generate:nodes": "node generate-nodes.js",
     "generate:trips": "node generate-trips.js",
+    "generate:coverage": "node generate-coverage.js",
     "load": "node load-to-db.js",
+    "seed:coverage": "node seed-coverage.js",
+    "clear": "node clear-db.js",
     "verify": "node verify-seed.js"
   },
   "dependencies": {
     "dotenv": "^16.4.5",
+    "h3-js": "^4.5.0",
     "mongodb": "^6.8.0"
   }
 }
