@@ -41,61 +41,66 @@ export default function GroupMapView({
     return () => observer.disconnect();
   }, []);
 
-  const title = data?.display_name
-    ? `${data.display_name}'s map`
-    : data?.group_name || "GroupMapView";
+  const showIsland = loading || error || usingFixture || friendId;
 
   return (
     <div ref={wrapRef} className="map-wrap">
-      {data ? (
+      {size.width > 0 && size.height > 0 ? (
         <GraphMap
-          graph={data}
+          graph={data || { nodes: [], edges: [], heatpoints: [] }}
           width={size.width}
           height={size.height}
           selectedNodeId={selectedNodeId}
           onSelectNode={onSelectNode}
         />
       ) : null}
-      <div className="map-hud">
-        <p>
-          <strong>{title}</strong>
-          {data ? ` · visit heatmap` : ""}
-        </p>
-        {loading && <p>Loading graph…</p>}
-        {usingFixture && (
-          <p className="hint">
-            Showing a local friend fixture ({error}). Group map uses Mongo when the API is up.
-          </p>
-        )}
-        {error && !usingFixture && <p className="error">{error}</p>}
-        <div className="hud-actions">
-          {friendId ? (
-          <button type="button" className="btn-paper" onClick={onBackToGroup}>
-            Back to group map
-          </button>
-          ) : null}
-          <button type="button" className="btn-sun" onClick={reload}>
-            Retry API
-          </button>
+
+      {showIsland ? (
+        <div className="status-island" role="status">
+          <div className="status-island-pill">
+            <span
+              className={
+                loading
+                  ? "status-island-dot status-island-dot-pulse"
+                  : usingFixture || error
+                    ? "status-island-dot status-island-dot-warn"
+                    : "status-island-dot"
+              }
+              aria-hidden="true"
+            />
+
+            <div className="status-island-copy">
+              {loading ? <p>Loading graph…</p> : null}
+              {usingFixture ? <p>Local fixture</p> : null}
+              {error && !usingFixture ? <p className="status-island-error">{error}</p> : null}
+              {friendId && !loading && !usingFixture && !error ? (
+                <p>Friend map</p>
+              ) : null}
+            </div>
+
+            <div className="status-island-actions">
+              {friendId ? (
+                <button
+                  type="button"
+                  className="status-island-btn status-island-btn-quiet"
+                  onClick={onBackToGroup}
+                >
+                  Group
+                </button>
+              ) : null}
+              {(error || usingFixture) && !loading ? (
+                <button
+                  type="button"
+                  className="status-island-btn"
+                  onClick={reload}
+                >
+                  Retry
+                </button>
+              ) : null}
+            </div>
+          </div>
         </div>
-      </div>
-      <aside className="heat-legend" aria-label="Visit heatmap legend">
-        <p>Visit heat</p>
-        <ul>
-          <li>
-            <span className="legend-swatch legend-swatch-light" />
-            Pale green — unvisited
-          </li>
-          <li>
-            <span className="legend-swatch legend-swatch-mid" />
-            Leaf green — medium visited
-          </li>
-          <li>
-            <span className="legend-swatch legend-swatch-dark" />
-            Forest green — heavily visited
-          </li>
-        </ul>
-      </aside>
+      ) : null}
     </div>
   );
 }

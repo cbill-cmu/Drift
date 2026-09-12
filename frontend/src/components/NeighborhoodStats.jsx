@@ -6,8 +6,11 @@ export default function NeighborhoodStats({
   nodes = [],
   selectedNodeId,
   onSelectNode,
+  focusHood = null,
 }) {
-  const entries = Object.entries(neighborhoods).sort((a, b) => b[1].pct - a[1].pct);
+  const entries = Object.entries(neighborhoods)
+    .filter(([name]) => !focusHood || name === focusHood)
+    .sort((a, b) => b[1].pct - a[1].pct);
   const overall =
     entries.length === 0
       ? 0
@@ -36,7 +39,7 @@ export default function NeighborhoodStats({
           const places = nodesByHood[name] || [];
           return (
             <li key={name}>
-              <details>
+              <details open={Boolean(focusHood)}>
                 <summary>
                   <div className="stat-row">
                     <span>{name}</span>

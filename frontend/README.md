@@ -32,7 +32,7 @@ Edit only under `frontend/` unless pairing with Person 4. Call APIs per [`shared
 | Friends panel | Partial — members from API or fixtures; add-friend is local stub |
 | Friend map fixtures | Fallback when member-graph fails |
 
-Default group: `VITE_DEMO_GROUP_ID` or `6aa4d5b78c6341a27ed90e4b`.
+Default group: `VITE_DEMO_GROUP_ID` or `6aa507373e4c8b8fc47e6428`.
 
 ## Still TODO (Person 2)
 
