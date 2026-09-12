@@ -1,39 +1,21 @@
 import { useAuth0 } from "@auth0/auth0-react";
 
 /**
- * Auth helper for components.
- * If Auth0 env vars are missing, app runs in "dev mode" without login.
+ * Auth helper — must only be used under Auth0Provider (see main.jsx).
  */
 export function useAuthStatus() {
-  const configured = Boolean(
-    import.meta.env.VITE_AUTH0_DOMAIN && import.meta.env.VITE_AUTH0_CLIENT_ID
-  );
-
-  if (!configured) {
-    return {
-      isConfigured: false,
-      isAuthenticated: true,
-      user: { name: "Dev User" },
-      loginWithRedirect: async () => {},
-      getAccessTokenSilently: async () => null,
-    };
-  }
-
-  // Hooks must be called unconditionally — wrap only when provider is mounted.
-  // When configured, Auth0Provider wraps App in main.jsx.
-  return useAuth0Configured();
-}
-
-function useAuth0Configured() {
   const auth = useAuth0();
+
   return {
     isConfigured: true,
+    isLoading: auth.isLoading,
     isAuthenticated: auth.isAuthenticated,
     user: auth.user,
+    error: auth.error,
     loginWithRedirect: auth.loginWithRedirect,
+    logout: auth.logout,
     getAccessTokenSilently: auth.getAccessTokenSilently,
   };
 }
 
-// Re-export for teammates who import useAuth0 from hooks/
 export { useAuth0 };
