@@ -6,9 +6,12 @@ import { requireAuth } from "./middleware/auth.js";
 import friendsRouter from "./routes/friends.js";
 import graphRouter from "./routes/graph.js";
 import groupsRouter from "./routes/groups.js";
+import placesRouter from "./routes/places.js";
+import recommendationsRouter from "./routes/recommendations.js";
 import tripsRouter from "./routes/trips.js";
 import usersRouter from "./routes/users.js";
 import { connectMongo } from "./services/mongoService.js";
+import { ensurePlacesCatalog } from "./services/placesCatalogService.js";
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -21,6 +24,8 @@ app.get("/", (_req, res) => {
 });
 
 app.use("/api/trips", requireAuth, tripsRouter);
+app.use("/api/places", requireAuth, placesRouter);
+app.use("/api/recommendations", requireAuth, recommendationsRouter);
 app.use("/api/friends", requireAuth, friendsRouter);
 app.use("/api/groups", requireAuth, groupsRouter);
 app.use("/api/groups", graphRouter);
@@ -29,6 +34,7 @@ app.use("/api/users", requireAuth, usersRouter);
 async function start() {
   try {
     await connectMongo();
+    await ensurePlacesCatalog();
   } catch (err) {
     console.warn("[mongo] Skipping connect on boot:", err.message);
   }

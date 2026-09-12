@@ -1,0 +1,44 @@
+{
+  "count": 84,
+  "categories": {
+    "food": 21,
+    "hangout": 4,
+    "night_life": 19,
+    "outdoors": 7,
+    "recreation": 4,
+    "shopping": 6,
+    "sights": 23
+  },
+  "place_types": {
+    "food": 16,
+    "shopping": 11,
+    "urban_core": 20,
+    "park": 10,
+    "entertainment": 25,
+    "transit": 2
+  },
+  "neighborhoods": {
+    "Bloomfield": 3,
+    "Downtown": 11,
+    "East Liberty": 8,
+    "Lawrenceville": 6,
+    "North Shore": 6,
+    "Oakland": 19,
+    "Shadyside": 3,
+    "Squirrel Hill": 1,
+    "Strip District": 7,
+    "McKees Rocks": 1,
+    "Millvale": 1,
+    "South Side": 3,
+    "Highland Park": 2,
+    "Point Breeze": 1,
+    "West Homestead": 1,
+    "West Mifflin": 1,
+    "Homestead": 1,
+    "South Shore": 1,
+    "Mexican War Streets": 2,
+    "Mount Washington": 3,
+    "North Side": 2,
+    "Swissvale": 1
+  }
+}

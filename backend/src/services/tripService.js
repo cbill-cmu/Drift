@@ -1,8 +1,8 @@
 import { COLLECTIONS, INDEXES, TRAVEL_MODES } from "../models/index.js";
-import { reverseGeocodePlaceType } from "./googlePlacesService.js";
 import { asString, idVariants, matchGroupId, sameId } from "./ids.js";
 import { getDb } from "./mongoService.js";
 import { haversineMeters, inferNeighborhood, neighborhoodPct } from "./neighborhoods.js";
+import { resolveOrCreatePlace } from "./placesCatalogService.js";
 import { recomputeUserPlaceTypeProfile } from "./recommendationService.js";
 
 export const NODE_MATCH_METERS = 500;
@@ -44,7 +44,24 @@ export function validateTripBody(body) {
     throw new HttpError(400, `travel_mode must be one of: ${TRAVEL_MODES.join(", ")}`);
   }
 
-  return { group_id, from_lat, from_lng, to_lat, to_lng, duration_min, travel_mode };
+  const from_name = optionalString(body.from_name);
+  const to_name = optionalString(body.to_name);
+  const from_place_id = optionalString(body.from_place_id);
+  const to_place_id = optionalString(body.to_place_id);
+
+  return {
+    group_id,
+    from_lat,
+    from_lng,
+    to_lat,
+    to_lng,
+    duration_min,
+    travel_mode,
+    from_name,
+    to_name,
+    from_place_id,
+    to_place_id,
+  };
 }
 
 export async function createTrip(rawBody, auth = {}) {
@@ -67,12 +84,16 @@ export async function createTrip(rawBody, auth = {}) {
     groupId: group._id,
     lat: input.from_lat,
     lng: input.from_lng,
+    name: input.from_name,
+    placeId: input.from_place_id,
     actor,
   });
   const toNode = await resolveNode(db, {
     groupId: group._id,
     lat: input.to_lat,
     lng: input.to_lng,
+    name: input.to_name,
+    placeId: input.to_place_id,
     actor,
   });
 
@@ -243,27 +264,48 @@ function normalizeActor(user) {
   };
 }
 
-async function resolveNode(db, { groupId, lat, lng, actor }) {
+async function resolveNode(db, { groupId, lat, lng, name, placeId, actor }) {
   const nodes = db.collection(COLLECTIONS.NODES);
-  const existing = await findNearestNode(db, groupId, lat, lng);
+  const catalog = await resolveOrCreatePlace({ lat, lng, name, placeId });
+  const catalogId = catalog.doc._id;
   const now = new Date();
 
+  const byCatalog = await nodes.findOne({
+    $and: [matchGroupId("group_id", groupId), { catalog_place_id: catalogId }],
+  });
+  if (byCatalog) {
+    await nodes.updateOne({ _id: byCatalog._id }, { $inc: { visit_count: 1 } });
+    byCatalog.visit_count = (byCatalog.visit_count || 0) + 1;
+    return { doc: byCatalog, created: false };
+  }
+
+  const existing = await findNearestNode(db, groupId, catalog.doc.lat, catalog.doc.lng, 80);
   if (existing) {
-    await nodes.updateOne({ _id: existing._id }, { $inc: { visit_count: 1 } });
+    await nodes.updateOne(
+      { _id: existing._id },
+      {
+        $inc: { visit_count: 1 },
+        $set: {
+          catalog_place_id: catalogId,
+          category: catalog.doc.category,
+          place_type: existing.place_type || catalog.doc.place_type,
+        },
+      }
+    );
     existing.visit_count = (existing.visit_count || 0) + 1;
+    existing.catalog_place_id = catalogId;
     return { doc: existing, created: false };
   }
 
-  const place = await reverseGeocodePlaceType(lat, lng);
-  const neighborhood = inferNeighborhood(lat, lng);
-  const name = place?.name || neighborhood || `Place ${lat.toFixed(4)}, ${lng.toFixed(4)}`;
   const doc = {
     group_id: groupId,
-    name,
-    neighborhood,
-    lat,
-    lng,
-    place_type: place?.place_type || "unknown",
+    catalog_place_id: catalogId,
+    name: catalog.doc.name,
+    neighborhood: catalog.doc.neighborhood,
+    lat: catalog.doc.lat,
+    lng: catalog.doc.lng,
+    place_type: catalog.doc.place_type || "unknown",
+    category: catalog.doc.category,
     visit_count: 1,
     first_discovered_by: actor._id,
     first_discovered_at: now,
@@ -274,8 +316,8 @@ async function resolveNode(db, { groupId, lat, lng, actor }) {
   return { doc, created: true };
 }
 
-async function findNearestNode(db, groupId, lat, lng) {
-  const deg = NODE_MATCH_METERS / 111_320;
+async function findNearestNode(db, groupId, lat, lng, maxMeters = NODE_MATCH_METERS) {
+  const deg = maxMeters / 111_320;
   const candidates = await db
     .collection(COLLECTIONS.NODES)
     .find({
@@ -291,7 +333,7 @@ async function findNearestNode(db, groupId, lat, lng) {
   let bestMeters = Infinity;
   for (const node of candidates) {
     const meters = haversineMeters(lat, lng, Number(node.lat), Number(node.lng));
-    if (meters <= NODE_MATCH_METERS && meters < bestMeters) {
+    if (meters <= maxMeters && meters < bestMeters) {
       best = node;
       bestMeters = meters;
     }
@@ -366,6 +408,10 @@ async function bumpHeatpoint(db, collectionName, { groupId, lat, lng, recordedAt
   };
   if (userId) doc.user_id = userId;
   await heat.insertOne(doc);
+}
+
+function optionalString(value) {
+  return typeof value === "string" && value.trim() ? value.trim() : "";
 }
 
 function toNumber(value, field) {

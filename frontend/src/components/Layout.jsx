@@ -5,6 +5,7 @@ import DiscoveryReveal from "./DiscoveryReveal.jsx";
 import FriendsPanel from "./FriendsPanel.jsx";
 import GroupMapView from "./GroupMapView.jsx";
 import GroupsPanel from "./GroupsPanel.jsx";
+import RecommendationsPanel from "./RecommendationsPanel.jsx";
 import NeighborhoodStats from "./NeighborhoodStats.jsx";
 import ProfileModal from "./ProfileModal.jsx";
 import TripLoggerModal from "./TripLoggerModal.jsx";
@@ -13,6 +14,7 @@ import { useGroups } from "../hooks/useGroups.js";
 
 const NAV = [
   { id: "places", label: "Places", icon: "places" },
+  { id: "recs", label: "Recs", icon: "recs" },
   { id: "friends", label: "Friends", icon: "friends" },
   { id: "profile", label: "Profile", icon: "profile" },
 ];
@@ -24,6 +26,16 @@ function NavIcon({ name }) {
         <path
           fill="currentColor"
           d="M12 2a7 7 0 0 0-7 7c0 5.25 7 13 7 13s7-7.75 7-13a7 7 0 0 0-7-7zm0 9.5a2.5 2.5 0 1 1 0-5 2.5 2.5 0 0 1 0 5z"
+        />
+      </svg>
+    );
+  }
+  if (name === "recs") {
+    return (
+      <svg viewBox="0 0 24 24" aria-hidden="true" className="nav-icon">
+        <path
+          fill="currentColor"
+          d="M12 2.5 13.7 8h5.8l-4.7 3.4 1.8 5.6L12 13.8 7.4 17l1.8-5.6L4.5 8h5.8L12 2.5z"
         />
       </svg>
     );
@@ -193,27 +205,15 @@ export default function Layout({ defaultGroupId }) {
       ? "Friends"
       : sheet === "profile"
         ? "Profile"
-        : "Places";
+        : sheet === "recs"
+          ? "Recommendations"
+          : "Places";
 
   return (
     <div className="layout layout-map-first">
       <header className="map-topbar">
         <strong className="brand">Drift</strong>
         <span className="group-chip">{groupName}</span>
-        <button
-          type="button"
-          className="icon-btn"
-          aria-label="Account settings"
-          title="Account settings"
-          onClick={() => setShowSettings(true)}
-        >
-          <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true">
-            <path
-              fill="currentColor"
-              d="M19.14 12.94c.04-.31.06-.63.06-.94s-.02-.63-.06-.94l2.03-1.58a.5.5 0 0 0 .12-.64l-1.92-3.32a.5.5 0 0 0-.6-.22l-2.39.96a7.07 7.07 0 0 0-1.63-.94l-.36-2.54a.5.5 0 0 0-.5-.42h-3.84a.5.5 0 0 0-.5.42l-.36 2.54c-.59.24-1.13.55-1.63.94l-2.39-.96a.5.5 0 0 0-.6.22L2.77 8.84a.5.5 0 0 0 .12.64l2.03 1.58c-.04.31-.06.63-.06.94s.02.63.06.94L2.89 13.94a.5.5 0 0 0-.12.64l1.92 3.32c.13.22.4.31.64.22l2.39-.96c.5.39 1.04.7 1.63.94l.36 2.54c.05.24.26.42.5.42h3.84c.24 0 .45-.18.5-.42l.36 2.54c.59-.24 1.13-.55 1.63-.94l2.39.96c.24.09.51 0 .64-.22l1.92-3.32a.5.5 0 0 0-.12-.64l-2.03-1.58ZM12 15.5A3.5 3.5 0 1 1 12 8.5a3.5 3.5 0 0 1 0 7Z"
-            />
-          </svg>
-        </button>
       </header>
 
       <main className="layout-main">
@@ -255,6 +255,20 @@ export default function Layout({ defaultGroupId }) {
                 nodes={displayedGraph?.nodes}
                 selectedNodeId={selectedNode?.id}
                 onSelectNode={setSelectedNode}
+              />
+            ) : null}
+            {sheet === "recs" ? (
+              <RecommendationsPanel
+                groupId={groupId}
+                onSelectPlace={(place) => {
+                  const match = (displayedGraph?.nodes || []).find(
+                    (node) => node.name?.toLowerCase() === place.location_name?.toLowerCase()
+                  );
+                  if (match) {
+                    setSelectedNode(match);
+                    setSheet(null);
+                  }
+                }}
               />
             ) : null}
             {sheet === "profile" ? (

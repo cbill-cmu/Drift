@@ -1,4 +1,4 @@
-import axios from "axios";
+﻿import axios from "axios";
 
 const baseURL = import.meta.env.VITE_API_BASE_URL || "http://localhost:3000";
 
@@ -37,6 +37,42 @@ function apiError(err, fallback) {
   if (fromBody) return new Error(fromBody);
   if (status) return new Error(`${fallback} (${status})`);
   return new Error(err.message || fallback);
+}
+
+/** GET /api/recommendations?group_id= */
+export async function fetchRecommendations(groupId) {
+  try {
+    const { data } = await api.get("/api/recommendations", {
+      params: { group_id: groupId },
+    });
+    return data;
+  } catch (err) {
+    throw apiError(err, "Failed to load recommendations");
+  }
+}
+
+/** GET /api/places — city catalog, not the group graph */
+export async function fetchPlaces(params = {}) {
+  try {
+    const { data } = await api.get("/api/places", { params });
+    return {
+      success: data?.success !== false,
+      places: data?.places || [],
+      neighborhoods: data?.neighborhoods || [],
+    };
+  } catch (err) {
+    throw apiError(err, "Failed to load places");
+  }
+}
+
+/** POST /api/places — add a named hangout to the catalog */
+export async function createPlace(body) {
+  try {
+    const { data } = await api.post("/api/places", body);
+    return data;
+  } catch (err) {
+    throw apiError(err, "Failed to add place");
+  }
 }
 
 /** POST /api/trips — see shared/api-contract.md */

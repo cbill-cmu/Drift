@@ -111,7 +111,7 @@ export default function ProfileModal({
             </p>
             <form className="profile-form" onSubmit={handleSubmit}>
               <label>
-                Name * (required)
+                Name* (required)
                 <input
                   value={displayName}
                   onChange={(e) => setDisplayName(e.target.value)}
@@ -133,11 +133,6 @@ export default function ProfileModal({
                   />
                 </span>
               </label>
-              <p className="hint">
-                {calendarName
-                  ? "Calendar import is a placeholder for now."
-                  : "Optional. Calendar import is a placeholder for now."}
-              </p>
               <label>
                 Preferred form of transportation
                 <select value={travelMode} onChange={(e) => setTravelMode(e.target.value)}>
