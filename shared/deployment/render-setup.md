@@ -51,6 +51,8 @@ The free instance **sleeps after ~15 minutes**. Hit the URL once before a demo s
 
 The SPA loads Auth0 from `GET /api/config` at runtime. After adding `AUTH0_CLIENT_ID`, click **Manual Deploy** (a full rebuild is only required for `VITE_CARTO_*`).
 
+Root `npm run build` uses `npm ci --include=dev` in `frontend/` so Vite still installs when Render sets `NODE_ENV=production`.
+
 ## Auth0 (required for login)
 
 On the SPA app, **add** the Render origin (keep localhost):
