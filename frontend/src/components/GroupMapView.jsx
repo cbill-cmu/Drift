@@ -84,15 +84,15 @@ export default function GroupMapView({
         <ul>
           <li>
             <span className="legend-swatch legend-swatch-light" />
-            Light yellow — unvisited
+            Pale green — unvisited
           </li>
           <li>
             <span className="legend-swatch legend-swatch-mid" />
-            Darker yellow — medium visited
+            Leaf green — medium visited
           </li>
           <li>
             <span className="legend-swatch legend-swatch-dark" />
-            Dark yellow — heavily visited
+            Forest green — heavily visited
           </li>
         </ul>
       </aside>

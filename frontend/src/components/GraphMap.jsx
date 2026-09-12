@@ -37,19 +37,19 @@ function colorizeHeat(image) {
     let b;
     if (intensity < 0.33) {
       const t = intensity / 0.33;
-      r = 254 + t * (253 - 254);
-      g = 249 + t * (224 - 249);
-      b = 195 + t * (71 - 195);
+      r = 232 + t * (168 - 232);
+      g = 240 + t * (201 - 240);
+      b = 216 + t * (122 - 216);
     } else if (intensity < 0.66) {
       const t = (intensity - 0.33) / 0.33;
-      r = 253 + t * (234 - 253);
-      g = 224 + t * (179 - 224);
-      b = 71 + t * (8 - 71);
+      r = 168 + t * (125 - 168);
+      g = 201 + t * (155 - 201);
+      b = 122 + t * (118 - 122);
     } else {
       const t = (intensity - 0.66) / 0.34;
-      r = 234 + t * (161 - 234);
-      g = 179 + t * (98 - 179);
-      b = 8 + t * (7 - 8);
+      r = 125 + t * (63 - 125);
+      g = 155 + t * (93 - 155);
+      b = 118 + t * (74 - 118);
     }
     data[i] = r;
     data[i + 1] = g;
@@ -75,9 +75,9 @@ export default function GraphMap({ graph, width, height, selectedNodeId, onSelec
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
 
     const sky = ctx.createLinearGradient(0, 0, 0, height);
-    sky.addColorStop(0, "#7dd3fc");
-    sky.addColorStop(0.5, "#38bdf8");
-    sky.addColorStop(1, "#fde047");
+    sky.addColorStop(0, "#c5d9e0");
+    sky.addColorStop(0.45, "#d5e4dc");
+    sky.addColorStop(1, "#e7efe2");
     ctx.fillStyle = sky;
     ctx.fillRect(0, 0, width, height);
 
