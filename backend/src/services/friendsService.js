@@ -2,19 +2,13 @@ import { ObjectId } from "mongodb";
 import { COLLECTIONS } from "../models/index.js";
 import { asString, idVariants, sameId } from "./ids.js";
 import { getDb } from "./mongoService.js";
+import { HttpError, upsertCurrentUser } from "./userService.js";
 
-/** user_id_1 = requester, user_id_2 = recipient. */
+export { HttpError };
+
 const PENDING = "pending";
 const ACCEPTED = "accepted";
 const BLOCKED = "blocked";
-
-export class HttpError extends Error {
-  constructor(status, message) {
-    super(message);
-    this.status = status;
-    this.name = "HttpError";
-  }
-}
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -83,52 +77,9 @@ async function ensureIndexes(db) {
   indexesReady = true;
 }
 
-export async function requireCurrentUser(db, auth) {
-  if (!auth?.sub && !auth?.email) {
-    throw new HttpError(401, "Unauthorized");
-  }
-
-  const users = db.collection(COLLECTIONS.USERS);
-  const email = String(auth.email || "").trim();
-  const clauses = [];
-  if (auth.sub) clauses.push({ auth0_id: auth.sub });
-  if (email) {
-    clauses.push({
-      email: { $regex: `^${escapeRegex(email)}$`, $options: "i" },
-    });
-  }
-
-  let me = await users.findOne({ $or: clauses });
-
-  if (!me) {
-    if (!auth.sub) {
-      throw new HttpError(404, "Current user is not in the database");
-    }
-    const now = new Date();
-    const doc = {
-      auth0_id: auth.sub,
-      email,
-      display_name: auth.name || email || "Traveler",
-      created_at: now,
-      groups: [],
-    };
-    try {
-      const { insertedId } = await users.insertOne(doc);
-      doc._id = insertedId;
-      me = doc;
-    } catch (err) {
-      const again = await users.findOne({ auth0_id: auth.sub });
-      if (!again) throw err;
-      me = again;
-    }
-  }
-
-  if (email && !emailsMatch(me.email, email)) {
-    await users.updateOne({ _id: me._id }, { $set: { email } });
-    me.email = email;
-  }
-
-  return me;
+export async function requireCurrentUser(_db, auth) {
+  const { user } = await upsertCurrentUser(auth);
+  return user;
 }
 
 async function findUserByEmail(db, email) {

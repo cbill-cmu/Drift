@@ -3,8 +3,95 @@ import { Router } from "express";
 import { COLLECTIONS } from "../models/index.js";
 import { asString, idVariants } from "../services/ids.js";
 import { getDb } from "../services/mongoService.js";
+import { HttpError, deleteCurrentUser, publicUser, updateCurrentUser, upsertCurrentUser } from "../services/userService.js";
 
 const router = Router();
+
+/**
+ * POST /api/users/me
+ * Create (or return) the Mongo user for the Auth0 token.
+ */
+router.post("/me", async (req, res) => {
+  try {
+    const { user, created } = await upsertCurrentUser(req.auth || {});
+    return res.status(created ? 201 : 200).json({
+      success: true,
+      created,
+      user: publicUser(user),
+    });
+  } catch (err) {
+    if (err instanceof HttpError) {
+      return res.status(err.status).json({ success: false, error: err.message });
+    }
+    if (err?.message?.includes("Mongo not connected")) {
+      return res.status(500).json({ success: false, error: "Mongo not connected" });
+    }
+    console.error("[users] POST /me failed:", err);
+    return res.status(500).json({ success: false, error: "Failed to create user" });
+  }
+});
+
+/**
+ * GET /api/users/me
+ */
+router.get("/me", async (req, res) => {
+  try {
+    const { user, created } = await upsertCurrentUser(req.auth || {});
+    return res.json({
+      success: true,
+      created,
+      user: publicUser(user),
+    });
+  } catch (err) {
+    if (err instanceof HttpError) {
+      return res.status(err.status).json({ success: false, error: err.message });
+    }
+    console.error("[users] GET /me failed:", err);
+    return res.status(500).json({ success: false, error: "Failed to load user" });
+  }
+});
+
+/**
+ * PATCH /api/users/me
+ */
+router.patch("/me", async (req, res) => {
+  try {
+    const { user } = await updateCurrentUser(req.auth || {}, req.body || {});
+    return res.json({
+      success: true,
+      created: false,
+      user: publicUser(user),
+    });
+  } catch (err) {
+    if (err instanceof HttpError) {
+      return res.status(err.status).json({ success: false, error: err.message });
+    }
+    if (err?.message?.includes("Mongo not connected")) {
+      return res.status(500).json({ success: false, error: "Mongo not connected" });
+    }
+    console.error("[users] PATCH /me failed:", err);
+    return res.status(500).json({ success: false, error: "Failed to update profile" });
+  }
+});
+
+/**
+ * DELETE /api/users/me
+ */
+router.delete("/me", async (req, res) => {
+  try {
+    const result = await deleteCurrentUser(req.auth || {});
+    return res.json({ success: true, ...result });
+  } catch (err) {
+    if (err instanceof HttpError) {
+      return res.status(err.status).json({ success: false, error: err.message });
+    }
+    if (err?.message?.includes("Mongo not connected")) {
+      return res.status(500).json({ success: false, error: "Mongo not connected" });
+    }
+    console.error("[users] DELETE /me failed:", err);
+    return res.status(500).json({ success: false, error: "Failed to delete account" });
+  }
+});
 
 /**
  * GET /api/users/:userId/profile
