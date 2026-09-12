@@ -1,31 +1,57 @@
 import { useCallback, useEffect, useState } from "react";
-import { fetchGroupGraph } from "../api/client.js";
+import { fetchFriendGraph, fetchGroupGraph } from "../api/client.js";
+import { normalizeGraph } from "../api/normalizeGraph.js";
+import { getFixtureFriendGraph } from "../data/fixtureFriendGraphs.js";
 
 /**
- * Load group graph payload for the map.
+ * Load the graph currently on the map from the API.
+ * Friend maps may still use a fixture if the member-graph route has no trips yet.
  */
-export function useGroupGraph(groupId) {
+export function useMapGraph({ groupId, friendId, refreshKey = 0 }) {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [usingFixture, setUsingFixture] = useState(false);
 
   const reload = useCallback(async () => {
-    if (!groupId) return;
+    if (!friendId && !groupId) return;
     setLoading(true);
     setError(null);
     try {
-      const graph = await fetchGroupGraph(groupId);
-      setData(graph);
+      const raw = friendId
+        ? await fetchFriendGraph(friendId, groupId)
+        : await fetchGroupGraph(groupId);
+      if (raw?.success === false) {
+        throw new Error(raw.error || "Failed to load graph");
+      }
+      setData(normalizeGraph(raw));
+      setUsingFixture(false);
     } catch (err) {
-      setError(err.message || "Failed to load graph");
+      const message = err.message || "Failed to load graph";
+      if (friendId) {
+        const fixture = getFixtureFriendGraph(friendId);
+        if (fixture) {
+          setData(normalizeGraph(fixture));
+          setUsingFixture(true);
+          setError(message);
+          return;
+        }
+      }
+      setData(null);
+      setUsingFixture(false);
+      setError(message);
     } finally {
       setLoading(false);
     }
-  }, [groupId]);
+  }, [groupId, friendId, refreshKey]);
 
   useEffect(() => {
     reload();
   }, [reload]);
 
-  return { data, loading, error, reload };
+  return { data, loading, error, reload, usingFixture };
+}
+
+export function useGroupGraph(groupId) {
+  return useMapGraph({ groupId, friendId: null });
 }

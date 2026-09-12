@@ -19,7 +19,7 @@ app.get("/", (_req, res) => {
 
 // Protected MVP routes (Person 1 implements handlers)
 app.use("/api/trips", requireAuth, tripsRouter);
-app.use("/api/groups", requireAuth, graphRouter);
+app.use("/api/groups", graphRouter);
 
 async function start() {
   try {

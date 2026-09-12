@@ -1,11 +1,28 @@
 import Layout from "./components/Layout.jsx";
+import { setAuthTokenGetter } from "./api/client.js";
+import { useAuthStatus } from "./hooks/useAuth0.js";
+import { useEffect } from "react";
+
+const GROUP_ID =
+  import.meta.env.VITE_DEMO_GROUP_ID || "6aa4d5b78c6341a27ed90e4b";
 
 /**
  * Root app (Person 2).
- * Wire Auth0 gate + groupId from route/context once login works.
  */
 export default function App() {
-  const groupId = "REPLACE_WITH_SEEDED_GROUP_ID";
+  const { getAccessTokenSilently, isConfigured } = useAuthStatus();
 
-  return <Layout groupId={groupId} />;
+  useEffect(() => {
+    setAuthTokenGetter(async () => {
+      if (!isConfigured) return "dev-local";
+      try {
+        return await getAccessTokenSilently();
+      } catch {
+        return null;
+      }
+    });
+    return () => setAuthTokenGetter(async () => null);
+  }, [getAccessTokenSilently, isConfigured]);
+
+  return <Layout groupId={GROUP_ID} />;
 }

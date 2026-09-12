@@ -5,27 +5,60 @@ const baseURL = import.meta.env.VITE_API_BASE_URL || "http://localhost:3000";
 export const api = axios.create({
   baseURL,
   headers: { "Content-Type": "application/json" },
+  timeout: 20000,
 });
 
-/**
- * Attach Auth0 bearer token when Person 2 wires getAccessTokenSilently.
- * Example: api.defaults.headers.common.Authorization = `Bearer ${token}`;
- */
+let tokenGetter = async () => null;
+
+export function setAuthTokenGetter(fn) {
+  tokenGetter = fn || (async () => null);
+}
+
+api.interceptors.request.use(async (config) => {
+  const token = await tokenGetter();
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`;
+  }
+  return config;
+});
+
+function apiError(err, fallback) {
+  const fromBody = err.response?.data?.error;
+  return new Error(fromBody || err.message || fallback);
+}
 
 /** POST /api/trips — see shared/api-contract.md */
 export async function postTrip(body) {
-  const { data } = await api.post("/api/trips", body);
-  return data;
+  try {
+    const { data } = await api.post("/api/trips", body);
+    return data;
+  } catch (err) {
+    throw apiError(err, "Trip request failed");
+  }
 }
 
 /** GET /api/groups/:groupId/graph */
 export async function fetchGroupGraph(groupId) {
-  const { data } = await api.get(`/api/groups/${groupId}/graph`);
-  return data;
+  try {
+    const { data } = await api.get(`/api/groups/${groupId}/graph`);
+    return data;
+  } catch (err) {
+    throw apiError(err, "Failed to load graph");
+  }
 }
 
 /** GET /api/users/:userId/profile */
 export async function fetchUserProfile(userId) {
   const { data } = await api.get(`/api/users/${userId}/profile`);
   return data;
+}
+
+/** Personal / friend graph for a member of the group. */
+export async function fetchFriendGraph(userId, groupId) {
+  try {
+    const { data } = await api.get(`/api/groups/${groupId}/members/${userId}/graph`);
+    return data;
+  } catch (err) {
+    throw apiError(err, "Failed to load friend graph");
+  }
 }

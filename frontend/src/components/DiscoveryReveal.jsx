@@ -25,7 +25,7 @@ export default function DiscoveryReveal({ discoveryData, onDismiss }) {
           {edge.duration_min != null ? `, ${edge.duration_min} min` : ""}
         </p>
       )}
-      <button type="button" onClick={onDismiss}>
+      <button type="button" className="btn-paper" onClick={onDismiss}>
         Dismiss
       </button>
     </div>
