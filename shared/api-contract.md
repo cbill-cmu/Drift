@@ -4,8 +4,23 @@
 **Owners:** Person 1 implements; Person 2 consumes; changes need team agreement.
 
 Base URL (local): `http://localhost:3000`  
-Auth: `Authorization: Bearer <Auth0 access token>` on all `/api/*` routes below.  
+Auth: `Authorization: Bearer <Auth0 access token>` on `/api/*` routes below, except public `GET /api/health` and `GET /api/config`.  
 Errors: `{ "success": false, "error": "string" }` with 400 / 401 / 403 / 404 / 409 / 500 as appropriate
+
+### GET /api/config
+
+Public. Returns Auth0 SPA settings so production can boot without Vite baking `VITE_AUTH0_*` at build time.
+
+```json
+{
+  "ok": true,
+  "auth0_domain": "YOUR_TENANT.us.auth0.com",
+  "auth0_client_id": "string",
+  "auth0_audience": "https://api.drift.local"
+}
+```
+
+Server reads `AUTH0_DOMAIN` / `AUTH0_CLIENT_ID` / `AUTH0_AUDIENCE` (or the matching `VITE_*` names).
 
 **Group ids** come from `GET /api/groups` after login (create in Profile, or accept an invite). Do not hardcode a seed ObjectId — the old CMU CREW id is gone from Atlas.
 

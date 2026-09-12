@@ -34,6 +34,22 @@ app.get("/api/health", (_req, res) => {
   res.json({ ok: true, service: "drift-backend" });
 });
 
+app.get("/api/config", (_req, res) => {
+  const domain = String(process.env.AUTH0_DOMAIN || process.env.VITE_AUTH0_DOMAIN || "").trim();
+  const clientId = String(
+    process.env.AUTH0_CLIENT_ID || process.env.VITE_AUTH0_CLIENT_ID || ""
+  ).trim();
+  const audience = String(
+    process.env.AUTH0_AUDIENCE || process.env.VITE_AUTH0_AUDIENCE || ""
+  ).trim();
+  res.json({
+    ok: true,
+    auth0_domain: domain,
+    auth0_client_id: clientId,
+    auth0_audience: audience,
+  });
+});
+
 if (!isProd) {
   app.get("/", (_req, res) => {
     res.json({ ok: true, service: "drift-backend" });

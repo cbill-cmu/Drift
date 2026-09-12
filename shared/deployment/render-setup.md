@@ -37,7 +37,7 @@ The free instance **sleeps after ~15 minutes**. Hit the URL once before a demo s
 | `VITE_API_BASE_URL` | leave **empty** (same origin) |
 | `VITE_DEMO_GROUP_ID` | leave empty |
 
-### Runtime (Node)
+### Runtime (Node) — enough for login even if Vite missed Auth0 at build
 
 | Key | From |
 |-----|------|
@@ -45,10 +45,11 @@ The free instance **sleeps after ~15 minutes**. Hit the URL once before a demo s
 | `MONGODB_URI` | same as local `backend/.env` |
 | `MONGODB_DB` | `drift` |
 | `AUTH0_DOMAIN` | same as `VITE_AUTH0_DOMAIN` |
+| `AUTH0_CLIENT_ID` | same as `VITE_AUTH0_CLIENT_ID` in `frontend/.env` |
 | `AUTH0_AUDIENCE` | `https://api.drift.local` |
 | `PORT` | Render sets this; do not hardcode |
 
-Redeploy after changing any `VITE_*` value (they only apply at build).
+The SPA loads Auth0 from `GET /api/config` at runtime. After adding `AUTH0_CLIENT_ID`, click **Manual Deploy** (a full rebuild is only required for `VITE_CARTO_*`).
 
 ## Auth0 (required for login)
 
