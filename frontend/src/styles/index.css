@@ -477,6 +477,30 @@ body {
   border-right-color: rgba(255, 255, 255, 0.95);
 }
 
+.drift-leaflet .leaflet-bottom.leaflet-right {
+  bottom: calc(var(--nav-bottom-offset) + var(--nav-height) + 0.65rem);
+  right: 0.7rem;
+}
+
+.drift-leaflet .leaflet-control-zoom {
+  border: 0;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: var(--shadow);
+}
+
+.drift-leaflet .leaflet-control-zoom a {
+  width: 2.1rem;
+  height: 2.1rem;
+  line-height: 2.1rem;
+  color: var(--mint-ink);
+  background: rgba(255, 255, 255, 0.94);
+}
+
+.drift-leaflet .leaflet-control-zoom a:hover {
+  background: var(--mint);
+}
+
 .drift-leaflet .leaflet-fog-pane {
   pointer-events: none;
 }

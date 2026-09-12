@@ -81,10 +81,10 @@ Status legend: `[ ]` not started · `[~]` in progress · `[x]` done
 
 ---
 
-## Phase 4 — Group coverage aggregation (backend)
+## Phase 4 — Group coverage aggregation (backend) ✅ done
 
-- [ ] New route: `GET /api/groups/:groupId/coverage` (behind `requireAuth` + `requireGroupMember`, per Person A's existing middleware pattern)
-- [ ] Aggregation in `locationService.js`:
+- [x] New route: `GET /api/groups/:groupId/coverage` (behind `requireAuth` + `requireGroupMember`, per Person A's existing middleware pattern)
+- [x] Aggregation in `locationService.js`:
   ```js
   db.collection(COLLECTIONS.USER_VISITED_CELLS).aggregate([
     { $match: { user_id: { $in: group.member_ids } } },
@@ -92,10 +92,12 @@ Status legend: `[ ]` not started · `[~]` in progress · `[x]` done
     { $project: { h3_cell: "$_id", visitor_count: { $size: "$visitors" } } },
   ]);
   ```
-- [ ] Classify each result: `visitor_count === member_ids.length` → `"everyone"`, else `"some"`. Cells absent from the result are implicitly `"no one"` — don't enumerate them.
-- [ ] Response shape: `{ success: true, group_id, everyone: [cells], some: [cells] }` (no-one is everything else, computed client-side as "not in either list")
+- [x] Classify each result: `visitor_count === member_ids.length` → `"everyone"`, else `"some"`. Cells absent from the result are implicitly `"no one"` — don't enumerate them.
+- [x] Response shape: `{ success: true, group_id, everyone: [cells], some: [cells] }` (no-one is everything else, computed client-side as "not in either list")
 
 **Done when:** a curl against a seeded group with 2+ members who both have visited cells returns correct tier classification — verify the arithmetic by hand against a couple of real `user_visited_cells` docs, same rigor as the earlier sub-agent assessments in this session.
+
+**Verified:** `classifyCoverage` unit cases (solo → everyone, pair mixed, duplicates, empty). Atlas write of a 2-member group: shared CMU cell `892a847317bffff` → everyone; two unique cells → some; a fourth unvisited cell omitted. Hand arithmetic matched the aggregation. Unauthenticated `GET /api/groups/:groupId/coverage` returns 401. Test docs cleaned up.
 
 ---
 

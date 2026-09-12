@@ -3,6 +3,7 @@ import { requireAuth } from "../middleware/auth.js";
 import { requireGroupMember } from "../middleware/groupMember.js";
 import { COLLECTIONS } from "../models/index.js";
 import { asString, idVariants, matchGroupId } from "../services/ids.js";
+import { getGroupCoverage } from "../services/locationService.js";
 import { getDb } from "../services/mongoService.js";
 import { buildNeighborhoods } from "../services/neighborhoods.js";
 
@@ -117,6 +118,30 @@ router.get("/:groupId/graph", requireAuth, requireWellFormedParams, requireGroup
     return res.status(500).json({
       success: false,
       error: err.message || "Failed to load graph",
+    });
+  }
+});
+
+/**
+ * GET /api/groups/:groupId/coverage
+ * Personal cells merged for the group: everyone / some. "No one" is
+ * every other cell, computed client-side.
+ */
+router.get("/:groupId/coverage", requireAuth, requireWellFormedParams, requireGroupMember, async (req, res) => {
+  try {
+    const group = req.groupDoc;
+    const coverage = await getGroupCoverage(getDb(), group);
+    return res.json({
+      success: true,
+      group_id: asString(group._id),
+      everyone: coverage.everyone,
+      some: coverage.some,
+    });
+  } catch (err) {
+    console.error("[coverage]", err);
+    return res.status(500).json({
+      success: false,
+      error: err.message || "Failed to load group coverage",
     });
   }
 });

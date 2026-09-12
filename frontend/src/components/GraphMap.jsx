@@ -5,24 +5,18 @@ import {
   Polyline,
   TileLayer,
   Tooltip,
+  ZoomControl,
   useMap,
 } from "react-leaflet";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 import { cellToLatLng } from "h3-js";
 import { boundsFromNodes } from "../utils/projection.js";
+import { getBasemap } from "../utils/basemap.js";
 import FogOverlayLayer from "./FogOverlayLayer.jsx";
 
-/**
- * Soft free raster basemap — no API key, no MapLibre worker.
- * Esri World Light Gray (calm / soft product look).
- */
-const SOFT_TILES =
-  "https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}";
-const SOFT_ATTR =
-  "Tiles &copy; Esri &mdash; Esri, DeLorme, NAVTEQ";
-
 const PITTSBURGH = [40.4406, -79.9959];
+const BASEMAP = getBasemap();
 
 function FitGraphBounds({ points }) {
   const map = useMap();
@@ -132,15 +126,26 @@ export default function GraphMap({
   return (
     <div className="graph-map" style={{ width, height }}>
       <MapContainer
-        key="drift-soft-map"
+        key={`drift-map-${BASEMAP.id}`}
         center={PITTSBURGH}
         zoom={13}
+        minZoom={11}
+        maxZoom={BASEMAP.maxZoom}
+        zoomSnap={1}
+        wheelPxPerZoomLevel={120}
         className="drift-leaflet"
         style={{ width: "100%", height: "100%" }}
         zoomControl={false}
         attributionControl
       >
-        <TileLayer url={SOFT_TILES} attribution={SOFT_ATTR} maxZoom={16} />
+        <TileLayer
+          url={BASEMAP.url}
+          attribution={BASEMAP.attribution}
+          maxZoom={BASEMAP.maxZoom}
+          maxNativeZoom={BASEMAP.maxNativeZoom}
+          {...(BASEMAP.subdomains ? { subdomains: BASEMAP.subdomains } : {})}
+        />
+        <ZoomControl position="bottomright" />
         <FogOverlayLayer cells={visitedCells} />
         <FitGraphBounds points={fitPoints} />
         <MapSizeSync width={width} height={height} />

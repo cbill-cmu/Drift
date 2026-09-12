@@ -1,13 +1,4 @@
-import { cellToBoundary } from "h3-js";
-
-/** Web-Mercator-safe world ring [lng, lat], closed. */
-const WORLD_RING = [
-  [-180, -85.05112878],
-  [180, -85.05112878],
-  [180, 85.05112878],
-  [-180, 85.05112878],
-  [-180, -85.05112878],
-];
+import { cellToBoundary, cellToLatLng } from "h3-js";
 
 function closedRing(coords) {
   if (!coords.length) return coords;
@@ -17,11 +8,40 @@ function closedRing(coords) {
   return [...coords, first];
 }
 
+export function lngLatRingFromBBox({ west, south, east, north }) {
+  return [
+    [west, south],
+    [east, south],
+    [east, north],
+    [west, north],
+    [west, south],
+  ];
+}
+
+export function filterCellsInBounds(cells, bbox) {
+  if (!bbox) return cells || [];
+  const { west, south, east, north } = bbox;
+  const out = [];
+  for (const cell of cells || []) {
+    const id = typeof cell === "string" ? cell : cell?.h3_cell;
+    if (!id) continue;
+    try {
+      const [lat, lng] = cellToLatLng(id);
+      if (lat >= south && lat <= north && lng >= west && lng <= east) {
+        out.push(cell);
+      }
+    } catch {
+      /* skip invalid indexes */
+    }
+  }
+  return out;
+}
+
 function hexHole(h3Cell) {
   try {
     const ring = cellToBoundary(h3Cell, true);
     if (!ring || ring.length < 3) return null;
-    // Reverse so the hole winds opposite the outer world ring (GeoJSON holes).
+    // Reverse so the hole winds opposite the outer ring (GeoJSON holes).
     return closedRing([...ring].reverse());
   } catch {
     return null;
@@ -29,10 +49,10 @@ function hexHole(h3Cell) {
 }
 
 /**
- * Invert-mask GeoJSON: a world polygon with visited hexes punched out
+ * Invert-mask GeoJSON: outer ring (viewport) with visited hexes punched out
  * so the map shows through explored cells and fog covers the rest.
  */
-export function buildPersonalFogGeoJSON(cells) {
+export function buildPersonalFogGeoJSON(cells, outerRing) {
   const holes = [];
   for (const cell of cells || []) {
     const id = typeof cell === "string" ? cell : cell?.h3_cell;
@@ -45,7 +65,7 @@ export function buildPersonalFogGeoJSON(cells) {
     properties: { kind: "personal-fog" },
     geometry: {
       type: "Polygon",
-      coordinates: [WORLD_RING, ...holes],
+      coordinates: [outerRing, ...holes],
     },
   };
 }

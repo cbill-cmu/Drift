@@ -6,7 +6,7 @@ import {
   VISITED_CELL_RESOLUTION,
 } from "../models/index.js";
 import { decodePolyline } from "../utils/polyline.js";
-import { idVariants } from "./ids.js";
+import { asString, idVariants } from "./ids.js";
 import { HttpError } from "./userService.js";
 
 const MAX_POLYLINE_CHARS = 100_000;
@@ -137,6 +137,55 @@ export async function listVisitedCells(db, userId) {
       h3_cell: doc.h3_cell,
       visit_count: Number.isFinite(doc.visit_count) ? doc.visit_count : 1,
     }));
+}
+
+/**
+ * Classify aggregated {h3_cell, visitors|visitor_count} rows against
+ * group size. Absent cells are implicitly "no one" and are not returned.
+ */
+export function classifyCoverage(rows, memberCount) {
+  const everyone = [];
+  const some = [];
+  const count = Number(memberCount) || 0;
+
+  for (const row of rows || []) {
+    const cell = row.h3_cell || row._id;
+    if (!cell) continue;
+    const visitors = Array.isArray(row.visitors)
+      ? new Set(row.visitors.map(asString)).size
+      : Number(row.visitor_count) || 0;
+    if (count > 0 && visitors === count) everyone.push(cell);
+    else if (visitors > 0) some.push(cell);
+  }
+
+  return { everyone, some };
+}
+
+export async function getGroupCoverage(db, group) {
+  await ensureIndexes(db);
+  const memberIds = Array.isArray(group?.member_ids) ? group.member_ids : [];
+  if (!memberIds.length) {
+    return { everyone: [], some: [] };
+  }
+
+  const userIds = memberIds.flatMap((id) => idVariants(id));
+  const rows = await db
+    .collection(COLLECTIONS.USER_VISITED_CELLS)
+    .aggregate([
+      { $match: { user_id: { $in: userIds } } },
+      { $group: { _id: "$h3_cell", visitors: { $addToSet: "$user_id" } } },
+      {
+        $project: {
+          _id: 0,
+          h3_cell: "$_id",
+          visitors: 1,
+          visitor_count: { $size: "$visitors" },
+        },
+      },
+    ])
+    .toArray();
+
+  return classifyCoverage(rows, memberIds.length);
 }
 
 async function ensureIndexes(db) {
