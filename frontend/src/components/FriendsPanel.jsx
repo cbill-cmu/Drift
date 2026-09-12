@@ -80,7 +80,6 @@ export default function FriendsPanel({ onViewMap, activeFriendId }) {
 
   return (
     <section className="friends-panel">
-      <h2>Friends</h2>
       <p className="hint">Add someone by email. Heat density stays friends-only.</p>
 
       <form className="add-friend" onSubmit={handleAdd}>

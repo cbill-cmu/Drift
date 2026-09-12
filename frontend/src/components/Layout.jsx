@@ -161,7 +161,11 @@ export default function Layout({ groupId }) {
       </main>
 
       {sheet ? (
-        <div className="soft-sheet" role="dialog" aria-label={sheetTitle}>
+        <div
+          className={sheet === "places" ? "soft-sheet soft-sheet-compact" : "soft-sheet"}
+          role="dialog"
+          aria-label={sheetTitle}
+        >
           <div className="soft-sheet-head">
             <strong>{sheetTitle}</strong>
             <button
@@ -232,18 +236,20 @@ export default function Layout({ groupId }) {
               </button>
             );
           })}
+          <button
+            type="button"
+            className="dock-circle dock-circle-cta"
+            aria-label="Log trip"
+            onClick={() => setShowTripLogger(true)}
+          >
+            <span className="dock-glyph dock-glyph-cta">
+              <span className="dock-cta-icon" aria-hidden="true">
+                +
+              </span>
+            </span>
+            <span className="dock-label">Log trip</span>
+          </button>
         </div>
-        <button
-          type="button"
-          className="dock-fab"
-          aria-label="Log trip"
-          onClick={() => setShowTripLogger(true)}
-        >
-          <span className="dock-fab-plus" aria-hidden="true">
-            +
-          </span>
-          <span>Log trip</span>
-        </button>
       </nav>
 
       <TripLoggerModal
