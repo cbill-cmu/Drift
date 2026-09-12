@@ -5,6 +5,7 @@ import express from "express";
 import { requireAuth } from "./middleware/auth.js";
 import graphRouter from "./routes/graph.js";
 import tripsRouter from "./routes/trips.js";
+import usersRouter from "./routes/users.js";
 import { connectMongo } from "./services/mongoService.js";
 
 const app = express();
@@ -20,6 +21,7 @@ app.get("/", (_req, res) => {
 // Protected MVP routes (Person 1 implements handlers)
 app.use("/api/trips", requireAuth, tripsRouter);
 app.use("/api/groups", graphRouter);
+app.use("/api/users", requireAuth, usersRouter);
 
 async function start() {
   try {
