@@ -7,7 +7,12 @@ export default function RecommendationsPanel({ groupId, onSelectPlace }) {
   const [error, setError] = useState("");
 
   useEffect(() => {
-    if (!groupId) return;
+    if (!groupId) {
+      setLoading(false);
+      setData(null);
+      setError("");
+      return undefined;
+    }
     let cancelled = false;
     setLoading(true);
     fetchRecommendations(groupId)
@@ -25,6 +30,11 @@ export default function RecommendationsPanel({ groupId, onSelectPlace }) {
     };
   }, [groupId]);
 
+  if (!groupId) {
+    return (
+      <p className="hint">Make a group first and we’ll show you what’s around the area.</p>
+    );
+  }
   if (loading) return <p className="hint">Finding spots for you…</p>;
   if (error) return <p className="error">{error}</p>;
 

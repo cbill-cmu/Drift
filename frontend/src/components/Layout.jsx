@@ -67,6 +67,17 @@ function NavIcon({ name }) {
   );
 }
 
+function NeedGroupPrompt({ onMakeGroup }) {
+  return (
+    <section className="need-group">
+      <p>Make a group first and we’ll show you what’s around the area.</p>
+      <button type="button" className="btn-mint" onClick={onMakeGroup}>
+        Create a group
+      </button>
+    </section>
+  );
+}
+
 /**
  * Soft product standard shell: full-bleed map + circular bottom nav.
  */
@@ -401,39 +412,47 @@ export default function Layout({ defaultGroupId }) {
               />
             ) : null}
             {sheet === "places" ? (
-              <>
-                <VisitedPlacesList
-                  items={visitedPlaces.length ? visitedPlaces : exploredPlaces}
-                  loading={visitedPlacesLoading || exploredLoading}
-                  selectedId={suggestionId(selectedPlace)}
-                  onSelectPlace={handleSelectPlace}
-                />
-                {displayedGraph?.neighborhoods &&
-                Object.keys(displayedGraph.neighborhoods).length ? (
-                  <NeighborhoodStats
-                    neighborhoods={displayedGraph.neighborhoods}
-                    nodes={displayedGraph.nodes}
-                    selectedNodeId={selectedNode?.id}
-                    onSelectNode={setSelectedNode}
+              groupId ? (
+                <>
+                  <VisitedPlacesList
+                    items={visitedPlaces.length ? visitedPlaces : exploredPlaces}
+                    loading={visitedPlacesLoading || exploredLoading}
+                    selectedId={suggestionId(selectedPlace)}
+                    onSelectPlace={handleSelectPlace}
                   />
-                ) : null}
-              </>
+                  {displayedGraph?.neighborhoods &&
+                  Object.keys(displayedGraph.neighborhoods).length ? (
+                    <NeighborhoodStats
+                      neighborhoods={displayedGraph.neighborhoods}
+                      nodes={displayedGraph.nodes}
+                      selectedNodeId={selectedNode?.id}
+                      onSelectNode={setSelectedNode}
+                    />
+                  ) : null}
+                </>
+              ) : (
+                <NeedGroupPrompt onMakeGroup={() => setSheet("profile")} />
+              )
             ) : null}
             {sheet === "recs" ? (
-              <>
-                <SuggestionCards
-                  items={openSuggestions}
-                  limit={20}
-                  origin={origin}
-                  selectedId={suggestionId(selectedPlace)}
-                  loading={suggestionsLoading}
-                  onSelectPlace={handleSelectPlace}
-                />
-                <RecommendationsPanel
-                groupId={groupId}
-                onSelectPlace={handleSelectPlace}
-              />
-              </>
+              groupId ? (
+                <>
+                  <SuggestionCards
+                    items={openSuggestions}
+                    limit={20}
+                    origin={origin}
+                    selectedId={suggestionId(selectedPlace)}
+                    loading={suggestionsLoading}
+                    onSelectPlace={handleSelectPlace}
+                  />
+                  <RecommendationsPanel
+                    groupId={groupId}
+                    onSelectPlace={handleSelectPlace}
+                  />
+                </>
+              ) : (
+                <NeedGroupPrompt onMakeGroup={() => setSheet("profile")} />
+              )
             ) : null}
             {sheet === "profile" ? (
               <section className="profile-sheet">
